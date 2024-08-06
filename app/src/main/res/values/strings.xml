@@ -2,5 +2,9 @@
     <string name="app_name">Playlist Maker</string>
     <string name="main_menu_button1">Поиск</string>
     <string name="main_menu_button2">Медиатека</string>
-    <string name="main_menu_button3">Настройки</string>
+    <string name="settings_name">Настройки</string>
+    <string name="settings_button1">Темная тема</string>
+    <string name="settings_button2">Поделиться приложением</string>
+    <string name="settings_button3">Написать в поддержку</string>
+    <string name="settings_button4">Пользовательское соглашение</string>
 </resources>

@@ -1,6 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/settings"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:padding="20dp"
+            android:gravity="start"
+            android:src="@drawable/arrowback">
+        </ImageButton>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/settings_name"
+            android:textSize="@dimen/main_menu_default_textSize"
+            android:paddingTop="14dp"
+            android:paddingStart="12dp"
+            android:paddingBottom="16dp"
+            android:textColor="@color/black">
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:paddingVertical="@dimen/settings_menu_default_padding_vertical"
+                android:text="@string/settings_button1"
+                android:paddingStart="@dimen/settings_menu_default_padding_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/deep_black">
+            </TextView>
+
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:paddingVertical="@dimen/settings_menu_default_padding_vertical" />
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/settings_menu_default_padding_vertical">
+            <TextView
+                android:text="@string/settings_button2"
+                android:paddingStart="@dimen/settings_menu_default_padding_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/deep_black">
+            </TextView>
+            <ImageView
+                android:paddingEnd="12dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:src="@drawable/share"
+                android:backgroundTint="@color/white"
+                android:layout_gravity="end">
+            </ImageView>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/settings_menu_default_padding_vertical">
+            <TextView
+                android:text="@string/settings_button3"
+                android:paddingStart="@dimen/settings_menu_default_padding_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/deep_black">
+            </TextView>
+            <ImageView
+                android:paddingEnd="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:src="@drawable/support">
+            </ImageView>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/settings_menu_default_padding_vertical">
+            <TextView
+                android:text="@string/settings_button4"
+                android:paddingStart="@dimen/settings_menu_default_padding_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/deep_black">
+            </TextView>
+            <ImageView
+                android:paddingEnd="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:src="@drawable/arrow_forward">
+            </ImageView>
+        </FrameLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

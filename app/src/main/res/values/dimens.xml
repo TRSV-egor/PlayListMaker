@@ -2,7 +2,9 @@
 <resources>
     <dimen name="main_menu_default_iconPadding">10dp</dimen>
     <dimen name="main_menu_default_textSize">22sp</dimen>
+    <dimen name="settings_default_textSize">16sp</dimen>
     <dimen name="main_menu_default_cornerRadius">16dp</dimen>
     <dimen name="settings_menu_default_padding_vertical">21dp</dimen>
     <dimen name="settings_menu_default_padding_start">16dp</dimen>
+    <dimen name="settings_menu_default_padding_end">12dp</dimen>
 </resources>

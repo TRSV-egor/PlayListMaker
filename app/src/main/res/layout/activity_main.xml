@@ -18,85 +18,70 @@
             android:layout_gravity="start"
             android:paddingStart="12dp"
             android:paddingTop="10dp"
+            android:paddingEnd="62dp"
             android:paddingBottom="12dp"
             android:text="@string/app_name"
             android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:textSize="@dimen/main_menu_default_textSize" />
     </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="28dp"
         android:layout_marginBottom="20dp"
-        android:orientation="vertical">
+        android:divider="@drawable/empty_tall_divider"
+        android:orientation="vertical"
+        android:showDividers="middle">
 
-        <FrameLayout
+        <Button
+            android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/main_menu_button1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/main_menu_default_textSize"
+            app:cornerRadius="@dimen/main_menu_default_cornerRadius"
+            app:icon="@drawable/search"
+            app:iconGravity="textStart"
+            app:iconPadding="@dimen/main_menu_default_iconPadding"
+            app:iconTint="@color/black" />
 
-            <Button
-                android:id="@+id/search"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:backgroundTint="@color/white"
-                android:text="@string/main_menu_button1"
-                android:textColor="@color/black"
-                android:textSize="@dimen/main_menu_default_textSize"
-                app:cornerRadius="@dimen/main_menu_default_cornerRadius"
-                app:icon="@drawable/search"
-                app:iconGravity="textStart"
-                app:iconPadding="@dimen/main_menu_default_iconPadding"
-                app:iconTint="@color/black"
-                android:foreground="?attr/selectableItemBackground"/>
-        </FrameLayout>
-
-        <FrameLayout
+        <Button
+            android:id="@+id/media"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/main_menu_button2"
+            android:textColor="@color/black"
+            android:textSize="@dimen/main_menu_default_textSize"
+            app:cornerRadius="@dimen/main_menu_default_cornerRadius"
+            app:icon="@drawable/library"
+            app:iconGravity="textStart"
+            app:iconPadding="@dimen/main_menu_default_iconPadding"
+            app:iconTint="@color/black" />
 
-            <Button
-                android:id="@+id/media"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:backgroundTint="@color/white"
-                android:text="@string/main_menu_button2"
-                android:textColor="@color/black"
-                android:textSize="@dimen/main_menu_default_textSize"
-                app:cornerRadius="@dimen/main_menu_default_cornerRadius"
-                app:icon="@drawable/library"
-                app:iconGravity="textStart"
-                app:iconPadding="@dimen/main_menu_default_iconPadding"
-                app:iconTint="@color/black"
-                android:foreground="?attr/selectableItemBackground"/>
-        </FrameLayout>
-
-        <FrameLayout
+        <Button
+            android:id="@+id/settings"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/settings"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:backgroundTint="@color/white"
-                android:text="@string/settings_name"
-                android:textColor="@color/black"
-                android:textSize="@dimen/main_menu_default_textSize"
-                app:cornerRadius="@dimen/main_menu_default_cornerRadius"
-                app:icon="@drawable/settings"
-                app:iconGravity="textStart"
-                app:iconPadding="@dimen/main_menu_default_iconPadding"
-                app:iconTint="@color/black"
-                android:foreground="?attr/selectableItemBackground"/>
-        </FrameLayout>
-
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/settings_name"
+            android:textColor="@color/black"
+            android:textSize="@dimen/main_menu_default_textSize"
+            app:cornerRadius="@dimen/main_menu_default_cornerRadius"
+            app:icon="@drawable/settings"
+            app:iconGravity="textStart"
+            app:iconPadding="@dimen/main_menu_default_iconPadding"
+            app:iconTint="@color/black" />
 
     </LinearLayout>
 

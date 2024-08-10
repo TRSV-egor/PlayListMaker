@@ -7,29 +7,13 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <LinearLayout
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp">
+        app:titleTextColor="@color/black" />
 
-        <androidx.appcompat.widget.Toolbar
-
-            android:id="@+id/toolbar_arrow_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            app:navigationIcon="@drawable/arrowback" />
-
-        <androidx.appcompat.widget.Toolbar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:title="@string/settings_name"
-            app:titleTextColor="@color/black"
-            android:paddingBottom="12dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="86dp"
-            android:paddingStart="12dp"/>
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,9 +24,9 @@
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/settings_menu_default_padding_vertical"
             android:paddingStart="@dimen/settings_menu_default_padding_start"
             android:paddingEnd="@dimen/settings_menu_default_padding_end"
-            android:paddingVertical="@dimen/settings_menu_default_padding_vertical"
             android:text="@string/settings_button1"
             android:textColor="@color/deep_black"
             android:textSize="@dimen/settings_default_textSize" />
@@ -52,9 +36,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableEnd="@drawable/share"
+            android:paddingVertical="@dimen/settings_menu_default_padding_vertical"
             android:paddingStart="@dimen/settings_menu_default_padding_start"
             android:paddingEnd="@dimen/settings_menu_default_padding_end"
-            android:paddingVertical="@dimen/settings_menu_default_padding_vertical"
             android:text="@string/settings_button2"
             android:textColor="@color/deep_black"
             android:textSize="@dimen/settings_default_textSize" />
@@ -64,9 +48,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableEnd="@drawable/support"
+            android:paddingVertical="@dimen/settings_menu_default_padding_vertical"
             android:paddingStart="@dimen/settings_menu_default_padding_start"
             android:paddingEnd="@dimen/settings_menu_default_padding_end"
-            android:paddingVertical="@dimen/settings_menu_default_padding_vertical"
             android:text="@string/settings_button3"
             android:textColor="@color/deep_black"
             android:textSize="@dimen/settings_default_textSize" />
@@ -75,9 +59,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableEnd="@drawable/arrow_forward"
+            android:paddingVertical="@dimen/settings_menu_default_padding_vertical"
             android:paddingStart="@dimen/settings_menu_default_padding_start"
             android:paddingEnd="@dimen/settings_menu_default_padding_end"
-            android:paddingVertical="@dimen/settings_menu_default_padding_vertical"
             android:text="@string/settings_button4"
             android:textColor="@color/deep_black"
             android:textSize="@dimen/settings_default_textSize" />

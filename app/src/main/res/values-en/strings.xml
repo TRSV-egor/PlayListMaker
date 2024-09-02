@@ -7,4 +7,6 @@
     <string name="settings_button2">Share app</string>
     <string name="settings_button3">Get help</string>
     <string name="settings_button4">User agreement</string>
+    <string name="email_subject">Message to the developers and developers of the Playlist Maker application</string>
+    <string name="email_text">Thanks to the developers and developers for a cool application</string>
 </resources>

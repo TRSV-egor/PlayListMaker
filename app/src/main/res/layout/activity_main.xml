@@ -4,15 +4,16 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue"
     android:orientation="vertical"
-    android:padding="4dp">
+    android:padding="4dp"
+    android:theme="@style/MainMenu">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
+            android:fontFamily="@font/ys_display_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -36,52 +37,26 @@
         android:showDividers="middle">
 
         <Button
+            style="@style/MainActivityButtons"
             android:id="@+id/search"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:foreground="?attr/selectableItemBackground"
             android:text="@string/main_menu_button1"
-            android:textColor="@color/black"
-            android:textSize="@dimen/main_menu_default_textSize"
-            app:cornerRadius="@dimen/main_menu_default_cornerRadius"
-            app:icon="@drawable/search"
-            app:iconGravity="textStart"
-            app:iconPadding="@dimen/main_menu_default_iconPadding"
-            app:iconTint="@color/black" />
+            app:icon="@drawable/main_search"
+            />
 
         <Button
+            style="@style/MainActivityButtons"
             android:id="@+id/media"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:foreground="?attr/selectableItemBackground"
             android:text="@string/main_menu_button2"
-            android:textColor="@color/black"
-            android:textSize="@dimen/main_menu_default_textSize"
-            app:cornerRadius="@dimen/main_menu_default_cornerRadius"
-            app:icon="@drawable/library"
-            app:iconGravity="textStart"
-            app:iconPadding="@dimen/main_menu_default_iconPadding"
-            app:iconTint="@color/black" />
+            app:icon="@drawable/main_library"/>
 
         <Button
+            style="@style/MainActivityButtons"
             android:id="@+id/settings"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:foreground="?attr/selectableItemBackground"
             android:text="@string/settings_name"
-            android:textColor="@color/black"
-            android:textSize="@dimen/main_menu_default_textSize"
-            app:cornerRadius="@dimen/main_menu_default_cornerRadius"
-            app:icon="@drawable/settings"
-            app:iconGravity="textStart"
-            app:iconPadding="@dimen/main_menu_default_iconPadding"
-            app:iconTint="@color/black" />
+            app:icon="@drawable/main_settings"/>
 
     </LinearLayout>
 

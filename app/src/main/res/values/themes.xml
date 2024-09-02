@@ -1,9 +1,30 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.PlaylistMaker" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <!-- Primary brand color. -->
+        <!-- <item name="colorPrimary">@color/blue</item>-->
+        <!-- <item name="colorPrimaryVariant">@color/purple_700</item>-->
+        <!-- <item name="colorOnPrimary">@color/black</item>-->
+        <!-- Secondary brand color. -->
+        <!-- <item name="colorSecondary">@color/blue</item> -->
+        <!-- <item name="colorSecondaryVariant">#0026FF</item>-->
+        <!-- <item name="colorOnSecondary">@color/black</item>-->
+
+        <!-- <item name="trackTint">@color/blue</item> -->
+
+        <!-- <item name="colorAccent">@color/blue</item> -->
+
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/black</item>
+
     </style>
 
-    <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
+    <style name="MainMenu" parent="Base.Theme.PlaylistMaker">
+        <item name="android:background">@color/blue</item>
+    </style>
+
+    <!-- <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />-->
 </resources>

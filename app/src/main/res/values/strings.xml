@@ -7,4 +7,8 @@
     <string name="settings_button2">Поделиться приложением</string>
     <string name="settings_button3">Написать в поддержку</string>
     <string name="settings_button4">Пользовательское соглашение</string>
+    <string name="course_url" translatable="false">https://practicum.yandex.ru/profile/android-developer-plus/</string>
+    <string name="my_email" translatable="false">eg0r-taras0v@yandex.ru</string>
+    <string name="email_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="email_text">Спасибо разработчикам и разработчицам за крутое приложение</string>
 </resources>

@@ -17,5 +17,7 @@
     <dimen name="search_field_padding_end">9dp</dimen>
     <dimen name="search_field_drawablePadding">8dp</dimen>
     <dimen name="search_field_text_size">16sp</dimen>
+    <dimen name="search_field_clear_button_padding_vertical">12dp</dimen>
+    <dimen name="search_field_clear_button_padding_end">14dp</dimen>
 
 </resources>

@@ -21,8 +21,9 @@
         android:orientation="vertical">
 
         <com.google.android.material.switchmaterial.SwitchMaterial
-            style="@style/Switcher"
-            android:text="@string/settings_button1" />
+            style="@style/SettingsActivityMenu"
+            android:text="@string/settings_button1"
+            android:checked="true"/>
 
 
         <TextView

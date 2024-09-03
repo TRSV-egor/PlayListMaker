@@ -9,4 +9,5 @@
     <string name="settings_button4">User agreement</string>
     <string name="email_subject">Message to the developers and developers of the Playlist Maker application</string>
     <string name="email_text">Thanks to the developers and developers for a cool application</string>
+    <string name="search_name">Search</string>
 </resources>

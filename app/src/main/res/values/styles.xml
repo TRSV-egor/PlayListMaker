@@ -34,10 +34,5 @@
         <item name="android:textAppearance">@font/ys_display_regular</item>
         <item name="android:clickable">true</item>
     </style>
-    <style name="Switcher" parent="SettingsActivityMenu">
-        <!-- <item name="trackTint">@color/blue</item> -->
-        <!-- <item name="thumbTint">@color/blue</item> -->
-    </style>
-
 
 </resources>

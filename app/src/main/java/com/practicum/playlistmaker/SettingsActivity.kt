@@ -19,7 +19,7 @@ class SettingsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         setTitle(R.string.settings_name)
         toolbar.setTitleTextAppearance(this, R.style.ToolbarStyle)
-        toolbar.setNavigationIcon(R.drawable.navigate_arrowback)
+        toolbar.setNavigationIcon(R.drawable.toolbar_arrowback)
         toolbar.setNavigationOnClickListener { finish() }
 
 
@@ -43,12 +43,13 @@ class SettingsActivity : AppCompatActivity() {
         val buttonSupport = findViewById<TextView>(R.id.support)
 
         buttonSupport.setOnClickListener{
-            //тут херня
-            val emailSubject = R.string.email_subject
-            val emailText = R.string.email_text
+            val myEmail = getString(R.string.my_email)
+            val emailSubject = getString(R.string.email_subject)
+            val emailText = getString(R.string.email_text)
+
             val intentEmail = Intent(Intent.ACTION_SENDTO)
             intentEmail.data = Uri.parse("mailto:")
-            intentEmail.putExtra(Intent.EXTRA_EMAIL, arrayOf(R.string.my_email))
+            intentEmail.putExtra(Intent.EXTRA_EMAIL, arrayOf(myEmail))
             intentEmail.putExtra(Intent.EXTRA_SUBJECT, emailSubject)
             intentEmail.putExtra(Intent.EXTRA_TEXT, emailText)
             startActivity(intentEmail)

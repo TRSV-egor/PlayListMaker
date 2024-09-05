@@ -13,40 +13,45 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class SearchActivity : AppCompatActivity() {
+
+    private var searchValue: String = SEARCH_FIELD_DEF
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
 
-        val linearLayout = findViewById<LinearLayout>(R.id.search)
         val inputEditText = findViewById<EditText>(R.id.search_field)
         val clearButton = findViewById<ImageView>(R.id.search_clear)
+
+        if (inputEditText.equals("")){
+            clearButton.visibility = View.GONE
+        }
+
+        clearButton.visibility = View.GONE
+        inputEditText.setText(searchValue)
 
         clearButton.setOnClickListener {
             inputEditText.setText("")
         }
 
+
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // empty
+            // empty
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.isNullOrEmpty()) {
-
-                } else {
-
-                }
                 clearButton.visibility = clearButtonVisibility(s)
+                searchValue = s.toString()
             }
 
             override fun afterTextChanged(s: Editable?) {
-                // empty
+            // empty
             }
         }
+
         inputEditText.addTextChangedListener(simpleTextWatcher)
-
-
 
         val toolbar : androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -56,12 +61,23 @@ class SearchActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener { finish() }
 
 
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.search)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(SEARCH_FIELD_TEXT, searchValue)
+
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        savedInstanceState.getString(SEARCH_FIELD_TEXT, SEARCH_FIELD_DEF)
+
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -70,5 +86,10 @@ class SearchActivity : AppCompatActivity() {
         } else {
             View.VISIBLE
         }
+    }
+
+    companion object{
+        const val SEARCH_FIELD_TEXT = "SEARCH_FIELD_TEXT"
+        const val SEARCH_FIELD_DEF = ""
     }
 }

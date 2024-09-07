@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         app:titleTextAppearance="@font/ys_display_medium" />
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/search_field_margin_horizontal"
@@ -25,10 +25,9 @@
 
         <EditText
             android:id="@+id/search_field"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"
             android:background="@null"
             android:drawableStart="@drawable/search_search"
             android:drawablePadding="@dimen/search_field_drawablePadding"
@@ -47,13 +46,13 @@
             android:id="@+id/search_clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="right|center"
             android:background="@null"
             android:paddingEnd="@dimen/search_field_clear_button_padding_end"
             android:src="@drawable/search_clear"
             android:visibility="visible" />
 
-    </LinearLayout>
+    </FrameLayout>
 
 
 </LinearLayout>

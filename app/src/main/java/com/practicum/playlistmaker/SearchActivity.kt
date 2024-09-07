@@ -1,59 +1,56 @@
 package com.practicum.playlistmaker
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 
 class SearchActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivitySearchBinding
     private var searchValue: String = SEARCH_FIELD_DEF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_search)
+        setContentView(binding.root)
 
-        val inputEditText = findViewById<EditText>(R.id.search_field)
-        val clearButton = findViewById<ImageView>(R.id.search_clear)
+        binding.searchClear.isVisible = false
 
-        if (inputEditText.equals("")){
-            clearButton.visibility = View.GONE
-        }
-
-        clearButton.visibility = View.GONE
-        inputEditText.setText(searchValue)
-
-        clearButton.setOnClickListener {
-            inputEditText.setText("")
+        binding.searchClear.setOnClickListener {
+            binding.searchField.setText(SEARCH_FIELD_DEF)
+            val inputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputMethodManager?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
         }
 
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            // empty
+                //empty
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = clearButtonVisibility(s)
+                binding.searchClear.isVisible = clearButtonVisibility(s)
                 searchValue = s.toString()
             }
 
             override fun afterTextChanged(s: Editable?) {
-            // empty
+                //empty
             }
         }
 
-        inputEditText.addTextChangedListener(simpleTextWatcher)
+        binding.searchField.addTextChangedListener(simpleTextWatcher)
 
-        val toolbar : androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
+        val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
         setSupportActionBar(toolbar)
         toolbar.setNavigationIcon(R.drawable.toolbar_arrowback)
         setTitle(R.string.search_name)
@@ -61,7 +58,7 @@ class SearchActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener { finish() }
 
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.search)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.search) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -71,24 +68,23 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_FIELD_TEXT, searchValue)
-
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        savedInstanceState.getString(SEARCH_FIELD_TEXT, SEARCH_FIELD_DEF)
-
+        binding.searchField.setText(
+            savedInstanceState.getString(
+                SEARCH_FIELD_TEXT,
+                SEARCH_FIELD_DEF
+            )
+        )
     }
 
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
+    private fun clearButtonVisibility(s: CharSequence?): Boolean {
+        return !s.isNullOrEmpty()
     }
 
-    companion object{
+    companion object {
         const val SEARCH_FIELD_TEXT = "SEARCH_FIELD_TEXT"
         const val SEARCH_FIELD_DEF = ""
     }

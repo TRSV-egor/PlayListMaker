@@ -42,7 +42,7 @@
         <TextView
             style="@style/SettingsActivityMenu"
             android:id="@+id/user_agreement"
-            android:drawableEnd="@drawable/settings_arrow_forward"
+            android:drawableEnd="@drawable/settings_track_arrow_forward"
             android:text="@string/settings_button4" />
 
     </LinearLayout>

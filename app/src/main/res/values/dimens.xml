@@ -20,4 +20,19 @@
     <dimen name="search_field_clear_button_padding_vertical">12dp</dimen>
     <dimen name="search_field_clear_button_padding_end">14dp</dimen>
 
+    <dimen name="track_recycler_logo_layout_marginVertical">8dp</dimen>
+    <dimen name="track_recycler_logo_layout_marginStart">12dp</dimen>
+    <dimen name="track_recycler_title_layout_marginStart">66dp</dimen>
+    <dimen name="track_recycler_title_layout_marginTop">14dp</dimen>
+    <dimen name="track_recycler_title_text_size">16sp</dimen>
+    <dimen name="track_recycler_subtitle_layout_marginStart">66dp</dimen>
+    <dimen name="track_recycler_subtitle_layout_marginBottom">14dp</dimen>
+    <dimen name="track_recycler_subtitle_text_size">11sp</dimen>
+    <dimen name="track_recycler_subtitle_dot_layout_marginHorizontal">5dp</dimen>
+    <dimen name="track_recycler_end_image_layout_marginBottom">19dp</dimen>
+    <dimen name="track_recycler_end_image_layout_marginTop">18dp</dimen>
+    <dimen name="track_recycler_marginEnd">44dp</dimen>
+
+
+
 </resources>

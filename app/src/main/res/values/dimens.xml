@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="main_menu_default_iconPadding">10dp</dimen>
+    <dimen name="main_menu_default_textSize">22sp</dimen>
+    <dimen name="main_menu_default_cornerRadius">16dp</dimen>
+
+    <dimen name="settings_default_textSize">16sp</dimen>
+    <dimen name="settings_menu_default_padding_vertical">21dp</dimen>
+    <dimen name="settings_menu_default_padding_start">16dp</dimen>
+    <dimen name="settings_menu_default_padding_end">12dp</dimen>
+
+
+    <dimen name="search_field_margin_vertical">8dp</dimen>
+    <dimen name="search_field_margin_horizontal">16dp</dimen>
+    <dimen name="search_field_padding_vertical">11dp</dimen>
+    <dimen name="search_field_padding_start">13dp</dimen>
+    <dimen name="search_field_padding_end">9dp</dimen>
+    <dimen name="search_field_drawablePadding">8dp</dimen>
+    <dimen name="search_field_text_size">16sp</dimen>
+    <dimen name="search_field_clear_button_padding_vertical">12dp</dimen>
+    <dimen name="search_field_clear_button_padding_end">14dp</dimen>
+
+    <dimen name="track_recycler_logo_layout_marginVertical">8dp</dimen>
+    <dimen name="track_recycler_logo_layout_marginStart">12dp</dimen>
+    <dimen name="track_recycler_title_layout_marginStart">66dp</dimen>
+    <dimen name="track_recycler_title_layout_marginTop">14dp</dimen>
+    <dimen name="track_recycler_title_text_size">16sp</dimen>
+    <dimen name="track_recycler_subtitle_layout_marginStart">66dp</dimen>
+    <dimen name="track_recycler_subtitle_layout_marginBottom">14dp</dimen>
+    <dimen name="track_recycler_subtitle_text_size">11sp</dimen>
+    <dimen name="track_recycler_subtitle_dot_layout_marginHorizontal">5dp</dimen>
+    <dimen name="track_recycler_end_image_layout_marginBottom">19dp</dimen>
+    <dimen name="track_recycler_end_image_layout_marginTop">18dp</dimen>
+    <dimen name="track_recycler_marginEnd">44dp</dimen>
+
+
+
+</resources>

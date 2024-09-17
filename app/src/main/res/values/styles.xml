@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ToolbarStyle">
+        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="android:textSize">@dimen/main_menu_default_textSize</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    <style name="MainActivityButtons" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/main_menu_default_textSize</item>
+        <item name="cornerRadius">@dimen/main_menu_default_cornerRadius</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">@dimen/main_menu_default_iconPadding</item>
+        <item name="iconTint">@color/black</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    <style name="SettingsActivityMenu">
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingVertical">@dimen/settings_menu_default_padding_vertical</item>
+        <item name="android:paddingStart">@dimen/settings_menu_default_padding_start</item>
+        <item name="android:paddingEnd">@dimen/settings_menu_default_padding_end</item>
+        <item name="android:textSize">@dimen/settings_default_textSize</item>
+        <item name="android:textAppearance">@font/ys_display_regular</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+</resources>

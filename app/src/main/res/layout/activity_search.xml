@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SearchActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleTextAppearance="@font/ys_display_medium" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/search_field_margin_horizontal"
+        android:layout_marginVertical="@dimen/search_field_margin_vertical"
+        android:background="@drawable/search_field"
+        android:orientation="horizontal"
+        >
+
+        <EditText
+            android:id="@+id/search_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:drawableStart="@drawable/search_search"
+            android:drawablePadding="@dimen/search_field_drawablePadding"
+            android:paddingVertical="@dimen/search_field_padding_vertical"
+            android:paddingStart="@dimen/search_field_padding_start"
+            android:fontFamily="@font/ys_display_medium"
+            android:hint="@string/search_name"
+            android:inputType="text"
+            android:lines="1"
+            android:maxLines="1"
+            android:textColor="@android:color/black"
+            android:textColorHint="@color/search_hint"
+            android:textSize="@dimen/search_field_text_size"></EditText>
+
+        <ImageView
+            android:id="@+id/search_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center"
+            android:background="@null"
+            android:paddingEnd="@dimen/search_field_clear_button_padding_end"
+            android:src="@drawable/search_clear"
+            android:visibility="visible" />
+
+    </FrameLayout>
+
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/view_track_recycle_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/search_field_margin_horizontal"></androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>

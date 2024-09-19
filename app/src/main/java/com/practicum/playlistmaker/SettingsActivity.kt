@@ -38,7 +38,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.share.setOnClickListener {
             val intentShare = Intent(Intent.ACTION_SEND)
             intentShare.putExtra(Intent.EXTRA_TEXT, getString(R.string.course_url))
-            intentShare.setType("text/plain");
+            intentShare.setType("text/plain")
             startActivity(intentShare)
         }
 
@@ -65,6 +65,6 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     companion object {
-        val MAIL_TO = "mailto:"
+        const val MAIL_TO = "mailto:"
     }
 }

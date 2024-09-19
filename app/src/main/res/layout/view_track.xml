@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/track_recycler_logo_layout_marginVertical"
-        android:layout_marginStart="@dimen/track_recycler_logo_layout_marginStart"></ImageView>
+        android:layout_marginStart="@dimen/track_recycler_logo_layout_marginStart" />
 
     <TextView
         android:fontFamily="@font/ys_display_regular"
@@ -24,7 +24,7 @@
         android:layout_marginStart="@dimen/track_recycler_title_layout_marginStart"
         android:layout_marginTop="@dimen/track_recycler_title_layout_marginTop"
         android:layout_marginEnd="@dimen/track_recycler_marginEnd"
-        android:textSize="@dimen/track_recycler_title_text_size"></TextView>
+        android:textSize="@dimen/track_recycler_title_text_size" />
 
 <LinearLayout
     android:layout_width="wrap_content"
@@ -35,6 +35,7 @@
     android:layout_marginBottom="@dimen/track_recycler_subtitle_layout_marginBottom"
     android:layout_marginEnd="@dimen/track_recycler_marginEnd"
     >
+
     <TextView
         android:fontFamily="@font/ys_display_regular"
         android:maxLines="1"
@@ -44,14 +45,15 @@
         android:layout_height="wrap_content"
         android:text="Michael Jackson Michael Jackson Michael Jackson "
         android:textSize="@dimen/track_recycler_subtitle_text_size"
-        android:textColor="@color/settings_logo"
-        ></TextView>
+        android:textColor="@color/settings_logo" />
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:src="@drawable/track_dot"
-        android:layout_marginHorizontal="@dimen/track_recycler_subtitle_dot_layout_marginHorizontal"></ImageView>
+        android:layout_marginHorizontal="@dimen/track_recycler_subtitle_dot_layout_marginHorizontal" />
+
     <TextView
         android:fontFamily="@font/ys_display_regular"
         android:maxLines="1"
@@ -61,8 +63,7 @@
         android:layout_height="wrap_content"
         android:text="4:35"
         android:textSize="@dimen/track_recycler_subtitle_text_size"
-        android:textColor="@color/settings_logo"
-        ></TextView>
+        android:textColor="@color/settings_logo" />
 </LinearLayout>
 
     <ImageView
@@ -72,6 +73,6 @@
         android:src="@drawable/settings_track_arrow_forward"
         android:layout_marginTop="@dimen/track_recycler_end_image_layout_marginTop"
         android:layout_marginEnd="@dimen/track_recycler_logo_layout_marginStart"
-        android:layout_marginBottom="@dimen/track_recycler_end_image_layout_marginBottom"></ImageView>
+        android:layout_marginBottom="@dimen/track_recycler_end_image_layout_marginBottom" />
 
 </FrameLayout>

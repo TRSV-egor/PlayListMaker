@@ -9,7 +9,6 @@
     <dimen name="settings_menu_default_padding_start">16dp</dimen>
     <dimen name="settings_menu_default_padding_end">12dp</dimen>
 
-
     <dimen name="search_field_margin_vertical">8dp</dimen>
     <dimen name="search_field_margin_horizontal">16dp</dimen>
     <dimen name="search_field_padding_vertical">11dp</dimen>
@@ -32,7 +31,4 @@
     <dimen name="track_recycler_end_image_layout_marginBottom">19dp</dimen>
     <dimen name="track_recycler_end_image_layout_marginTop">18dp</dimen>
     <dimen name="track_recycler_marginEnd">44dp</dimen>
-
-
-
 </resources>

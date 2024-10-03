@@ -13,4 +13,8 @@
     <string name="email_text">Спасибо разработчикам и разработчицам за крутое приложение</string>
     <string name="search_name">Поиск</string>
     <string name="practicum_offer" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="search_404">Ничего не нашлось</string>
+    <string name="search_no_connection">Проблемы со связью\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
+    <string name="search_update">Обновить</string>
+    <string name="itunes_base_url" translatable="false">https://itunes.apple.com</string>
 </resources>

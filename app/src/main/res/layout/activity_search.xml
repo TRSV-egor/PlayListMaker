@@ -20,27 +20,29 @@
         android:layout_marginHorizontal="@dimen/search_field_margin_horizontal"
         android:layout_marginVertical="@dimen/search_field_margin_vertical"
         android:background="@drawable/search_field"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
         <EditText
             android:id="@+id/search_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="start"
+            android:layout_marginEnd="@dimen/search_field_layout_marginEnd"
             android:background="@null"
             android:drawableStart="@drawable/search_search"
             android:drawablePadding="@dimen/search_field_drawablePadding"
-            android:paddingVertical="@dimen/search_field_padding_vertical"
-            android:paddingStart="@dimen/search_field_padding_start"
             android:fontFamily="@font/ys_display_medium"
             android:hint="@string/search_name"
             android:inputType="text"
             android:lines="1"
             android:maxLines="1"
+            android:paddingVertical="@dimen/search_field_padding_vertical"
+            android:paddingStart="@dimen/search_field_padding_start"
             android:textColor="@android:color/black"
             android:textColorHint="@color/search_hint"
-            android:textSize="@dimen/search_field_text_size"></EditText>
+            android:textSize="@dimen/search_field_text_size"
+            android:imeOptions="actionDone"
+            android:singleLine="true"></EditText>
 
         <ImageView
             android:id="@+id/search_clear"
@@ -54,10 +56,73 @@
 
     </FrameLayout>
 
-<androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/view_track_recycle_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/search_field_margin_horizontal"></androidx.recyclerview.widget.RecyclerView>
+    <LinearLayout
+        android:id="@+id/search_not_found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/search_error_logo_layout_marginTop"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/search_404"></ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/search_error_text_layout_marginTop"
+            android:fontFamily="@font/ys_display_medium"
+            android:text="@string/search_404"
+            android:textSize="@dimen/search_error_text_size"></TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/search_no_connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/search_error_logo_layout_marginTop"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/search_no_connect"></ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/search_error_text_layout_marginTop"
+            android:fontFamily="@font/ys_display_medium"
+            android:gravity="center"
+            android:text="@string/search_no_connection"
+            android:textSize="@dimen/search_error_text_size"></TextView>
+
+        <Button
+            android:id="@+id/search_upd_bttn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/search_error_button_layout_marginTop"
+            android:backgroundTint="@color/toolbar"
+            android:fontFamily="@font/ys_display_medium"
+            android:text="@string/search_update"
+            android:textColor="@color/search_buton_update"
+            android:textSize="@dimen/search_error_button_text_size"></Button>
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/view_track_recycle_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/search_field_margin_horizontal"
+        ></androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>

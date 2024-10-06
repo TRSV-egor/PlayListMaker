@@ -19,24 +19,12 @@ import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 class SearchActivity : AppCompatActivity() {
 
-    //Задаём базовый URL
-    //private var baseURL: String = getString(R.string.itunes_base_url)
-    private val baseURL = "https://itunes.apple.com"
-
-    //Инициализируем retrofit передавая базовый URL и GsonConverter
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(baseURL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
     //с помощью retrofit создаём сервис Айтюнс
-    private val itunesService: ItunesAPI = retrofit.create(ItunesAPI::class.java)
+    private val itunesService = ItunesRetrofit.getService()
 
     //Массив треков для вывода в RecycleView
     private val trackArray = ArrayList<Track>()
@@ -71,10 +59,7 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchClear.setOnClickListener {
             binding.searchField.setText(SEARCH_FIELD_DEF)
-            trackArray.clear()
-            adapter.notifyDataSetChanged()
-            binding.searchNotFound.visibility = View.GONE
-            binding.searchNoConnect.visibility = View.GONE
+            clearAll()
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
@@ -96,7 +81,9 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                //empty
+                if (binding.searchField.text.isEmpty()) {
+                    clearAll()
+                }
             }
         }
 
@@ -138,11 +125,7 @@ class SearchActivity : AppCompatActivity() {
     private fun search(query: String) {
 
         lastQuery = query
-        trackArray.clear()
-
-        binding.searchNoConnect.visibility = View.GONE
-        binding.searchNotFound.visibility = View.GONE
-
+        clearAll()
 
         itunesService.getTrack("song", query)
             .enqueue(object : Callback<TrackResponse> {
@@ -181,6 +164,13 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
             )
+    }
+
+    private fun clearAll() {
+        trackArray.clear()
+        adapter.notifyDataSetChanged()
+        binding.searchNotFound.visibility = View.GONE
+        binding.searchNoConnect.visibility = View.GONE
     }
 
     companion object {

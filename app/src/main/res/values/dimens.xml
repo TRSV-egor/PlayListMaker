@@ -14,10 +14,17 @@
     <dimen name="search_field_padding_vertical">11dp</dimen>
     <dimen name="search_field_padding_start">13dp</dimen>
     <dimen name="search_field_padding_end">9dp</dimen>
+    <dimen name="search_field_layout_marginEnd">45dp</dimen>
     <dimen name="search_field_drawablePadding">8dp</dimen>
     <dimen name="search_field_text_size">16sp</dimen>
     <dimen name="search_field_clear_button_padding_vertical">12dp</dimen>
     <dimen name="search_field_clear_button_padding_end">14dp</dimen>
+    <dimen name="search_error_logo_layout_marginTop">110dp</dimen>
+    <dimen name="search_error_text_layout_marginTop">16dp</dimen>
+    <dimen name="search_error_text_size">19sp</dimen>
+    <dimen name="search_error_button_layout_marginTop">24dp</dimen>
+    <dimen name="search_error_button_text_size">14sp</dimen>
+
 
     <dimen name="track_recycler_logo_layout_marginVertical">8dp</dimen>
     <dimen name="track_recycler_logo_layout_marginStart">12dp</dimen>

@@ -10,4 +10,7 @@
     <string name="email_subject">Message to the developers and developers of the Playlist Maker application</string>
     <string name="email_text">Thanks to the developers and developers for a cool application</string>
     <string name="search_name">Search</string>
+    <string name="search_404">Nothing found</string>
+    <string name="search_no_connection">Problems with connection\n\nLoad failed. Check\nthe internet connection</string>
+    <string name="search_update">Update</string>
 </resources>

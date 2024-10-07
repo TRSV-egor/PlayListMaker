@@ -4,4 +4,5 @@
     <color name="search_field">#FFFFFFFF</color>
     <color name="search_hint">#1A1B22</color>
     <color name="toolbar">#FFFFFFFF</color>
+    <color name="search_buton_update">#1A1B22</color>
 </resources>

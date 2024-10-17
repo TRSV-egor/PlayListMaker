@@ -6,6 +6,8 @@
     <color name="search_hint">#AEAFB4</color>
     <color name="search_buton_update">#FFFFFFFF</color>
     <color name="toolbar">#1A1B22</color>
+    <color name="settings_switcher_thumb">#AEAFB4</color>
+    <color name="settings_switcher_track">#E6E8EB</color>
 
 
     <color name="black">#1A1B22</color>

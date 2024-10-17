@@ -34,6 +34,14 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
+        //night light theme
+        if ((applicationContext as App).darkTheme){
+            binding.themeSwitcher.isChecked = (applicationContext as App).darkTheme
+        }
+        binding.themeSwitcher.setOnCheckedChangeListener{
+                switcher, checked -> (applicationContext as App).switchTheme(checked)
+        }
+
         //Share app button
         binding.share.setOnClickListener {
             val intentShare = Intent(Intent.ACTION_SEND)

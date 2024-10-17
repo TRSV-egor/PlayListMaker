@@ -21,9 +21,11 @@
         android:orientation="vertical">
 
         <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/theme_switcher"
             style="@style/SettingsActivityMenu"
             android:text="@string/settings_button1"
-            android:checked="true"/>
+            app:thumbTint="@color/settings_switcher_thumb"
+            app:trackTint="@color/settings_switcher_track"/>
 
 
         <TextView

@@ -6,17 +6,20 @@ import androidx.appcompat.app.AppCompatDelegate
 const val SETTINGS = "playListMaker_settings"
 const val NIGHTTHEME = "night_theme"
 
+
 class App : Application() {
 
     var darkTheme = false
 
     override fun onCreate() {
         super.onCreate()
-        switchTheme(getSharedPreferences(SETTINGS, MODE_PRIVATE)
-            .getBoolean(NIGHTTHEME, false))
+        switchTheme(
+            getSharedPreferences(SETTINGS, MODE_PRIVATE)
+                .getBoolean(NIGHTTHEME, false)
+        )
     }
 
-    fun switchTheme(darkThemeEnabled: Boolean){
+    fun switchTheme(darkThemeEnabled: Boolean) {
         darkTheme = darkThemeEnabled
 
         getSharedPreferences(SETTINGS, MODE_PRIVATE).edit()
@@ -31,4 +34,6 @@ class App : Application() {
             }
         )
     }
+
+
 }

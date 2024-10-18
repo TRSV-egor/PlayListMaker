@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -15,6 +16,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -36,7 +39,6 @@ class SearchActivity : AppCompatActivity() {
 
     private var lastQuery: String = ""
 
-
     private var searchValue: String = SEARCH_FIELD_DEF
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,9 +47,18 @@ class SearchActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
 
+        val sharedPreferences = getSharedPreferences(SETTINGS, MODE_PRIVATE)
+        val searchHistory = SearchHistory(sharedPreferences)
+        val adapterHistory = SearchHistoryAdapter(searchHistory.get())
+
         binding.viewTrackRecycleView.layoutManager = LinearLayoutManager(this)
         binding.viewTrackRecycleView.adapter = adapter
+        binding.viewTrackHistoryRecycleView.adapter = adapterHistory
+        binding.viewTrackHistoryRecycleView.layoutManager = LinearLayoutManager(this)
+
         binding.searchClear.isVisible = false
+
+        //Слушатель нажатия кнопки ОК при поиске
         binding.searchField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (binding.searchField.text.isNotEmpty()) {
@@ -57,6 +68,7 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
+        //Слушатель нажатия на Очистить поле поиска
         binding.searchClear.setOnClickListener {
             binding.searchField.setText(SEARCH_FIELD_DEF)
             clearAll()
@@ -65,10 +77,10 @@ class SearchActivity : AppCompatActivity() {
             inputMethodManager?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
         }
 
+        //Слушатель нажатия Обновить при ошибке
         binding.searchUpdBttn.setOnClickListener {
             search(lastQuery)
         }
-
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -83,11 +95,39 @@ class SearchActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 if (binding.searchField.text.isEmpty()) {
                     clearAll()
+                    showHistory(adapterHistory)
                 }
             }
         }
 
         binding.searchField.addTextChangedListener(simpleTextWatcher)
+
+        //Слушатель при фокусировке на поле поиска
+        binding.searchField.setOnFocusChangeListener { view, hasFocus ->
+
+            binding.searchHistory.visibility = if (
+                hasFocus
+                && binding.searchField.text.isEmpty()
+                && adapter.itemCount == 0
+                && adapterHistory.itemCount != 0
+            ) View.VISIBLE else View.GONE
+
+        }
+
+        //Слушатель нажатия на кнопку очистки истории
+        binding.searchClearHistory.setOnClickListener{
+            searchHistory.clear()
+            adapterHistory.notifyDataSetChanged()
+            binding.searchHistory.visibility = View.GONE
+        }
+
+        adapter.onClick = { item ->
+            Log.i("TEST", "${item.trackName} ${item.artistName} ")
+
+            searchHistory.save(item)
+            adapterHistory.notifyDataSetChanged()
+
+        }
 
         val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
         setSupportActionBar(toolbar)
@@ -124,6 +164,8 @@ class SearchActivity : AppCompatActivity() {
 
     private fun search(query: String) {
 
+        binding.searchHistory.visibility = View.GONE
+
         lastQuery = query
         clearAll()
 
@@ -133,6 +175,7 @@ class SearchActivity : AppCompatActivity() {
                     call: Call<TrackResponse>,
                     response: Response<TrackResponse>
                 ) {
+                    binding.searchHistory.visibility = View.GONE
                     when (response.code()) {
                         200 -> {
                             if (response.body()?.tracksList!!.isNotEmpty()) {
@@ -164,6 +207,14 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
             )
+    }
+
+    private fun showHistory(adapterHistory: SearchHistoryAdapter){
+        if (adapterHistory.itemCount == 0) {
+            return
+        } else {
+            binding.searchHistory.visibility = View.VISIBLE
+        }
     }
 
     private fun clearAll() {

@@ -24,6 +24,9 @@
     <dimen name="search_error_text_size">19sp</dimen>
     <dimen name="search_error_button_layout_marginTop">24dp</dimen>
     <dimen name="search_error_button_text_size">14sp</dimen>
+    <dimen name="search_history_text_layout_marginTop">42dp</dimen>
+    <dimen name="search_history_text_size">19sp</dimen>
+    <dimen name="search_history_recycler_view_marginTop">20dp</dimen>
 
 
     <dimen name="track_recycler_logo_layout_marginVertical">8dp</dimen>

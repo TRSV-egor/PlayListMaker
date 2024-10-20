@@ -17,4 +17,6 @@
     <string name="search_no_connection">Проблемы со связью\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
     <string name="search_update">Обновить</string>
     <string name="itunes_base_url" translatable="false">https://itunes.apple.com</string>
+    <string name="search_history">Вы искали</string>
+    <string name="search_clear_history">Очистить историю</string>
 </resources>

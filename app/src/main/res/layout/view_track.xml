@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    >
+    android:background="?android:selectableItemBackground">
 
     <ImageView
         android:id="@+id/view_track_logo"
@@ -12,67 +12,66 @@
         android:layout_marginStart="@dimen/track_recycler_logo_layout_marginStart" />
 
     <TextView
-        android:fontFamily="@font/ys_display_regular"
         android:id="@+id/view_track_name"
-        android:scrollHorizontally="true"
-        android:ellipsize="end"
-        android:maxLines="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Billie Jean Billie Jean Billie Jean Billie Jean Billie Jean"
         android:layout_gravity="top"
         android:layout_marginStart="@dimen/track_recycler_title_layout_marginStart"
         android:layout_marginTop="@dimen/track_recycler_title_layout_marginTop"
         android:layout_marginEnd="@dimen/track_recycler_marginEnd"
+        android:ellipsize="end"
+        android:fontFamily="@font/ys_display_regular"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:text="Billie Jean Billie Jean Billie Jean Billie Jean Billie Jean"
         android:textSize="@dimen/track_recycler_title_text_size" />
 
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_gravity="bottom"
-    android:layout_marginStart="@dimen/track_recycler_subtitle_layout_marginStart"
-    android:layout_marginBottom="@dimen/track_recycler_subtitle_layout_marginBottom"
-    android:layout_marginEnd="@dimen/track_recycler_marginEnd"
-    >
-
-    <TextView
-        android:fontFamily="@font/ys_display_regular"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:id="@+id/view_track_artist"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Michael Jackson Michael Jackson Michael Jackson "
-        android:textSize="@dimen/track_recycler_subtitle_text_size"
-        android:textColor="@color/settings_logo" />
+        android:layout_gravity="bottom"
+        android:layout_marginStart="@dimen/track_recycler_subtitle_layout_marginStart"
+        android:layout_marginEnd="@dimen/track_recycler_marginEnd"
+        android:layout_marginBottom="@dimen/track_recycler_subtitle_layout_marginBottom"
+        android:orientation="horizontal">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:src="@drawable/track_dot"
-        android:layout_marginHorizontal="@dimen/track_recycler_subtitle_dot_layout_marginHorizontal" />
+        <TextView
+            android:id="@+id/view_track_artist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/ys_display_regular"
+            android:maxLines="1"
+            android:text="Michael Jackson Michael Jackson Michael Jackson "
+            android:textColor="@color/settings_logo"
+            android:textSize="@dimen/track_recycler_subtitle_text_size" />
 
-    <TextView
-        android:fontFamily="@font/ys_display_regular"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:id="@+id/view_track_length"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="4:35"
-        android:textSize="@dimen/track_recycler_subtitle_text_size"
-        android:textColor="@color/settings_logo" />
-</LinearLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/track_recycler_subtitle_dot_layout_marginHorizontal"
+            android:src="@drawable/track_dot" />
+
+        <TextView
+            android:id="@+id/view_track_length"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/ys_display_regular"
+            android:maxLines="1"
+            android:text="4:35"
+            android:textColor="@color/settings_logo"
+            android:textSize="@dimen/track_recycler_subtitle_text_size" />
+    </LinearLayout>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|end"
-        android:src="@drawable/settings_track_arrow_forward"
         android:layout_marginTop="@dimen/track_recycler_end_image_layout_marginTop"
         android:layout_marginEnd="@dimen/track_recycler_logo_layout_marginStart"
-        android:layout_marginBottom="@dimen/track_recycler_end_image_layout_marginBottom" />
+        android:layout_marginBottom="@dimen/track_recycler_end_image_layout_marginBottom"
+        android:src="@drawable/settings_track_arrow_forward" />
 
 </FrameLayout>

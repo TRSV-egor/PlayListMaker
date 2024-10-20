@@ -13,4 +13,6 @@
     <string name="search_404">Nothing found</string>
     <string name="search_no_connection">Problems with connection\n\nLoad failed. Check\nthe internet connection</string>
     <string name="search_update">Update</string>
+    <string name="search_history">Search history</string>
+    <string name="search_clear_history">Clear history</string>
 </resources>

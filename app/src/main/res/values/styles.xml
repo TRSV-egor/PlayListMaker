@@ -34,5 +34,18 @@
         <item name="android:textAppearance">@font/ys_display_regular</item>
         <item name="android:clickable">true</item>
     </style>
+    <style name="AudioplayerActivityStrings">
+        <item name="android:textColor">@color/toolbar</item>
+        <item name="android:textSize">@dimen/audioplayer_description_text_size</item>
+    </style>
+    <style name="AudioplayerActivityDescriptionValue" parent="AudioplayerActivityStrings">
+        <item name="android:layout_marginTop">9dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+    <style name="AudioplayerActivityDescription" parent="AudioplayerActivityStrings">
+        <item name="android:layout_marginTop">9dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:textColor">@color/audioplayer_description</item>
+    </style>
 
 </resources>

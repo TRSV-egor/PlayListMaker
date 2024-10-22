@@ -2,6 +2,7 @@ package com.practicum.playlistmaker
 
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -20,6 +21,7 @@ import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.Serializable
 
 
 class SearchActivity : AppCompatActivity() {
@@ -120,11 +122,19 @@ class SearchActivity : AppCompatActivity() {
         }
 
         adapter.onClick = { item ->
-            Log.i("TEST", "${item.trackName} ${item.artistName} ")
-
             searchHistory.save(item)
             adapterHistory.notifyDataSetChanged()
+            val intent = Intent(this, AudioplayerActivity::class.java)
+            intent.putExtra("track", item as Serializable)
+            startActivity(intent)
+        }
 
+        adapterHistory.onClick = { item ->
+            searchHistory.save(item)
+            adapterHistory.notifyDataSetChanged()
+            val intent = Intent(this, AudioplayerActivity::class.java)
+            intent.putExtra("track", item as Serializable)
+            startActivity(intent)
         }
 
         val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar

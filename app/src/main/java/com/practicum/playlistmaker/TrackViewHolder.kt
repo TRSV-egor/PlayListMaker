@@ -5,7 +5,6 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -15,8 +14,8 @@ import java.util.Locale
 class TrackViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
 
     private val trackLogo: ImageView = itemview.findViewById(R.id.view_track_logo)
-    private val trackName: TextView = itemview.findViewById(R.id.view_track_name)
-    private val trackArtist: TextView = itemview.findViewById(R.id.view_track_artist)
+    private val trackName: TextView = itemview.findViewById(R.id.track_name)
+    private val trackArtist: TextView = itemview.findViewById(R.id.track_artist)
     private val trackLength: TextView = itemview.findViewById(R.id.view_track_length)
 
     fun bind(model: Track) {

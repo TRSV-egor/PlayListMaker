@@ -15,4 +15,9 @@
     <string name="search_update">Update</string>
     <string name="search_history">Search history</string>
     <string name="search_clear_history">Clear history</string>
+    <string name="audioplayer_description_country">Country</string>
+    <string name="audioplayer_description_style">"Genre "</string>
+    <string name="audioplayer_description_year">Year</string>
+    <string name="audioplayer_description_album">Album</string>
+    <string name="audioplayer_description_duration">Duration</string>
 </resources>

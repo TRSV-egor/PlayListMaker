@@ -3,33 +3,30 @@ package com.practicum.playlistmaker
 import android.content.Context
 import android.util.TypedValue
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.databinding.ActivityAudioplayerBinding
+import com.practicum.playlistmaker.databinding.ViewTrackBinding
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class TrackViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
-
-    private val trackLogo: ImageView = itemview.findViewById(R.id.view_track_logo)
-    private val trackName: TextView = itemview.findViewById(R.id.view_track_name)
-    private val trackArtist: TextView = itemview.findViewById(R.id.view_track_artist)
-    private val trackLength: TextView = itemview.findViewById(R.id.view_track_length)
+class TrackViewHolder(val binding: ViewTrackBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(model: Track) {
 
-        Glide.with(trackLogo.context)
-            .load(model.artworkUrl100)
-            .placeholder(R.drawable.track_placeholder)
-            .transform(RoundedCorners(trackLogo.context.dpToPx(2f)))
-            .into(trackLogo)
-        trackName.text = model.trackName
-        trackArtist.text = model.artistName
-        trackLength.text =
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTime.toLongOrNull())
+        with(binding){
+            Glide.with(viewTrackLogo.context)
+                .load(model.artworkUrl100)
+                .placeholder(R.drawable.track_placeholder)
+                .transform(RoundedCorners(viewTrackLogo.context.dpToPx(2f)))
+                .into(viewTrackLogo)
+            trackName.text = model.trackName
+            trackArtist.text = model.artistName
+            viewTrackLength.text =
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTime.toLongOrNull())
+        }
+
 
     }
 }

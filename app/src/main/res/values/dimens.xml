@@ -41,4 +41,16 @@
     <dimen name="track_recycler_end_image_layout_marginBottom">19dp</dimen>
     <dimen name="track_recycler_end_image_layout_marginTop">18dp</dimen>
     <dimen name="track_recycler_marginEnd">44dp</dimen>
+
+    <dimen name="audioplayer_description_text_size">13sp</dimen>
+    <dimen name="audioplayer_guide_begin">24dp</dimen>
+    <dimen name="audioplayer_guide_begin_2">16dp</dimen>
+    <dimen name="audioplayer_track_image_marginTop">26dp</dimen>
+    <dimen name="audioplayer_track_name_text_size">22sp</dimen>
+    <dimen name="audioplayer_track_artist_marginTop">12dp</dimen>
+    <dimen name="audioplayer_track_artist_text_size">14sp</dimen>
+    <dimen name="audioplayer_button_play_margin_top">30dp</dimen>
+    <dimen name="audioplayer_track_timer_margin_top">4dp</dimen>
+    <dimen name="audioplayer_separator">30dp</dimen>
+
 </resources>

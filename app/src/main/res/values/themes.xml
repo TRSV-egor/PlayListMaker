@@ -7,8 +7,7 @@
         <item name="colorSecondary">@color/blue</item>
         <item name="android:background">@color/white</item>
         <item name="android:textColor">@color/black</item>
-
-
+        <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
 
     <style name="MainMenu" parent="Base.Theme.PlaylistMaker">

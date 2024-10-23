@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -23,6 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.Serializable
 
+const val TRACK_BUNDLE = "track"
 
 class SearchActivity : AppCompatActivity() {
 
@@ -121,21 +121,9 @@ class SearchActivity : AppCompatActivity() {
             binding.searchHistory.visibility = View.GONE
         }
 
-        adapter.onClick = { item ->
-            searchHistory.save(item)
-            adapterHistory.notifyDataSetChanged()
-            val intent = Intent(this, AudioplayerActivity::class.java)
-            intent.putExtra("track", item as Serializable)
-            startActivity(intent)
-        }
+        adapter.onClick = { item -> openAudioplayer(item, adapterHistory, searchHistory)}
 
-        adapterHistory.onClick = { item ->
-            searchHistory.save(item)
-            adapterHistory.notifyDataSetChanged()
-            val intent = Intent(this, AudioplayerActivity::class.java)
-            intent.putExtra("track", item as Serializable)
-            startActivity(intent)
-        }
+        adapterHistory.onClick = { item -> openAudioplayer(item, adapterHistory, searchHistory)}
 
         val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
         setSupportActionBar(toolbar)
@@ -230,6 +218,14 @@ class SearchActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
         binding.searchNotFound.visibility = View.GONE
         binding.searchNoConnect.visibility = View.GONE
+    }
+
+    private fun openAudioplayer(item: Track, adapterHistory: SearchHistoryAdapter, searchHistory: SearchHistory){
+        searchHistory.save(item)
+        adapterHistory.notifyDataSetChanged()
+        val intent = Intent(this, AudioplayerActivity::class.java)
+        intent.putExtra("track", item as Serializable)
+        startActivity(intent)
     }
 
     companion object {

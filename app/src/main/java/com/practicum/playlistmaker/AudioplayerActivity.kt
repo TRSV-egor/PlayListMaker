@@ -21,7 +21,7 @@ class AudioplayerActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
 
-        fillPlayer(intent.getSerializableExtra("track") as Track)
+        fillPlayer(intent.getSerializableExtra(TRACK_BUNDLE) as Track)
 
         val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
         setSupportActionBar(toolbar)
@@ -39,24 +39,28 @@ class AudioplayerActivity : AppCompatActivity() {
 
     fun fillPlayer(item: Track) {
 
-        Glide.with(binding.trackImage.context)
-            .load(getCoverArtworkLink(item.artworkUrl100, 512))
-            .placeholder(R.drawable.track_placeholder)
-            .transform(RoundedCorners(binding.trackImage.context.dpToPx(8f)))
-            .into(binding.trackImage)
+        with(binding) {
+            Glide.with(trackImage.context)
+                .load(getCoverArtworkLink(item.artworkUrl100, 512))
+                .placeholder(R.drawable.track_placeholder)
+                .transform(RoundedCorners(binding.trackImage.context.dpToPx(8f)))
+                .into(binding.trackImage)
 
-        binding.trackTimer.text =
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTime.toLongOrNull())
+            trackTimer.text =
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTime.toLongOrNull())
 
-        binding.trackArtist.text = item.artistName
-        binding.trackName.text = item.trackName
+            trackArtist.text = item.artistName
+            trackName.text = item.trackName
 
-        binding.descriptionDurationValue.text =
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTime.toLongOrNull())
-        binding.descriptionAlbumValue.text = item.collectionName
-        binding.descriptionYearValue.text = item.releaseDate.substring(0, 4)
-        binding.descriptionStyleValue.text = item.primaryGenreName
-        binding.descriptionCountryValue.text = item.country
+            descriptionDurationValue.text =
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTime.toLongOrNull())
+            descriptionAlbumValue.text = item.collectionName
+            descriptionYearValue.text = item.releaseDate.substring(0, 4)
+            descriptionStyleValue.text = item.primaryGenreName
+            descriptionCountryValue.text = item.country
+        }
+
+
     }
 
 

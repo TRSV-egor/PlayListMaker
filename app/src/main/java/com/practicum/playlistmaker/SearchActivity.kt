@@ -224,7 +224,7 @@ class SearchActivity : AppCompatActivity() {
         searchHistory.save(item)
         adapterHistory.notifyDataSetChanged()
         val intent = Intent(this, AudioplayerActivity::class.java)
-        intent.putExtra("track", item as Serializable)
+        intent.putExtra(TRACK_BUNDLE, item as Serializable)
         startActivity(intent)
     }
 

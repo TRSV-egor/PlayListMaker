@@ -1,13 +1,14 @@
 package com.practicum.playlistmaker
 
-
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -26,6 +27,13 @@ const val TRACK_BUNDLE = "track"
 
 class SearchActivity : AppCompatActivity() {
 
+    companion object {
+        const val SEARCH_FIELD_TEXT = "SEARCH_FIELD_TEXT"
+        const val SEARCH_FIELD_DEF = ""
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+    }
+
     //с помощью retrofit создаём сервис Айтюнс
     private val itunesService = ItunesRetrofit.getService()
 
@@ -35,11 +43,28 @@ class SearchActivity : AppCompatActivity() {
     //Инициализация адаптера
     private val adapter = TrackAdapter(trackArray)
 
+    //Инициализация binding
     private lateinit var binding: ActivitySearchBinding
 
+    //Последний поисковый запрос
     private var lastQuery: String = ""
 
+    //Значение поиска по-умолчанию
     private var searchValue: String = SEARCH_FIELD_DEF
+
+    //Инициализация Handler к главному потоку
+    private val handler = Handler(Looper.getMainLooper())
+
+    //Выносим search() в отдельный поток
+    private val searchRunnable = Runnable {
+        //BUGFIX при удалении текста backspace'ом из поля ввода происходит пустой поиск из за postDelayed
+        if (binding.searchField.text.isNotEmpty()) {
+            search()
+        }
+    }
+
+    //Разрешено ли нажатие на позицию в recycler view
+    private var isClickAllowed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,28 +83,20 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchClear.isVisible = false
 
-        //Слушатель нажатия кнопки ОК при поиске
-        binding.searchField.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if (binding.searchField.text.isNotEmpty()) {
-                    search(binding.searchField.text.toString())
-                }
-            }
-            false
-        }
-
         //Слушатель нажатия на Очистить поле поиска
         binding.searchClear.setOnClickListener {
             binding.searchField.setText(SEARCH_FIELD_DEF)
             clearAll()
+            //Сворачиваем клавиатуру
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
         }
 
-        //Слушатель нажатия Обновить при ошибке
+        //Слушатель нажатия кнопки Обновить при ошибке связи
         binding.searchUpdBttn.setOnClickListener {
-            search(lastQuery)
+            showProgressBar()
+            binding.searchField.setText(lastQuery)
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -89,13 +106,14 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.searchClear.isVisible = clearButtonVisibility(s)
-                searchValue = s.toString()
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if (binding.searchField.text.isEmpty()) {
                     clearAll()
                     showHistory(adapterHistory)
+                } else {
+                    searchDebounce()
                 }
             }
         }
@@ -115,15 +133,20 @@ class SearchActivity : AppCompatActivity() {
         }
 
         //Слушатель нажатия на кнопку очистки истории
-        binding.searchClearHistory.setOnClickListener{
+        binding.searchClearHistory.setOnClickListener {
             searchHistory.clear()
             adapterHistory.notifyDataSetChanged()
             binding.searchHistory.visibility = View.GONE
         }
 
-        adapter.onClick = { item -> openAudioplayer(item, adapterHistory, searchHistory)}
+        //Слшуатель нажатия на элемент recycler view
+        adapter.onClick = { item ->
+            if (clickDebounce()) {
+                openAudioplayer(item, adapterHistory, searchHistory)
+            }
+        }
 
-        adapterHistory.onClick = { item -> openAudioplayer(item, adapterHistory, searchHistory)}
+        adapterHistory.onClick = { item -> openAudioplayer(item, adapterHistory, searchHistory) }
 
         val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
         setSupportActionBar(toolbar)
@@ -158,20 +181,31 @@ class SearchActivity : AppCompatActivity() {
         return !s.isNullOrEmpty()
     }
 
-    private fun search(query: String) {
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
 
+    private fun showProgressBar() {
         binding.searchHistory.visibility = View.GONE
+        binding.searchNoConnect.visibility = View.GONE
+        binding.searchNotFound.visibility = View.GONE
+        binding.searchProgressBar.visibility = View.VISIBLE
+    }
 
-        lastQuery = query
+    private fun search() {
+        handler.postAtFrontOfQueue { showProgressBar() }
+        lastQuery = binding.searchField.text.toString()
         clearAll()
 
-        itunesService.getTrack("song", query)
+        itunesService.getTrack("song", binding.searchField.text.toString())
             .enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(
                     call: Call<TrackResponse>,
                     response: Response<TrackResponse>
                 ) {
                     binding.searchHistory.visibility = View.GONE
+                    binding.searchProgressBar.visibility = View.GONE
                     when (response.code()) {
                         200 -> {
                             if (response.body()?.tracksList!!.isNotEmpty()) {
@@ -197,6 +231,7 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                    binding.searchProgressBar.visibility = View.GONE
                     binding.searchNoConnect.visibility = View.VISIBLE
                     Toast.makeText(applicationContext, t.message.toString(), Toast.LENGTH_LONG)
                         .show()
@@ -205,7 +240,7 @@ class SearchActivity : AppCompatActivity() {
             )
     }
 
-    private fun showHistory(adapterHistory: SearchHistoryAdapter){
+    private fun showHistory(adapterHistory: SearchHistoryAdapter) {
         if (adapterHistory.itemCount == 0) {
             return
         } else {
@@ -220,7 +255,11 @@ class SearchActivity : AppCompatActivity() {
         binding.searchNoConnect.visibility = View.GONE
     }
 
-    private fun openAudioplayer(item: Track, adapterHistory: SearchHistoryAdapter, searchHistory: SearchHistory){
+    private fun openAudioplayer(
+        item: Track,
+        adapterHistory: SearchHistoryAdapter,
+        searchHistory: SearchHistory
+    ) {
         searchHistory.save(item)
         adapterHistory.notifyDataSetChanged()
         val intent = Intent(this, AudioplayerActivity::class.java)
@@ -228,10 +267,12 @@ class SearchActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    companion object {
-        const val SEARCH_FIELD_TEXT = "SEARCH_FIELD_TEXT"
-        const val SEARCH_FIELD_DEF = ""
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
     }
-
-
 }

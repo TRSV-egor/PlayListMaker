@@ -1,19 +1,22 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.player
 
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.databinding.ActivityAudioplayerBinding
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.practicum.playlistmaker.presentation.presenters.mapper.DateFormater
+import com.practicum.playlistmaker.presentation.presenters.mapper.GetCoverArtworkLink
+import com.practicum.playlistmaker.presentation.ui.search.TRACK_BUNDLE
+import com.practicum.playlistmaker.presentation.ui.search.dpToPx
 
 class AudioplayerActivity : AppCompatActivity() {
 
@@ -76,21 +79,17 @@ class AudioplayerActivity : AppCompatActivity() {
 
         with(binding) {
             Glide.with(trackImage.context)
-                .load(getCoverArtworkLink(item.artworkUrl100, 512))
+                .load(GetCoverArtworkLink.getCoverArtworkLink(item.artworkUrl100, 512))
                 .placeholder(R.drawable.track_placeholder)
                 .transform(RoundedCorners(binding.trackImage.context.dpToPx(8f)))
                 .into(binding.trackImage)
 
-            trackTimer.text =
-                    //    SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTime.toLongOrNull())
-                    //Указано время 30000 в millis = 30 секунд
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(TIMER_TRACK_DURATION)
+            trackTimer.text = DateFormater.mmSS(TIMER_TRACK_DURATION)
 
             trackArtist.text = item.artistName
             trackName.text = item.trackName
 
-            descriptionDurationValue.text =
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTime.toLongOrNull())
+            descriptionDurationValue.text =item.trackTime
             descriptionAlbumValue.text = item.collectionName
             descriptionYearValue.text = item.releaseDate.substring(0, 4)
             descriptionStyleValue.text = item.primaryGenreName
@@ -139,19 +138,12 @@ class AudioplayerActivity : AppCompatActivity() {
         }
     }
 
-    fun getCoverArtworkLink(link: String, resolution: Int): String {
-        return link.replaceAfterLast('/', "${resolution}x${resolution}bb.jpg")
-    }
-
     fun durationTimer(): Runnable {
         return object : Runnable {
             override fun run() {
                 if (playerState == STATE_PLAYING) {
                     binding.trackTimer.setText(
-                        SimpleDateFormat(
-                            "mm:ss",
-                            Locale.getDefault()
-                        ).format(mediaPlayer.currentPosition)
+                        DateFormater.mmSS(mediaPlayer.currentPosition)
                     )
                     handler.postDelayed(this, TIMER_UPD)
                 } else {

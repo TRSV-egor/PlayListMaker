@@ -18,11 +18,4 @@ object DateFormater{
         ).format(string)
     }
 
-    fun mmSS(string: String): String {
-        return SimpleDateFormat(
-            "mm:ss",
-            Locale.getDefault()
-        ).format(string)
-    }
-
 }

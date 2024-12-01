@@ -10,8 +10,6 @@ class App : Application() {
 
     var darkTheme = false
 
-
-
     override fun onCreate() {
         super.onCreate()
 

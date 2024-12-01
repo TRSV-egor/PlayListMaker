@@ -15,7 +15,7 @@ class TrackViewHolder(val binding: ViewTrackBinding) : RecyclerView.ViewHolder(b
 
     fun bind(model: Track) {
 
-        with(binding){
+        with(binding) {
             Glide.with(viewTrackLogo.context)
                 .load(model.artworkUrl100)
                 .placeholder(R.drawable.track_placeholder)
@@ -23,8 +23,7 @@ class TrackViewHolder(val binding: ViewTrackBinding) : RecyclerView.ViewHolder(b
                 .into(viewTrackLogo)
             trackName.text = model.trackName
             trackArtist.text = model.artistName
-            viewTrackLength.text =model.trackTime
-                //SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTime.toLongOrNull())
+            viewTrackLength.text = model.trackTime
         }
 
 

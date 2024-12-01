@@ -75,7 +75,7 @@ class AudioplayerActivity : AppCompatActivity() {
         }
     }
 
-    fun fillPlayer(item: Track) {
+    private fun fillPlayer(item: Track) {
 
         with(binding) {
             Glide.with(trackImage.context)
@@ -89,7 +89,7 @@ class AudioplayerActivity : AppCompatActivity() {
             trackArtist.text = item.artistName
             trackName.text = item.trackName
 
-            descriptionDurationValue.text =item.trackTime
+            descriptionDurationValue.text = item.trackTime
             descriptionAlbumValue.text = item.collectionName
             descriptionYearValue.text = item.releaseDate.substring(0, 4)
             descriptionStyleValue.text = item.primaryGenreName
@@ -138,7 +138,7 @@ class AudioplayerActivity : AppCompatActivity() {
         }
     }
 
-    fun durationTimer(): Runnable {
+    private fun durationTimer(): Runnable {
         return object : Runnable {
             override fun run() {
                 if (playerState == STATE_PLAYING) {

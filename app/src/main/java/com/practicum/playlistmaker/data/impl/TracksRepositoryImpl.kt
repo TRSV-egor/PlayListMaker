@@ -17,111 +17,98 @@ class TracksRepositoryImpl(
     private val localData: LocalData
 ) : TracksRepository {
 
-    override fun searchTracks(searchType: String, expression: String): List<Track> {
+    override fun searchTracks(searchType: String, expression: String): List<Track>? {
         val resp = networkClient.doRequest(TracksSearchRequest(searchType, expression))
-        if (resp.resultCode == 200) {
-            return trackDtoToTrack((resp as TracksSearchResponse).tracksList)
-        } else {
-            return emptyList()
+        when (resp.resultCode) {
+            200 -> {
+                return (resp as TracksSearchResponse).tracksList.map {
+                    with(it) {
+                        Track(
+                            trackId ,
+                            trackName,
+                            artistName,
+                            convertDateToFormat(trackTime),
+                            artworkUrl100,
+                            releaseDate,
+                            primaryGenreName,
+                            country,
+                            collectionName,
+                            previewUrl,
+                        )
+                    }
+                }
+            }
+            408 -> {
+                return null
+            }
+            else -> {
+                return emptyList()
+            }
         }
     }
 
-    override fun changeDarkTheme(bool: Boolean) {
-        localData.changeDarkTheme(bool)
-    }
+    override fun getHistoryTracks(): ArrayList<Track> {
 
-    override fun getNightTheme(): Boolean {
-        return localData.getDarkTheme()
-    }
+        val arrayList: ArrayList<Track> = arrayListOf()
 
-    override fun saveTrackToHistory(track: Track) {
+        arrayList.addAll(localData.getTracksHistory().map {
+            with(it) {
+                Track(
+                    trackId,
+                    trackName,
+                    artistName,
+                    trackTime,
+                    artworkUrl100,
+                    releaseDate,
+                    primaryGenreName,
+                    country,
+                    collectionName,
+                    previewUrl,
+                )
+            }
+        })
 
-        localData.saveTrackToHistory(
-            TrackDto(
-                track.trackId ?: "",
-                track.trackName ?: "", // Название композиции
-                track.artistName ?: "", // Имя исполнителя
-                convertDatetoLong(track.trackTime), // Продолжительность трека
-                track.artworkUrl100 ?: "", // Ссылка на изображение обложки
-                track.releaseDate ?: "",
-                track.primaryGenreName ?: "",
-                track.country ?: "",
-                track.collectionName ?: "",
-                track.previewUrl ?: "",
-            )
-        )
+        return arrayList
     }
 
     override fun clearTrackHistory() {
         localData.clearTrackHistory()
     }
 
-    override fun getHistoryTracks(): List<Track> {
-        return trackDtoToTrack(
-            localData.getTracksHistory()
+    override fun saveTrackToHistory(arrayListTracks: ArrayList<Track>) {
+        localData.saveTrackToHistory(
+            arrayListTracks.map {
+                TrackDto(
+                    it.trackId,
+                    it.trackName,
+                    it.artistName,
+                    it.trackTime,
+                    it.artworkUrl100,
+                    it.releaseDate,
+                    it.primaryGenreName,
+                    it.country,
+                    it.collectionName,
+                    it.previewUrl,
+                )
+            }.toTypedArray()
         )
+    }
 
+    override fun getNightTheme(): Boolean {
+        return localData.getDarkTheme()
     }
 
     override fun checkDarkTheme(): Boolean {
-       return localData.checkDarkTheme()
+        return localData.checkDarkTheme()
     }
 
-
-    private fun trackDtoToTrack(list: List<TrackDto>): List<Track> {
-        return list.map {
-            with(it) {
-                Track(
-                    trackId ?: "",
-                    trackName ?: "", // Название композиции
-                    artistName ?: "", // Имя исполнителя
-                    convertDateToFormat(trackTime) ?: "", // Продолжительность трека
-                    artworkUrl100 ?: "", // Ссылка на изображение обложки
-                    releaseDate ?: "",
-                    primaryGenreName ?: "",
-                    country ?: "",
-                    collectionName ?: "",
-                    previewUrl ?: "",
-                )
-            }
-        }
+    override fun changeDarkTheme(bool: Boolean) {
+        localData.changeDarkTheme(bool)
     }
 
-    private fun trackToTrackDto(list: List<Track>): List<TrackDto> {
-        return list.map {
-            with(it) {
-                TrackDto(
-                    trackId ?: "",
-                    trackName ?: "", // Название композиции
-                    artistName ?: "", // Имя исполнителя
-                    convertDatetoLong(trackTime), // Продолжительность трека
-                    artworkUrl100 ?: "", // Ссылка на изображение обложки
-                    releaseDate ?: "",
-                    primaryGenreName ?: "",
-                    country ?: "",
-                    collectionName ?: "",
-                    previewUrl ?: "",
-                )
-            }
-        }
-    }
-
-    fun convertDateToFormat(time: String): String {
+    private fun convertDateToFormat(time: String): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(time.toLongOrNull())
     }
 
-    fun convertDatetoLong(time: String): String {
-
-        var result: Long = 0L
-
-        val parts = time.split(":")
-
-        val minutes = parts[0].toLongOrNull() ?: 0L
-        val seconds = parts[1].toLongOrNull() ?: 0L
-
-        result = minutes * 60L + seconds
-        return result.toString()
-
-    }
 }
 

@@ -11,10 +11,7 @@ const val NIGHTTHEME = "night_theme"
 
 class SharedPrefLocalData : LocalData {
 
-    val sharedPref = Creator.provideSharedPreferences()
-
-    var sharedTrackHistoryArrayList: ArrayList<TrackDto> = arrayListOf()
-    val maxSizesharedTrackHistory: Int = 10
+    private val sharedPref = Creator.provideSharedPreferences()
 
     override fun changeDarkTheme(bool: Boolean) {
         sharedPref.edit()
@@ -30,58 +27,26 @@ class SharedPrefLocalData : LocalData {
         return sharedPref.contains(NIGHTTHEME)
     }
 
-    override fun getTracksHistory(): ArrayList<TrackDto> {
-            updateSharedTrackHistoryArrayList()
-           return sharedTrackHistoryArrayList
+    override fun getTracksHistory(): Array<TrackDto> {
+        val json = sharedPref.getString(TRACKHISTORY, "")
+        return try {
+            Gson().fromJson(json, Array<TrackDto>::class.java)
+        } catch (e: NullPointerException){
+            arrayOf()
+        }
     }
 
     override fun clearTrackHistory() {
-            clearTrackArrayAndShared()
-    }
-
-    override fun saveTrackToHistory(trackDto: TrackDto) {
-        saveTrackToArray(trackDto)
-    }
-
-
-
-    fun updateSharedTrackHistoryArrayList() {
-        val json = sharedPref.getString(TRACKHISTORY, "")
-        sharedTrackHistoryArrayList.clear()
-
-        try {
-            sharedTrackHistoryArrayList.addAll(Gson().fromJson(json, Array<TrackDto>::class.java))
-        } catch (e: NullPointerException) { }
-    }
-
-    fun clearTrackArrayAndShared() {
         sharedPref.edit()
             .putString(com.practicum.playlistmaker.data.impl.TRACKHISTORY, "")
             .apply()
-        sharedTrackHistoryArrayList.clear()
     }
 
-    fun saveTrackToArray(trackDto: TrackDto) {
-
-        if (sharedTrackHistoryArrayList.contains(trackDto)) {
-            sharedTrackHistoryArrayList.remove(trackDto)
-        }
-
-        sharedTrackHistoryArrayList.add(0, trackDto)
-
-        if (sharedTrackHistoryArrayList.size > maxSizesharedTrackHistory) {
-            sharedTrackHistoryArrayList.removeAt(maxSizesharedTrackHistory)
-        }
-
-        updateTracksInSharedPref()
-    }
-
-    fun updateTracksInSharedPref(){
-        val json = Gson().toJson(sharedTrackHistoryArrayList)
+    override fun saveTrackToHistory(arrayTrackDto: Array<TrackDto>) {
+        val json = Gson().toJson(arrayTrackDto)
         sharedPref.edit()
             .putString(TRACKHISTORY, json)
             .apply()
     }
-
 
 }

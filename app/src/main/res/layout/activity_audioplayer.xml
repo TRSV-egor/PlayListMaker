@@ -225,6 +225,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/audioplayer_button_play_margin_top"
         android:background="@drawable/audioplayer_play"
+        android:enabled="false"
         app:layout_constraintBottom_toTopOf="@id/track_timer"
         app:layout_constraintEnd_toStartOf="@id/button_favorites"
         app:layout_constraintStart_toEndOf="@id/button_playlist"

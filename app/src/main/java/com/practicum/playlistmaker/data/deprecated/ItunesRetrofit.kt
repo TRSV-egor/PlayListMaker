@@ -1,5 +1,6 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.data.deprecated
 
+import com.practicum.playlistmaker.data.network.ItunesAPI
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

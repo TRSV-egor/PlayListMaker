@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -17,9 +16,9 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.creator.Creator.provideTracksInteractor
-import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.domain.interactor.TracksInteractor
+import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.presentation.ui.player.AudioplayerActivity
 import java.io.Serializable
 
@@ -36,43 +35,27 @@ class SearchActivity : AppCompatActivity() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    //Массив треков для вывода в RecycleView
     private val foundTracksArray = ArrayList<Track>()
-
-    //Массив треков для вывода в RecycleView
     private val historyTracksArray = ArrayList<Track>()
-
-    //Инициализация адаптера найденых треков
     private val adapterFound = TrackAdapter(foundTracksArray)
-
-    //Инициализация адаптера истории треков
     private val adapterHistory = SearchHistoryAdapter(historyTracksArray)
 
-    //Инициализация binding
-    private lateinit var binding: ActivitySearchBinding
-
-    //Последний поисковый запрос
+    //private lateinit var binding: ActivitySearchBinding
+    private var binding: ActivitySearchBinding? = null
     private var lastQuery: String = SEARCH_FIELD_DEF
-
-    //Значение поиска по-умолчанию
     private var searchValue: String = SEARCH_FIELD_DEF
-
-    //Инициализация Handler к главному потоку
     private val handler = Handler(Looper.getMainLooper())
-
     private val tracksInteractor = provideTracksInteractor()
-
-    //Выносим search() в отдельный поток
     private val searchRunnable = Runnable {
-        //BUGFIX при удалении текста backspace'ом из поля ввода происходит пустой поиск из за postDelayed
-        if (binding.searchField.text.isNotEmpty()) {
-            lastQuery = binding.searchField.text.toString()
+
+        if (binding?.searchField?.text!!.isNotEmpty()) {
+            lastQuery = binding?.searchField?.text.toString()
             clearAllFound()
             showProgressBar()
 
             tracksInteractor.searchTracks(
                 DEF_SEARCH,
-                binding.searchField.text.toString(),
+                binding?.searchField?.text.toString(),
                 object : TracksInteractor.TracksConsumer {
                     override fun consume(foundTracks: List<Track>?) {
                         handler.post {
@@ -96,51 +79,49 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
-    //Разрешено ли нажатие на позицию в recycler view
+
     private var isClickAllowed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         enableEdgeToEdge()
-        setContentView(binding.root)
+        setContentView(binding?.root)
 
-        binding.viewTrackFoundRecycleView.layoutManager = LinearLayoutManager(this)
-        binding.viewTrackFoundRecycleView.adapter = adapterFound
+        binding?.viewTrackFoundRecycleView?.layoutManager = LinearLayoutManager(this)
+        binding?.viewTrackFoundRecycleView?.adapter = adapterFound
 
-        binding.viewTrackHistoryRecycleView.layoutManager = LinearLayoutManager(this)
-        binding.viewTrackHistoryRecycleView.adapter = adapterHistory
+        binding?.viewTrackHistoryRecycleView?.layoutManager = LinearLayoutManager(this)
+        binding?.viewTrackHistoryRecycleView?.adapter = adapterHistory
 
-        binding.searchClear.isVisible = false
+        binding?.searchClear?.isVisible = false
 
-        //Слушатель нажатия на Очистить поле поиска
-        binding.searchClear.setOnClickListener {
-            binding.searchField.setText(SEARCH_FIELD_DEF)
+
+        binding?.searchClear?.setOnClickListener {
+            binding?.searchField?.setText(SEARCH_FIELD_DEF)
             getHistory()
-            //Сворачиваем клавиатуру
+
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
+            inputMethodManager?.hideSoftInputFromWindow(binding?.searchField?.windowToken, 0)
         }
 
-        //Слушатель нажатия кнопки Обновить при ошибке связи
-        binding.searchUpdBttn.setOnClickListener {
+
+        binding?.searchUpdBttn?.setOnClickListener {
             showProgressBar()
-            binding.searchField.setText(lastQuery)
+            binding?.searchField?.setText(lastQuery)
         }
 
-        //мониторинг изменения в поле ввода
+
         val simpleTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                //empty
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.searchClear.isVisible = clearButtonVisibility(s)
+                binding?.searchClear?.isVisible = clearButtonVisibility(s)
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (binding.searchField.text.isEmpty()) {
+                if (binding?.searchField?.text!!.isEmpty()) {
                     clearAllFound()
                     getHistory()
                 } else {
@@ -149,25 +130,25 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        binding.searchField.addTextChangedListener(simpleTextWatcher)
+        binding?.searchField?.addTextChangedListener(simpleTextWatcher)
 
-        //Слушатель при фокусировке на поле поиска
-        binding.searchField.setOnFocusChangeListener { _, hasFocus ->
+
+        binding?.searchField?.setOnFocusChangeListener { _, hasFocus ->
             if (
                 hasFocus
-                && binding.searchField.text.isEmpty()
+                && binding?.searchField?.text!!.isEmpty()
             ) {
                 getHistory()
             }
 
         }
 
-        //Слушатель нажатия на кнопку очистки истории
-        binding.searchClearHistory.setOnClickListener {
+
+        binding?.searchClearHistory?.setOnClickListener {
             clearHistroy()
         }
 
-        //Слшуатель нажатия на элемент recycler view
+
         adapterFound.onClick = { item ->
             if (clickDebounce()) {
                 openAudioplayer(item)
@@ -178,14 +159,14 @@ class SearchActivity : AppCompatActivity() {
             openAudioplayer(item)
         }
 
-        val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
+        val toolbar: androidx.appcompat.widget.Toolbar = binding?.toolbar!!
         setSupportActionBar(toolbar)
         toolbar.setNavigationIcon(R.drawable.toolbar_arrowback)
         setTitle(R.string.search_name)
         toolbar.setTitleTextAppearance(this, R.style.ToolbarStyle)
         toolbar.setNavigationOnClickListener { finish() }
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.search) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding?.search!!) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -199,7 +180,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        binding.searchField.setText(
+        binding?.searchField?.setText(
             savedInstanceState.getString(
                 SEARCH_FIELD_TEXT,
                 SEARCH_FIELD_DEF
@@ -211,7 +192,7 @@ class SearchActivity : AppCompatActivity() {
         tracksInteractor.clearTrackHistory()
         historyTracksArray.clear()
         adapterHistory.notifyDataSetChanged()
-        binding.searchHistory.visibility = View.GONE
+        binding?.searchHistory?.isVisible = false
     }
 
     private fun getHistory() {
@@ -233,10 +214,10 @@ class SearchActivity : AppCompatActivity() {
     private fun showHistory() {
         if (adapterHistory.itemCount > 0 && adapterFound.itemCount == 0
         ) {
-            binding.searchHistory.visibility = View.VISIBLE
-            binding.searchNoConnect.visibility = View.GONE
-            binding.searchNotFound.visibility = View.GONE
-            binding.searchProgressBar.visibility = View.GONE
+            binding?.searchHistory?.isVisible = true
+            binding?.searchNoConnect?.isVisible = false
+            binding?.searchNotFound?.isVisible = false
+            binding?.searchProgressBar?.isVisible = false
         }
     }
 
@@ -269,31 +250,31 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun hideAll() {
-        binding.searchHistory.visibility = View.GONE
-        binding.searchNoConnect.visibility = View.GONE
-        binding.searchNotFound.visibility = View.GONE
-        binding.searchProgressBar.visibility = View.GONE
+        binding?.searchHistory?.isVisible = false
+        binding?.searchNoConnect?.isVisible = false
+        binding?.searchNotFound?.isVisible = false
+        binding?.searchProgressBar?.isVisible = false
     }
 
     private fun showProgressBar() {
-        binding.searchHistory.visibility = View.GONE
-        binding.searchNoConnect.visibility = View.GONE
-        binding.searchNotFound.visibility = View.GONE
-        binding.searchProgressBar.visibility = View.VISIBLE
+        binding?.searchHistory?.isVisible = false
+        binding?.searchNoConnect?.isVisible = false
+        binding?.searchNotFound?.isVisible = false
+        binding?.searchProgressBar?.isVisible = true
     }
 
     private fun showNoConnect() {
-        binding.searchHistory.visibility = View.GONE
-        binding.searchNoConnect.visibility = View.VISIBLE
-        binding.searchNotFound.visibility = View.GONE
-        binding.searchProgressBar.visibility = View.GONE
+        binding?.searchHistory?.isVisible = false
+        binding?.searchNoConnect?.isVisible = true
+        binding?.searchNotFound?.isVisible = false
+        binding?.searchProgressBar?.isVisible = false
     }
 
     private fun showNotFound() {
-        binding.searchHistory.visibility = View.GONE
-        binding.searchNoConnect.visibility = View.GONE
-        binding.searchNotFound.visibility = View.VISIBLE
-        binding.searchProgressBar.visibility = View.GONE
+        binding?.searchHistory?.isVisible = false
+        binding?.searchNoConnect?.isVisible = false
+        binding?.searchNotFound?.isVisible = true
+        binding?.searchProgressBar?.isVisible = false
     }
 
     private fun clearAllFound() {

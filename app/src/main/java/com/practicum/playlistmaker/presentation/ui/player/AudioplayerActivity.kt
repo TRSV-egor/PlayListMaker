@@ -11,16 +11,22 @@ import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.databinding.ActivityAudioplayerBinding
+import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.presentation.presenters.mapper.DateFormater
 import com.practicum.playlistmaker.presentation.presenters.mapper.GetCoverArtworkLink
 import com.practicum.playlistmaker.presentation.ui.search.TRACK_BUNDLE
 import com.practicum.playlistmaker.presentation.ui.search.dpToPx
 
+
 class AudioplayerActivity : AppCompatActivity() {
 
     companion object {
+        private const val DESCRIPTION_YEAR_VALUE_INDEX_START = 0
+        private const val DESCRIPTION_YEAR_VALUE_INDEX_END = 4
+        private const val AUDIOPLAYER_IMAGE_RESOLUTION = 512
+        private const val AUDIOPLAYER_IMAGE_ROUNDED_CORNER = 8f
+
         private const val STATE_DEFAULT = 0
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
@@ -79,9 +85,20 @@ class AudioplayerActivity : AppCompatActivity() {
 
         with(binding) {
             Glide.with(trackImage.context)
-                .load(GetCoverArtworkLink.getCoverArtworkLink(item.artworkUrl100, 512))
+                .load(
+                    GetCoverArtworkLink.getCoverArtworkLink(
+                        item.artworkUrl100,
+                        AUDIOPLAYER_IMAGE_RESOLUTION
+                    )
+                )
                 .placeholder(R.drawable.track_placeholder)
-                .transform(RoundedCorners(binding.trackImage.context.dpToPx(8f)))
+                .transform(
+                    RoundedCorners(
+                        binding.trackImage.context.dpToPx(
+                            AUDIOPLAYER_IMAGE_ROUNDED_CORNER
+                        )
+                    )
+                )
                 .into(binding.trackImage)
 
             trackTimer.text = DateFormater.mmSS(TIMER_TRACK_DURATION)
@@ -91,7 +108,10 @@ class AudioplayerActivity : AppCompatActivity() {
 
             descriptionDurationValue.text = item.trackTime
             descriptionAlbumValue.text = item.collectionName
-            descriptionYearValue.text = item.releaseDate.substring(0, 4)
+            descriptionYearValue.text = item.releaseDate.substring(
+                DESCRIPTION_YEAR_VALUE_INDEX_START,
+                DESCRIPTION_YEAR_VALUE_INDEX_END
+            )
             descriptionStyleValue.text = item.primaryGenreName
             descriptionCountryValue.text = item.country
         }

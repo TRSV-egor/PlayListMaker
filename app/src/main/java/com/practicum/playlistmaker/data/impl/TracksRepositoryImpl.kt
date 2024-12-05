@@ -18,10 +18,11 @@ class TracksRepositoryImpl(
 ) : TracksRepository {
 
     override fun searchTracks(searchType: String, expression: String): List<Track>? {
-        val resp = networkClient.doRequest(TracksSearchRequest(searchType, expression))
-        when (resp.resultCode) {
+        val networkClientResponse =
+            networkClient.doRequest(TracksSearchRequest(searchType, expression))
+        when (networkClientResponse.resultCode) {
             200 -> {
-                return (resp as TracksSearchResponse).tracksList.map {
+                return (networkClientResponse as TracksSearchResponse).tracksList.map {
                     with(it) {
                         Track(
                             trackId ,

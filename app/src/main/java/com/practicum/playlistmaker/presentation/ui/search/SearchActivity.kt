@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -17,14 +16,15 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.creator.Creator.provideTracksInteractor
-import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.domain.interactor.TracksInteractor
+import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.presentation.ui.player.AudioplayerActivity
 import java.io.Serializable
 
 const val TRACK_BUNDLE = "track"
 const val DEF_SEARCH = "song"
+const val MAX_HISTORY = 10
 
 class SearchActivity : AppCompatActivity() {
 
@@ -35,58 +35,58 @@ class SearchActivity : AppCompatActivity() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    //Массив треков для вывода в RecycleView
     private val foundTracksArray = ArrayList<Track>()
-
-    //Массив треков для вывода в RecycleView
     private val historyTracksArray = ArrayList<Track>()
-
-    //Инициализация адаптера найденых треков
     private val adapterFound = TrackAdapter(foundTracksArray)
-
-    //Инициализация адаптера истории треков
     private val adapterHistory = SearchHistoryAdapter(historyTracksArray)
 
-    //Инициализация binding
-    private lateinit var binding: ActivitySearchBinding
+    //private lateinit var binding: ActivitySearchBinding
+    private var _binding: ActivitySearchBinding? = null
+    private val binding get() = _binding!!
 
-    //Последний поисковый запрос
-    private var lastQuery: String = ""
-
-    //Значение поиска по-умолчанию
+    private var lastQuery: String = SEARCH_FIELD_DEF
     private var searchValue: String = SEARCH_FIELD_DEF
-
-    //Инициализация Handler к главному потоку
     private val handler = Handler(Looper.getMainLooper())
-
     private val tracksInteractor = provideTracksInteractor()
-
-    //Выносим search() в отдельный поток
     private val searchRunnable = Runnable {
-        //BUGFIX при удалении текста backspace'ом из поля ввода происходит пустой поиск из за postDelayed
+
         if (binding.searchField.text.isNotEmpty()) {
-            //search()
-            clearAll()
+            lastQuery = binding.searchField.text.toString()
+            clearAllFound()
             showProgressBar()
-            tracksInteractor.searchTracks(DEF_SEARCH, binding.searchField.text.toString(), object : TracksInteractor.TracksConsumer{
-                override fun consume(foundTracks: List<Track>) {
-                    handler.post{
-                        foundTracksArray.addAll(foundTracks)
-                        hideAll()
-                        adapterFound.notifyDataSetChanged()
+
+            tracksInteractor.searchTracks(
+                DEF_SEARCH,
+                binding.searchField.text.toString(),
+                object : TracksInteractor.TracksConsumer {
+                    override fun consume(foundTracks: List<Track>?) {
+                        handler.post {
+                            if (foundTracks == null) {
+                                showNoConnect()
+                            } else {
+                                foundTracksArray.addAll(foundTracks)
+                                hideAll()
+                                adapterFound.notifyDataSetChanged()
+                                if (adapterFound.itemCount == 0) {
+                                    showNotFound()
+                                }
+                            }
+
+                        }
                     }
-                }
-            })
+                })
+
+
         }
 
     }
 
-    //Разрешено ли нажатие на позицию в recycler view
+
     private var isClickAllowed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
+        _binding = ActivitySearchBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
 
@@ -99,27 +99,24 @@ class SearchActivity : AppCompatActivity() {
         binding.searchClear.isVisible = false
 
 
-        //Слушатель нажатия на Очистить поле поиска
         binding.searchClear.setOnClickListener {
             binding.searchField.setText(SEARCH_FIELD_DEF)
-            showHistory(adapterHistory)
-            //Сворачиваем клавиатуру
+            getHistory()
+
             val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
         }
 
-        //Слушатель нажатия кнопки Обновить при ошибке связи
+
         binding.searchUpdBttn.setOnClickListener {
             showProgressBar()
             binding.searchField.setText(lastQuery)
         }
 
-        //мониторинг изменения в поле ввода
+
         val simpleTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                //empty
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.searchClear.isVisible = clearButtonVisibility(s)
@@ -127,8 +124,8 @@ class SearchActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {
                 if (binding.searchField.text.isEmpty()) {
-                    clearAll()
-                    //showHistory(adapterHistory)
+                    clearAllFound()
+                    getHistory()
                 } else {
                     searchDebounce()
                 }
@@ -137,34 +134,31 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchField.addTextChangedListener(simpleTextWatcher)
 
-        //Слушатель при фокусировке на поле поиска
-        binding.searchField.setOnFocusChangeListener { view, hasFocus ->
 
-            getHistory()
-
-            binding.searchHistory.visibility = if (
+        binding.searchField.setOnFocusChangeListener { _, hasFocus ->
+            if (
                 hasFocus
                 && binding.searchField.text.isEmpty()
-                && adapterFound.itemCount == 0
-                && adapterHistory.itemCount != 0
-            ) View.VISIBLE else View.GONE
+            ) {
+                getHistory()
+            }
 
         }
 
-        //Слушатель нажатия на кнопку очистки истории
+
         binding.searchClearHistory.setOnClickListener {
             clearHistroy()
         }
 
-        //Слшуатель нажатия на элемент recycler view
+
         adapterFound.onClick = { item ->
             if (clickDebounce()) {
                 openAudioplayer(item)
             }
         }
 
-        adapterHistory.onClick = {
-           item -> openAudioplayer(item)
+        adapterHistory.onClick = { item ->
+            openAudioplayer(item)
         }
 
         val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
@@ -196,24 +190,56 @@ class SearchActivity : AppCompatActivity() {
         )
     }
 
-    private fun clearHistroy(){
+    private fun clearHistroy() {
         tracksInteractor.clearTrackHistory()
         historyTracksArray.clear()
-        adapterFound.notifyDataSetChanged()
-        binding.searchHistory.visibility = View.GONE
+        adapterHistory.notifyDataSetChanged()
+        binding.searchHistory.isVisible = false
     }
 
     private fun getHistory() {
-        tracksInteractor.getTracksHistory(object : TracksInteractor.TracksConsumer{
-            override fun consume(foundTracks: List<Track>) {
-                handler.post{
-                    historyTracksArray.addAll(foundTracks)
-                    adapterFound.notifyDataSetChanged()
+        tracksInteractor.getTracksHistory(object : TracksInteractor.TracksConsumer {
+            override fun consume(foundTracks: List<Track>?) {
+                if (!foundTracks.isNullOrEmpty()) {
+                    handler.post {
+                        historyTracksArray.clear()
+                        historyTracksArray.addAll(foundTracks)
+                        adapterHistory.notifyDataSetChanged()
+                        showHistory()
+                    }
                 }
-
 
             }
         })
+    }
+
+    private fun showHistory() {
+        if (adapterHistory.itemCount > 0 && adapterFound.itemCount == 0
+        ) {
+            binding.searchHistory.isVisible = true
+            binding.searchNoConnect.isVisible = false
+            binding.searchNotFound.isVisible = false
+            binding.searchProgressBar.isVisible = false
+        }
+    }
+
+    private fun addTrackToHistory(track: Track) {
+        if (historyTracksArray.contains(track)) {
+            historyTracksArray.remove(track)
+        }
+
+        historyTracksArray.add(0, track)
+
+        if (historyTracksArray.size > MAX_HISTORY) {
+            historyTracksArray.removeAt(MAX_HISTORY)
+        }
+
+        Runnable {
+            handler.post {
+                tracksInteractor.saveTracksToHistory(historyTracksArray)
+                adapterHistory.notifyDataSetChanged()
+            }
+        }.run()
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Boolean {
@@ -223,61 +249,45 @@ class SearchActivity : AppCompatActivity() {
     private fun searchDebounce() {
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-
     }
 
     private fun hideAll() {
-        binding.searchHistory.visibility = View.GONE
-        binding.searchNoConnect.visibility = View.GONE
-        binding.searchNotFound.visibility = View.GONE
-        binding.searchProgressBar.visibility = View.GONE
+        binding.searchHistory.isVisible = false
+        binding.searchNoConnect.isVisible = false
+        binding.searchNotFound.isVisible = false
+        binding.searchProgressBar.isVisible = false
     }
 
     private fun showProgressBar() {
-        binding.searchHistory.visibility = View.GONE
-        binding.searchNoConnect.visibility = View.GONE
-        binding.searchNotFound.visibility = View.GONE
-        binding.searchProgressBar.visibility = View.VISIBLE
+        binding.searchHistory.isVisible = false
+        binding.searchNoConnect.isVisible = false
+        binding.searchNotFound.isVisible = false
+        binding.searchProgressBar.isVisible = true
     }
+
     private fun showNoConnect() {
-        binding.searchHistory.visibility = View.GONE
-        binding.searchNoConnect.visibility = View.VISIBLE
-        binding.searchNotFound.visibility = View.GONE
-        binding.searchProgressBar.visibility = View.GONE
+        binding.searchHistory.isVisible = false
+        binding.searchNoConnect.isVisible = true
+        binding.searchNotFound.isVisible = false
+        binding.searchProgressBar.isVisible = false
     }
+
     private fun showNotFound() {
-        binding.searchHistory.visibility = View.GONE
-        binding.searchNoConnect.visibility = View.GONE
-        binding.searchNotFound.visibility = View.VISIBLE
-        binding.searchProgressBar.visibility = View.GONE
+        binding.searchHistory.isVisible = false
+        binding.searchNoConnect.isVisible = false
+        binding.searchNotFound.isVisible = true
+        binding.searchProgressBar.isVisible = false
     }
 
-
-    private fun showHistory(adapterHistory: SearchHistoryAdapter) {
-        if (adapterHistory.itemCount == 0) {
-            return
-        } else {
-            binding.searchHistory.visibility = View.VISIBLE
-            binding.searchNoConnect.visibility = View.GONE
-            binding.searchNotFound.visibility = View.GONE
-            binding.searchProgressBar.visibility = View.GONE
-        }
-    }
-
-    private fun clearAll() {
+    private fun clearAllFound() {
         foundTracksArray.clear()
         adapterFound.notifyDataSetChanged()
-        showHistory(adapterHistory)
     }
 
     private fun openAudioplayer(
         item: Track,
-        //adapterHistory: SearchHistoryAdapter,
-        //searchHistory: SearchHistory
     ) {
-        //searchHistory.save(item)
-        tracksInteractor.saveTrackToHistory(item)
-        adapterHistory.notifyDataSetChanged()
+        addTrackToHistory(item)
         val intent = Intent(this, AudioplayerActivity::class.java)
         intent.putExtra(TRACK_BUNDLE, item as Serializable)
         startActivity(intent)
@@ -291,55 +301,4 @@ class SearchActivity : AppCompatActivity() {
         }
         return current
     }
-
-//    private fun search() {
-//        handler.postAtFrontOfQueue { showProgressBar() }
-//        lastQuery = binding.searchField.text.toString()
-//        clearAll()
-//
-//        itunesService.getTracks("song", binding.searchField.text.toString())
-//            .enqueue(object : Callback<TracksSearchResponse> {
-//                override fun onResponse(
-//                    call: Call<TracksSearchResponse>,
-//                    response: Response<TracksSearchResponse>
-//                ) {
-//                    binding.searchHistory.visibility = View.GONE
-//                    binding.searchProgressBar.visibility = View.GONE
-//                    when (response.code()) {
-//                        200 -> {
-//                            if (response.body()?.tracksList!!.isNotEmpty()) {
-//                                trackFoundArray.addAll(response.body()?.tracksList!!)
-//                                adapter.notifyDataSetChanged()
-//                            } else {
-//                                binding.searchNotFound.visibility = View.VISIBLE
-//                            }
-//
-//                        }
-//
-//                        else -> {
-//                            binding.searchNoConnect.visibility = View.VISIBLE
-//                            Toast.makeText(
-//                                applicationContext,
-//                                response.code().toString(),
-//                                Toast.LENGTH_LONG
-//                            )
-//                                .show()
-//                        }
-//
-//                    }
-//                }
-//
-//                override fun onFailure(call: Call<TracksSearchResponse>, t: Throwable) {
-//                    binding.searchProgressBar.visibility = View.GONE
-//                    binding.searchNoConnect.visibility = View.VISIBLE
-//                    Toast.makeText(applicationContext, t.message.toString(), Toast.LENGTH_LONG)
-//                        .show()
-//                }
-//            }
-//            )
-//    }
-
-
-
-
 }

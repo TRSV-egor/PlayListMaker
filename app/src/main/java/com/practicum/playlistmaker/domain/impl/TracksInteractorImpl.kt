@@ -7,9 +7,7 @@ import java.util.concurrent.Executors
 
 class TracksInteractorImpl(private val repository: TracksRepository) :TracksInteractor {
 
-    //Здесь можно было бы пересортировать список фильмов, отфильтровать, убрав ненужные результаты поиска,
-
-    val executor = Executors.newCachedThreadPool()
+    private val executor = Executors.newCachedThreadPool()
 
     override fun searchTracks(
         searchType: String,
@@ -27,9 +25,9 @@ class TracksInteractorImpl(private val repository: TracksRepository) :TracksInte
         }
     }
 
-    override fun saveTrackToHistory(track: Track) {
+    override fun saveTracksToHistory(arrayListTracks: ArrayList<Track>) {
         executor.execute {
-            repository.saveTrackToHistory(track)
+            repository.saveTrackToHistory(arrayListTracks)
         }
     }
 

@@ -41,21 +41,23 @@ class SearchActivity : AppCompatActivity() {
     private val adapterHistory = SearchHistoryAdapter(historyTracksArray)
 
     //private lateinit var binding: ActivitySearchBinding
-    private var binding: ActivitySearchBinding? = null
+    private var _binding: ActivitySearchBinding? = null
+    private val binding get() = _binding!!
+
     private var lastQuery: String = SEARCH_FIELD_DEF
     private var searchValue: String = SEARCH_FIELD_DEF
     private val handler = Handler(Looper.getMainLooper())
     private val tracksInteractor = provideTracksInteractor()
     private val searchRunnable = Runnable {
 
-        if (binding?.searchField?.text!!.isNotEmpty()) {
-            lastQuery = binding?.searchField?.text.toString()
+        if (binding.searchField.text.isNotEmpty()) {
+            lastQuery = binding.searchField.text.toString()
             clearAllFound()
             showProgressBar()
 
             tracksInteractor.searchTracks(
                 DEF_SEARCH,
-                binding?.searchField?.text.toString(),
+                binding.searchField.text.toString(),
                 object : TracksInteractor.TracksConsumer {
                     override fun consume(foundTracks: List<Track>?) {
                         handler.post {
@@ -84,32 +86,32 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
+        _binding = ActivitySearchBinding.inflate(layoutInflater)
         enableEdgeToEdge()
-        setContentView(binding?.root)
+        setContentView(binding.root)
 
-        binding?.viewTrackFoundRecycleView?.layoutManager = LinearLayoutManager(this)
-        binding?.viewTrackFoundRecycleView?.adapter = adapterFound
+        binding.viewTrackFoundRecycleView.layoutManager = LinearLayoutManager(this)
+        binding.viewTrackFoundRecycleView.adapter = adapterFound
 
-        binding?.viewTrackHistoryRecycleView?.layoutManager = LinearLayoutManager(this)
-        binding?.viewTrackHistoryRecycleView?.adapter = adapterHistory
+        binding.viewTrackHistoryRecycleView.layoutManager = LinearLayoutManager(this)
+        binding.viewTrackHistoryRecycleView.adapter = adapterHistory
 
-        binding?.searchClear?.isVisible = false
+        binding.searchClear.isVisible = false
 
 
-        binding?.searchClear?.setOnClickListener {
-            binding?.searchField?.setText(SEARCH_FIELD_DEF)
+        binding.searchClear.setOnClickListener {
+            binding.searchField.setText(SEARCH_FIELD_DEF)
             getHistory()
 
             val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(binding?.searchField?.windowToken, 0)
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
         }
 
 
-        binding?.searchUpdBttn?.setOnClickListener {
+        binding.searchUpdBttn.setOnClickListener {
             showProgressBar()
-            binding?.searchField?.setText(lastQuery)
+            binding.searchField.setText(lastQuery)
         }
 
 
@@ -117,11 +119,11 @@ class SearchActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding?.searchClear?.isVisible = clearButtonVisibility(s)
+                binding.searchClear.isVisible = clearButtonVisibility(s)
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (binding?.searchField?.text!!.isEmpty()) {
+                if (binding.searchField.text.isEmpty()) {
                     clearAllFound()
                     getHistory()
                 } else {
@@ -130,13 +132,13 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        binding?.searchField?.addTextChangedListener(simpleTextWatcher)
+        binding.searchField.addTextChangedListener(simpleTextWatcher)
 
 
-        binding?.searchField?.setOnFocusChangeListener { _, hasFocus ->
+        binding.searchField.setOnFocusChangeListener { _, hasFocus ->
             if (
                 hasFocus
-                && binding?.searchField?.text!!.isEmpty()
+                && binding.searchField.text.isEmpty()
             ) {
                 getHistory()
             }
@@ -144,7 +146,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
 
-        binding?.searchClearHistory?.setOnClickListener {
+        binding.searchClearHistory.setOnClickListener {
             clearHistroy()
         }
 
@@ -159,14 +161,14 @@ class SearchActivity : AppCompatActivity() {
             openAudioplayer(item)
         }
 
-        val toolbar: androidx.appcompat.widget.Toolbar = binding?.toolbar!!
+        val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
         setSupportActionBar(toolbar)
         toolbar.setNavigationIcon(R.drawable.toolbar_arrowback)
         setTitle(R.string.search_name)
         toolbar.setTitleTextAppearance(this, R.style.ToolbarStyle)
         toolbar.setNavigationOnClickListener { finish() }
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding?.search!!) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.search) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -180,7 +182,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        binding?.searchField?.setText(
+        binding.searchField.setText(
             savedInstanceState.getString(
                 SEARCH_FIELD_TEXT,
                 SEARCH_FIELD_DEF
@@ -192,7 +194,7 @@ class SearchActivity : AppCompatActivity() {
         tracksInteractor.clearTrackHistory()
         historyTracksArray.clear()
         adapterHistory.notifyDataSetChanged()
-        binding?.searchHistory?.isVisible = false
+        binding.searchHistory.isVisible = false
     }
 
     private fun getHistory() {
@@ -214,10 +216,10 @@ class SearchActivity : AppCompatActivity() {
     private fun showHistory() {
         if (adapterHistory.itemCount > 0 && adapterFound.itemCount == 0
         ) {
-            binding?.searchHistory?.isVisible = true
-            binding?.searchNoConnect?.isVisible = false
-            binding?.searchNotFound?.isVisible = false
-            binding?.searchProgressBar?.isVisible = false
+            binding.searchHistory.isVisible = true
+            binding.searchNoConnect.isVisible = false
+            binding.searchNotFound.isVisible = false
+            binding.searchProgressBar.isVisible = false
         }
     }
 
@@ -250,31 +252,31 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun hideAll() {
-        binding?.searchHistory?.isVisible = false
-        binding?.searchNoConnect?.isVisible = false
-        binding?.searchNotFound?.isVisible = false
-        binding?.searchProgressBar?.isVisible = false
+        binding.searchHistory.isVisible = false
+        binding.searchNoConnect.isVisible = false
+        binding.searchNotFound.isVisible = false
+        binding.searchProgressBar.isVisible = false
     }
 
     private fun showProgressBar() {
-        binding?.searchHistory?.isVisible = false
-        binding?.searchNoConnect?.isVisible = false
-        binding?.searchNotFound?.isVisible = false
-        binding?.searchProgressBar?.isVisible = true
+        binding.searchHistory.isVisible = false
+        binding.searchNoConnect.isVisible = false
+        binding.searchNotFound.isVisible = false
+        binding.searchProgressBar.isVisible = true
     }
 
     private fun showNoConnect() {
-        binding?.searchHistory?.isVisible = false
-        binding?.searchNoConnect?.isVisible = true
-        binding?.searchNotFound?.isVisible = false
-        binding?.searchProgressBar?.isVisible = false
+        binding.searchHistory.isVisible = false
+        binding.searchNoConnect.isVisible = true
+        binding.searchNotFound.isVisible = false
+        binding.searchProgressBar.isVisible = false
     }
 
     private fun showNotFound() {
-        binding?.searchHistory?.isVisible = false
-        binding?.searchNoConnect?.isVisible = false
-        binding?.searchNotFound?.isVisible = true
-        binding?.searchProgressBar?.isVisible = false
+        binding.searchHistory.isVisible = false
+        binding.searchNoConnect.isVisible = false
+        binding.searchNotFound.isVisible = true
+        binding.searchProgressBar.isVisible = false
     }
 
     private fun clearAllFound() {

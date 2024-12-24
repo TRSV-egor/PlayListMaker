@@ -1,10 +1,7 @@
 package com.practicum.playlistmaker.search.ui.activity
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
@@ -13,18 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.creator.Creator.provideTracksInteractor
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
-import com.practicum.playlistmaker.player.ui.activity.AudioplayerActivity
-import com.practicum.playlistmaker.search.domain.TracksInteractor
-import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.SearchHistoryAdapter
 import com.practicum.playlistmaker.search.ui.TrackAdapter
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
-import java.io.Serializable
 
 const val TRACK_BUNDLE = "track"
 const val DEF_SEARCH = "song"
@@ -35,7 +28,7 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val SEARCH_FIELD_TEXT = "SEARCH_FIELD_TEXT"
         const val SEARCH_FIELD_DEF = ""
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
@@ -46,6 +39,7 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var searchViewModel: SearchViewModel
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivitySearchBinding.inflate(layoutInflater)
@@ -53,6 +47,11 @@ class SearchActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         searchViewModel = ViewModelProvider(this)[SearchViewModel::class.java]
+
+        val adapterFound =
+            TrackAdapter((searchViewModel.foundTracksArrayLive.value) ?: arrayListOf())
+        val adapterHistory =
+            SearchHistoryAdapter((searchViewModel.historyTracksArrayLive.value) ?: arrayListOf())
 
         binding.viewTrackFoundRecycleView.layoutManager = LinearLayoutManager(this)
         binding.viewTrackFoundRecycleView.adapter = adapterFound
@@ -62,10 +61,29 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchClear.isVisible = false
 
+        searchViewModel.foundTracksArrayLive.observe(this, Observer {
+            adapterFound.notifyDataSetChanged()
+        })
+
+        searchViewModel.historyTracksArrayLive.observe(this, Observer {
+            adapterHistory.notifyDataSetChanged()
+        })
+
+        searchViewModel.searchFieldLive.observe(this, Observer {
+            binding.searchField.setText(it)
+
+            if (it == "") {
+                showHistory()
+            } else {
+                searchViewModel.searchDebounce()
+            }
+        })
+
 
         binding.searchClear.setOnClickListener {
-            binding.searchField.setText(SEARCH_FIELD_DEF)
-            getHistory()
+            //binding.searchField.setText(SEARCH_FIELD_DEF)
+            //getHistory()
+            searchViewModel.searchClearPressed()
 
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -139,6 +157,10 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun clearButtonVisibility(s: CharSequence?): Boolean {
+        return !s.isNullOrEmpty()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_FIELD_TEXT, searchValue)
@@ -152,6 +174,16 @@ class SearchActivity : AppCompatActivity() {
                 SEARCH_FIELD_DEF
             )
         )
+    }
+
+    private fun showHistory() {
+//        if (adapterHistory.itemCount > 0 && adapterFound.itemCount == 0
+//        ) {
+        binding.searchHistory.isVisible = true
+        binding.searchNoConnect.isVisible = false
+        binding.searchNotFound.isVisible = false
+        binding.searchProgressBar.isVisible = false
+//        }
     }
 
     private fun hideAll() {

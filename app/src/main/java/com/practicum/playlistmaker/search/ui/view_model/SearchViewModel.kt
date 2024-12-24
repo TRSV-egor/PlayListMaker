@@ -4,33 +4,47 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import androidx.core.view.isVisible
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.practicum.playlistmaker.creator.Creator.provideTracksInteractor
 import com.practicum.playlistmaker.player.ui.activity.AudioplayerActivity
 import com.practicum.playlistmaker.search.domain.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.SearchHistoryAdapter
-import com.practicum.playlistmaker.search.ui.TrackAdapter
 import com.practicum.playlistmaker.search.ui.activity.DEF_SEARCH
 import com.practicum.playlistmaker.search.ui.activity.MAX_HISTORY
 import com.practicum.playlistmaker.search.ui.activity.SearchActivity.Companion.CLICK_DEBOUNCE_DELAY
-import com.practicum.playlistmaker.search.ui.activity.SearchActivity.Companion.SEARCH_DEBOUNCE_DELAY
 import com.practicum.playlistmaker.search.ui.activity.SearchActivity.Companion.SEARCH_FIELD_DEF
 import com.practicum.playlistmaker.search.ui.activity.TRACK_BUNDLE
 import java.io.Serializable
 
 class SearchViewModel : ViewModel() {
-    private val foundTracksArray = ArrayList<Track>()
-    private val historyTracksArray = ArrayList<Track>()
+    //private val foundTracksArray = ArrayList<Track>()
+    //private val historyTracksArray = ArrayList<Track>()
 
-    private val adapterFound = TrackAdapter(foundTracksArray)
-    private val adapterHistory = SearchHistoryAdapter(historyTracksArray)
+    companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        //private var lastQuery: String = SEARCH_FIELD_DEF
+        //private var searchValue: String = SEARCH_FIELD_DEF
+    }
 
-    private var lastQuery: String = SEARCH_FIELD_DEF
-    private var searchValue: String = SEARCH_FIELD_DEF
+
     private val handler = Handler(Looper.getMainLooper())
     private val tracksInteractor = provideTracksInteractor()
 
+    private var foundTracksArrayLiveMutable = MutableLiveData<ArrayList<Track>>()
+    var foundTracksArrayLive: LiveData<ArrayList<Track>> = foundTracksArrayLiveMutable
+
+    private var historyTracksArrayLiveMutable = MutableLiveData<ArrayList<Track>>()
+    var historyTracksArrayLive: LiveData<ArrayList<Track>> = foundTracksArrayLiveMutable
+
+    private var searchFieldLiveMutable = MutableLiveData<String>()
+    var searchFieldLive: LiveData<String> = searchFieldLiveMutable
+
+    fun searchClearPressed() {
+        searchFieldLiveMutable.value = SEARCH_FIELD_DEF
+        getHistory()
+    }
 
     private val searchRunnable = Runnable {
 
@@ -74,15 +88,19 @@ class SearchViewModel : ViewModel() {
         binding.searchHistory.isVisible = false
     }
 
-    private fun getHistory() {
+    fun getHistory() {
         tracksInteractor.getTracksHistory(object : TracksInteractor.TracksConsumer {
             override fun consume(foundTracks: List<Track>?) {
                 if (!foundTracks.isNullOrEmpty()) {
                     handler.post {
-                        historyTracksArray.clear()
-                        historyTracksArray.addAll(foundTracks)
-                        adapterHistory.notifyDataSetChanged()
-                        showHistory()
+//                        historyTracksArray.clear()
+//                        historyTracksArray.addAll(foundTracks)
+//                        adapterHistory.notifyDataSetChanged()
+//                        showHistory()
+                        historyTracksArrayLiveMutable.value?.clear()
+                        historyTracksArrayLiveMutable.value?.addAll(foundTracks)
+
+
                     }
                 }
 
@@ -90,15 +108,7 @@ class SearchViewModel : ViewModel() {
         })
     }
 
-    private fun showHistory() {
-        if (adapterHistory.itemCount > 0 && adapterFound.itemCount == 0
-        ) {
-            binding.searchHistory.isVisible = true
-            binding.searchNoConnect.isVisible = false
-            binding.searchNotFound.isVisible = false
-            binding.searchProgressBar.isVisible = false
-        }
-    }
+
 
     private fun addTrackToHistory(track: Track) {
         if (historyTracksArray.contains(track)) {
@@ -119,11 +129,8 @@ class SearchViewModel : ViewModel() {
         }.run()
     }
 
-    private fun clearButtonVisibility(s: CharSequence?): Boolean {
-        return !s.isNullOrEmpty()
-    }
 
-    private fun searchDebounce() {
+    fun searchDebounce() {
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
@@ -144,7 +151,7 @@ class SearchViewModel : ViewModel() {
         startActivity(intent)
     }
 
-    private fun clickDebounce(): Boolean {
+    fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false

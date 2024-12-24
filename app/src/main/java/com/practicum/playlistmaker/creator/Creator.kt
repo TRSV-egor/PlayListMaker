@@ -3,12 +3,12 @@ package com.practicum.playlistmaker.creator
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
-import com.practicum.playlistmaker.data.impl.TracksRepositoryImpl
-import com.practicum.playlistmaker.data.local.sharedpref.SharedPrefLocalData
-import com.practicum.playlistmaker.data.network.RetrofitNetworkClient
-import com.practicum.playlistmaker.domain.impl.TracksInteractorImpl
-import com.practicum.playlistmaker.domain.interactor.TracksInteractor
-import com.practicum.playlistmaker.domain.repositories.TracksRepository
+import com.practicum.playlistmaker.search.data.impl.TracksRepositoryImpl
+import com.practicum.playlistmaker.search.data.sharedpref.SharedPrefLocalData
+import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
+import com.practicum.playlistmaker.search.domain.TracksInteractorImpl
+import com.practicum.playlistmaker.search.domain.TracksInteractor
+import com.practicum.playlistmaker.search.domain.TracksRepository
 
 const val SETTINGS = "playListMaker_settings"
 

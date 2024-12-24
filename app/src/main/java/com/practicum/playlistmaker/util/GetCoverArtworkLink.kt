@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.util
 
 object GetCoverArtworkLink {
     fun getCoverArtworkLink(link: String, resolution: Int): String {

@@ -33,15 +33,15 @@ class TracksInteractorImpl(private val repository: TracksRepository) : TracksInt
         repository.clearTrackHistory()
     }
 
-    override fun getNightTheme(): Boolean {
-        return repository.getNightTheme()
-    }
-
-    override fun checkDarkTheme(): Boolean {
-        return repository.checkDarkTheme()
-    }
-
-    override fun changeDarkTheme(bool: Boolean) {
-        repository.changeDarkTheme(bool)
-    }
+//    override fun getNightTheme(): Boolean {
+//        return repository.getNightTheme()
+//    }
+//
+//    override fun checkDarkTheme(): Boolean {
+//        return repository.checkDarkTheme()
+//    }
+//
+//    override fun changeDarkTheme(bool: Boolean) {
+//        repository.changeDarkTheme(bool)
+//    }
 }

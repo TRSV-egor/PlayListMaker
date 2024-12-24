@@ -9,7 +9,5 @@ interface TracksRepository {
     fun clearTrackHistory()
     fun saveTrackToHistory(arrayListTracks: ArrayList<Track>)
 
-    fun getNightTheme(): Boolean
-    fun checkDarkTheme(): Boolean
-    fun changeDarkTheme(bool: Boolean)
+
 }

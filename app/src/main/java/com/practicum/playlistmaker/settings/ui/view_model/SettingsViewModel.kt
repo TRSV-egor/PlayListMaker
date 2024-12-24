@@ -1,36 +1,56 @@
 package com.practicum.playlistmaker.settings.ui.view_model
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.App
+import com.practicum.playlistmaker.creator.Creator
+import com.practicum.playlistmaker.settings.domain.SettingsInteractor
+import com.practicum.playlistmaker.settings.domain.model.ThemeSettings
+import com.practicum.playlistmaker.sharing.domain.SharingInteractor
 
 class SettingsViewModel(
-    application: Application
-) : AndroidViewModel(application) {
+    private val settingsInteractor: SettingsInteractor,
+    private val sharingInteractor: SharingInteractor,
+) : ViewModel() {
+
     companion object {
+
+        const val MAIL_TO = "mailto:"
+
         fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                SettingsViewModel(this[APPLICATION_KEY] as Application)
+                SettingsViewModel(
+                    Creator.provideSettingsInteractor(),
+                    Creator.provideSharingInteractor()
+                )
             }
         }
     }
 
-    val application = getApplication<Application>() as App
+    private val darkThemeLiveMutable = MutableLiveData<Boolean>()
+    val darkThemeLive: LiveData<Boolean> = darkThemeLiveMutable
 
-    fun darkThemeEnabled(): Boolean{
-        return application.darkTheme
+    fun checkDarkTheme() {
+        darkThemeLiveMutable.value = settingsInteractor.checkThemeSettings().darkTheme
     }
 
-    fun toggleTheme(isChecked: Boolean): Boolean {
+    fun toggleTheme(isChecked: Boolean) {
+        settingsInteractor.updateThemeSettings(ThemeSettings(isChecked))
+    }
 
-        application.switchTheme(isChecked)
+    fun share() {
+        sharingInteractor.shareApp()
+    }
 
-        return application.darkTheme
+    fun support() {
+        sharingInteractor.openSupport()
+    }
 
+    fun agreement() {
+        sharingInteractor.openTerms()
     }
 
 }

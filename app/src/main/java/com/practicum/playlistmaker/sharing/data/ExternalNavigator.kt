@@ -1,10 +1,13 @@
 package com.practicum.playlistmaker.sharing.data
 
+import android.content.Intent
+import com.practicum.playlistmaker.sharing.domain.model.EmailData
+
 interface ExternalNavigator {
 
-    fun shareLink()
+    fun shareLink(link: String): Intent
 
-    fun openLink()
+    fun openLink(link: String): Intent
 
-    fun openEmail()
+    fun openEmail(emailData: EmailData): Intent
 }

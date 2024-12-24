@@ -13,19 +13,19 @@ class SharedPrefLocalData : LocalData {
 
     private val sharedPref = Creator.provideSharedPreferences()
 
-    override fun changeDarkTheme(bool: Boolean) {
-        sharedPref.edit()
-            .putBoolean(NIGHTTHEME, bool)
-            .apply()
-    }
-
-    override fun getDarkTheme(): Boolean {
-        return sharedPref.getBoolean(NIGHTTHEME, false)
-    }
-
-    override fun checkDarkTheme(): Boolean {
-        return sharedPref.contains(NIGHTTHEME)
-    }
+//    override fun changeDarkTheme(bool: Boolean) {
+//        sharedPref.edit()
+//            .putBoolean(NIGHTTHEME, bool)
+//            .apply()
+//    }
+//
+//    override fun getDarkTheme(): Boolean {
+//        return sharedPref.getBoolean(NIGHTTHEME, false)
+//    }
+//
+//    override fun checkDarkTheme(): Boolean {
+//        return sharedPref.contains(NIGHTTHEME)
+//    }
 
     override fun getTracksHistory(): Array<TrackDto> {
         val json = sharedPref.getString(TRACKHISTORY, "")

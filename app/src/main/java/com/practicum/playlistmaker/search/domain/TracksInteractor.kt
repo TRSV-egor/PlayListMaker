@@ -9,9 +9,9 @@ interface TracksInteractor {
     fun clearTrackHistory()
     fun saveTracksToHistory(arrayListTracks: ArrayList<Track>)
 
-    fun getNightTheme(): Boolean
-    fun checkDarkTheme(): Boolean
-    fun changeDarkTheme(bool: Boolean)
+//    fun getNightTheme(): Boolean
+//    fun checkDarkTheme(): Boolean
+//    fun changeDarkTheme(bool: Boolean)
 
     interface TracksConsumer {
         fun consume(foundTracks: List<Track>?)

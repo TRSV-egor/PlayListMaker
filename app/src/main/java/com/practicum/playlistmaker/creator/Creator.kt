@@ -4,11 +4,20 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import com.practicum.playlistmaker.search.data.impl.TracksRepositoryImpl
-import com.practicum.playlistmaker.search.data.sharedpref.SharedPrefLocalData
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
-import com.practicum.playlistmaker.search.domain.TracksInteractorImpl
+import com.practicum.playlistmaker.search.data.sharedpref.SharedPrefLocalData
 import com.practicum.playlistmaker.search.domain.TracksInteractor
+import com.practicum.playlistmaker.search.domain.TracksInteractorImpl
 import com.practicum.playlistmaker.search.domain.TracksRepository
+import com.practicum.playlistmaker.settings.data.SettingsRepository
+import com.practicum.playlistmaker.settings.data.impl.SettingsRepositoryImpl
+import com.practicum.playlistmaker.settings.data.sharedpref.SettingsSharedPrefLocalData
+import com.practicum.playlistmaker.settings.domain.SettingsInteractor
+import com.practicum.playlistmaker.settings.domain.impl.SettingsInteractorImpl
+import com.practicum.playlistmaker.sharing.data.ExternalNavigator
+import com.practicum.playlistmaker.sharing.data.impl.ExternalNavigatorImpl
+import com.practicum.playlistmaker.sharing.domain.SharingInteractor
+import com.practicum.playlistmaker.sharing.domain.impl.SharingInteractorImpl
 
 const val SETTINGS = "playListMaker_settings"
 
@@ -32,6 +41,24 @@ object Creator {
 
     fun provideTracksInteractor(): TracksInteractor {
         return TracksInteractorImpl(getTracksRepository())
+    }
+
+    //Settings: theme
+    private fun getSettingsRepository(): SettingsRepository {
+        return SettingsRepositoryImpl(SettingsSharedPrefLocalData())
+    }
+
+    fun provideSettingsInteractor(): SettingsInteractor {
+        return SettingsInteractorImpl(getSettingsRepository(), application)
+    }
+
+    //Settings: sharing
+    private fun getExternalNavigatorImpl(): ExternalNavigator {
+        return ExternalNavigatorImpl()
+    }
+
+    fun provideSharingInteractor(): SharingInteractor {
+        return SharingInteractorImpl(getExternalNavigatorImpl(), application)
     }
     
 }

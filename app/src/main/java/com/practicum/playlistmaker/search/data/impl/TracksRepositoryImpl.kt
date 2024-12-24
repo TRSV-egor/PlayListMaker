@@ -5,8 +5,8 @@ import com.practicum.playlistmaker.search.data.NetworkClient
 import com.practicum.playlistmaker.search.data.dto.TrackDto
 import com.practicum.playlistmaker.search.data.dto.TracksSearchRequest
 import com.practicum.playlistmaker.search.data.dto.TracksSearchResponse
-import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.domain.TracksRepository
+import com.practicum.playlistmaker.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -93,18 +93,6 @@ class TracksRepositoryImpl(
                 )
             }.toTypedArray()
         )
-    }
-
-    override fun getNightTheme(): Boolean {
-        return localData.getDarkTheme()
-    }
-
-    override fun checkDarkTheme(): Boolean {
-        return localData.checkDarkTheme()
-    }
-
-    override fun changeDarkTheme(bool: Boolean) {
-        localData.changeDarkTheme(bool)
     }
 
     private fun convertDateToFormat(time: String): String {

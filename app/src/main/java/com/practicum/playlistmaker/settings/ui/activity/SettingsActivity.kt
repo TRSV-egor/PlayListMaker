@@ -7,13 +7,20 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
-import com.practicum.playlistmaker.App
+import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
 
+    companion object {
+        const val MAIL_TO = "mailto:"
+    }
+
     private lateinit var binding: ActivitySettingsBinding
+    private lateinit var viewModel: SettingsViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +28,7 @@ class SettingsActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
 
+        viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory())[SettingsViewModel::class.java]
 
         val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
         setSupportActionBar(toolbar)
@@ -36,13 +44,20 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
+        binding.themeSwitcher.isChecked = viewModel.darkThemeEnabled()
+
+        binding.themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
+            binding.themeSwitcher.isChecked = viewModel.toggleTheme(isChecked)
+        }
+
+        //viewModel.toogleTheme(binding.themeSwitcher.isChecked)
         //night light theme
-        if ((applicationContext as App).darkTheme) {
-            binding.themeSwitcher.isChecked = (applicationContext as App).darkTheme
-        }
-        binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            (applicationContext as App).switchTheme(checked)
-        }
+//        if ((applicationContext as App).darkTheme) {
+//            binding.themeSwitcher.isChecked = (applicationContext as App).darkTheme
+//        }
+//        binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
+//            (applicationContext as App).switchTheme(checked)
+//        }
 
         //Share app button
         binding.share.setOnClickListener {
@@ -74,7 +89,5 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    companion object {
-        const val MAIL_TO = "mailto:"
-    }
+
 }

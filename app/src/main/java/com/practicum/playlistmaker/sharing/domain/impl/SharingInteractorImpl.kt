@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.sharing.domain.impl
 
+import com.practicum.playlistmaker.sharing.data.ExternalNavigator
 import com.practicum.playlistmaker.sharing.domain.SharingInteractor
 
 class SharingInteractorImpl(
@@ -7,27 +8,27 @@ class SharingInteractorImpl(
 ) : SharingInteractor {
 
     override fun openSupport() {
-        externalNavigator.shareLink(getShareAppLink())
+        //externalNavigator.shareLink(getShareAppLink())
     }
 
     override fun openTerms() {
-        externalNavigator.openLink(getTermsLink())
+        //externalNavigator.openLink(getTermsLink())
     }
 
     override fun shareApp() {
-        externalNavigator.openEmail(getSupportEmailData())
+       // externalNavigator.openEmail(getSupportEmailData())
     }
 
     private fun getShareAppLink(): String {
-
+        return ""
     }
 
-    private fun getTermsLink(): EmailData {
-
-    }
+//    private fun getTermsLink(): EmailData {
+//
+//    }
 
     private fun getSupportEmailData(): String {
-
+        return ""
     }
 
 }

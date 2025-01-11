@@ -17,6 +17,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.search.ui.SearchHistoryAdapter
 import com.practicum.playlistmaker.search.ui.TrackAdapter
+import com.practicum.playlistmaker.search.ui.models.SearchStatus
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
 
 const val TRACK_BUNDLE = "track"
@@ -49,9 +50,9 @@ class SearchActivity : AppCompatActivity() {
         searchViewModel = ViewModelProvider(this)[SearchViewModel::class.java]
 
         val adapterFound =
-            TrackAdapter((searchViewModel.foundTracksArrayLive.value) ?: arrayListOf())
+            TrackAdapter((searchViewModel.foundTracksArrayLive().value) ?: arrayListOf())
         val adapterHistory =
-            SearchHistoryAdapter((searchViewModel.historyTracksArrayLive.value) ?: arrayListOf())
+            SearchHistoryAdapter((searchViewModel.historyTracksArrayLive().value) ?: arrayListOf())
 
         binding.viewTrackFoundRecycleView.layoutManager = LinearLayoutManager(this)
         binding.viewTrackFoundRecycleView.adapter = adapterFound
@@ -61,15 +62,15 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchClear.isVisible = false
 
-        searchViewModel.foundTracksArrayLive.observe(this, Observer {
+        searchViewModel.foundTracksArrayLive().observe(this, Observer {
             adapterFound.notifyDataSetChanged()
         })
 
-        searchViewModel.historyTracksArrayLive.observe(this, Observer {
+        searchViewModel.historyTracksArrayLive().observe(this, Observer {
             adapterHistory.notifyDataSetChanged()
         })
 
-        searchViewModel.searchFieldLive.observe(this, Observer {
+        searchViewModel.searchFieldLive().observe(this, Observer {
             binding.searchField.setText(it)
 
             if (it == "") {
@@ -92,8 +93,9 @@ class SearchActivity : AppCompatActivity() {
 
 
         binding.searchUpdBttn.setOnClickListener {
-            showProgressBar()
-            binding.searchField.setText(lastQuery)
+            //showProgressBar()
+            //binding.searchField.setText(lastQuery)
+            searchViewModel.searchUpdButtonPressed()
         }
 
 
@@ -101,16 +103,20 @@ class SearchActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.searchClear.isVisible = clearButtonVisibility(s)
+                //binding.searchClear.isVisible = clearButtonVisibility(s)
+
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (binding.searchField.text.isEmpty()) {
-                    clearAllFound()
-                    getHistory()
-                } else {
-                    searchDebounce()
-                }
+                searchViewModel.searchDebounce(
+                   query =  s?.toString() ?: ""
+                )
+//                if (binding.searchField.text.isEmpty()) {
+//                    clearAllFound()
+//                    getHistory()
+//                } else {
+//                    searchDebounce()
+//                }
             }
         }
 
@@ -214,5 +220,13 @@ class SearchActivity : AppCompatActivity() {
         binding.searchProgressBar.isVisible = false
     }
 
+    private fun render(state: SearchStatus) {
+        when (state) {
+            is SearchStatus.Content -> showContent(state.movies)
+            is SearchStatus.Empty -> showEmpty(state.message)
+            is SearchStatus.Error -> showError(state.errorMessage)
+            is SearchStatus.Loading -> showProgressBar()
+        }
+    }
 
 }

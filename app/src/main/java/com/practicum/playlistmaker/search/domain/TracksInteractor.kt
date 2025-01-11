@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.search.domain
 
 import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.util.Resource
 
 interface TracksInteractor {
     fun searchTracks(searchType: String, expression: String, consumer: TracksConsumer)
@@ -14,7 +15,7 @@ interface TracksInteractor {
 //    fun changeDarkTheme(bool: Boolean)
 
     interface TracksConsumer {
-        fun consume(foundTracks: List<Track>?)
+        fun consume(foundTracks: List<Track>?, errorMessage: String?)
     }
 
 

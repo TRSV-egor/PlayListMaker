@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.databinding.ViewTrackBinding
 
-class SearchHistoryAdapter(
-    private val historyTrackList: List<Track>
-) : RecyclerView.Adapter<TrackViewHolder>() {
+class SearchHistoryAdapter : RecyclerView.Adapter<TrackViewHolder>() {
+
+    var historyTracks = ArrayList<Track>()
 
     var onClick: (Track) -> Unit = {}
 
@@ -18,11 +18,12 @@ class SearchHistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(historyTrackList[position])
-        holder.itemView.setOnClickListener { onClick(historyTrackList[position]) }
+        holder.bind(historyTracks[position])
+        holder.itemView.setOnClickListener { onClick(historyTracks[position]) }
     }
 
     override fun getItemCount(): Int {
-        return historyTrackList.size
+        return historyTracks.size
     }
+
 }

@@ -26,26 +26,28 @@ class TracksRepositoryImpl(
                 return Resource.Success((networkClientResponse as TracksSearchResponse).tracksList.map {
                     with(it) {
                         Track(
-                            trackId ,
+                            trackId,
                             trackName,
-                            artistName,
+                            artistName ?: "",
                             convertDateToFormat(trackTime),
-                            artworkUrl100,
-                            releaseDate,
-                            primaryGenreName,
-                            country,
-                            collectionName,
-                            previewUrl,
+                            artworkUrl100 ?: "",
+                            releaseDate ?: "",
+                            primaryGenreName ?: "",
+                            country ?: "",
+                            collectionName ?: "",
+                            previewUrl ?: "",
                         )
                     }
                 })
 
             }
-            -1 -> {
+
+            408 -> {
                 return Resource.Error("Проверьте подключение к интернету")
             }
+
             else -> {
-                return  Resource.Error("Ошибка сервера")
+                return Resource.Error("Ошибка сервера")
             }
         }
     }
@@ -59,14 +61,14 @@ class TracksRepositoryImpl(
                 Track(
                     trackId,
                     trackName,
-                    artistName,
+                    artistName ?: "",
                     trackTime,
-                    artworkUrl100,
-                    releaseDate,
-                    primaryGenreName,
-                    country,
-                    collectionName,
-                    previewUrl,
+                    artworkUrl100 ?: "",
+                    releaseDate ?: "",
+                    primaryGenreName ?: "",
+                    country ?: "",
+                    collectionName ?: "",
+                    previewUrl ?: "",
                 )
             }
         })

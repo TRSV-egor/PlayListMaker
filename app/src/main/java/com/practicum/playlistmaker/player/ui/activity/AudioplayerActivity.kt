@@ -16,7 +16,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityAudioplayerBinding
 import com.practicum.playlistmaker.player.ui.view_model.AudioplayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.activity.TRACK_BUNDLE
+import com.practicum.playlistmaker.search.ui.activity.SearchActivity
 import com.practicum.playlistmaker.search.ui.dpToPx
 
 
@@ -53,7 +53,7 @@ class AudioplayerActivity : AppCompatActivity() {
 
         audioplayerViewModel = ViewModelProvider(this)[AudioplayerViewModel::class.java]
 
-        val track = intent.getSerializableExtra(TRACK_BUNDLE) as Track
+        val track = intent.getSerializableExtra(SearchActivity.TRACK_BUNDLE) as Track
 
         audioplayerViewModel.fillPlayer(track)
         audioplayerViewModel.prepareMediaPlayer(track.previewUrl)
@@ -67,7 +67,7 @@ class AudioplayerActivity : AppCompatActivity() {
                 }
 
                 PlayerStateType.DEFAULT -> {
-                    binding.buttonPlay.background = getDrawable(R.drawable.audioplayer_play)
+                    binding.buttonPlay.background = getDrawable(R.drawable.audioplayer_play_not_ready)
                     binding.buttonPlay.isEnabled = false
                 }
 

@@ -49,7 +49,7 @@
             android:background="@null"
             android:paddingEnd="@dimen/search_field_clear_button_padding_end"
             android:src="@drawable/search_clear"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
     </FrameLayout>
 

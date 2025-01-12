@@ -7,8 +7,9 @@ import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.databinding.ViewTrackBinding
 
 class TrackAdapter(
-    private val trackList: ArrayList<Track>
 ) : RecyclerView.Adapter<TrackViewHolder>() {
+
+    var foundTracks = ArrayList<Track>()
 
     var onClick: (Track) -> Unit = {}
 
@@ -18,11 +19,12 @@ class TrackAdapter(
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(trackList[position])
-        holder.itemView.setOnClickListener { onClick(trackList[position]) }
+        holder.bind(foundTracks[position])
+        holder.itemView.setOnClickListener { onClick(foundTracks[position]) }
     }
 
     override fun getItemCount(): Int {
-        return trackList.size
+        return foundTracks.size
     }
+
 }

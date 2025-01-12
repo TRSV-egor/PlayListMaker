@@ -14,24 +14,28 @@ class TracksInteractorImpl(private val repository: TracksRepository) : TracksInt
         consumer: TracksInteractor.TracksConsumer
     ) {
         executor.execute {
+            when (val resource = repository.searchTracks(searchType, expression)) {
+                is Resource.Success -> {
+                    consumer.consume(resource.data, null)
+                }
 
-            when(val resource = repository.searchTracks(searchType, expression)) {
-                is Resource.Success -> { consumer.consume(resource.data, null) }
-                is Resource.Error -> { consumer.consume(null, resource.message) }
+                is Resource.Error -> {
+                    consumer.consume(null, resource.message)
+                }
             }
-
-//            consumer.consume(
-//                repository.searchTracks(searchType, expression), null
-//
-//            )
         }
     }
 
-    override fun getTracksHistory(consumer: TracksInteractor.TracksConsumer){
+    override fun getTracksHistory(consumer: TracksInteractor.TracksConsumer) {
         executor.execute {
-            when(val resource = repository.getHistoryTracks()) {
-                is Resource.Success -> { consumer.consume(resource.data, null) }
-                is Resource.Error -> { consumer.consume(null, resource.message) }
+            when (val resource = repository.getHistoryTracks()) {
+                is Resource.Success -> {
+                    consumer.consume(resource.data, null)
+                }
+
+                is Resource.Error -> {
+                    consumer.consume(null, resource.message)
+                }
             }
         }
     }
@@ -46,15 +50,4 @@ class TracksInteractorImpl(private val repository: TracksRepository) : TracksInt
         repository.clearTrackHistory()
     }
 
-//    override fun getNightTheme(): Boolean {
-//        return repository.getNightTheme()
-//    }
-//
-//    override fun checkDarkTheme(): Boolean {
-//        return repository.checkDarkTheme()
-//    }
-//
-//    override fun changeDarkTheme(bool: Boolean) {
-//        repository.changeDarkTheme(bool)
-//    }
 }

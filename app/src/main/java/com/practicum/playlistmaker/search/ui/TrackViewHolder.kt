@@ -9,7 +9,9 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.databinding.ViewTrackBinding
 
-class TrackViewHolder(val binding: ViewTrackBinding) : RecyclerView.ViewHolder(binding.root) {
+class TrackViewHolder(
+    private val binding: ViewTrackBinding,
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(model: Track) {
 
@@ -23,8 +25,6 @@ class TrackViewHolder(val binding: ViewTrackBinding) : RecyclerView.ViewHolder(b
             trackArtist.text = model.artistName
             viewTrackLength.text = model.trackTime
         }
-
-
     }
 }
 

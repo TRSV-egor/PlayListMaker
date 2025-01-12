@@ -4,18 +4,17 @@ import com.practicum.playlistmaker.search.domain.models.Track
 
 sealed interface SearchStatus {
 
-    object Loading : SearchStatus
+    data object Loading : SearchStatus
+    data object Empty : SearchStatus
+    data object Error : SearchStatus
+    data object Clean : SearchStatus
 
     data class Content(
-        val tracks: List<Track>
+        val tracks: ArrayList<Track>
     ) : SearchStatus
 
-    data class Error(
-        val errorMessage: String
-    ) : SearchStatus
-
-    data class Empty(
-        val message: String
+    data class History(
+        val historyTracks: ArrayList<Track>
     ) : SearchStatus
 
 }

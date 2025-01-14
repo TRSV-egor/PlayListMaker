@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
-import com.practicum.playlistmaker.player.ui.activity.AudioplayerActivity
+import com.practicum.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.SearchHistoryAdapter
 import com.practicum.playlistmaker.search.ui.TrackAdapter
@@ -225,7 +225,7 @@ class SearchActivity : AppCompatActivity() {
         if (clickDebounce()) {
             searchViewModel.addTrackToHistory(track, adapterHistory.historyTracks)
             adapterHistory.notifyDataSetChanged()
-            val intent = Intent(this@SearchActivity, AudioplayerActivity::class.java)
+            val intent = Intent(this@SearchActivity, AudioPlayerActivity::class.java)
             intent.putExtra(TRACK_BUNDLE, track as Serializable)
             startActivity(intent)
         }

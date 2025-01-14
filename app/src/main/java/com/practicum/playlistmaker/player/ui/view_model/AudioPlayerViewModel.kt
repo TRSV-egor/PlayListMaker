@@ -6,11 +6,11 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.practicum.playlistmaker.util.DateFormater
-import com.practicum.playlistmaker.player.domain.model.PlayerStateType
+import com.practicum.playlistmaker.player.ui.models.PlayerStatus
 import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.util.DateFormater
 
-class AudioplayerViewModel : ViewModel() {
+class AudioPlayerViewModel : ViewModel() {
 
     companion object {
         private const val TIMER_UPD = 500L
@@ -20,19 +20,16 @@ class AudioplayerViewModel : ViewModel() {
 
     private var mediaPlayer = MediaPlayer()
 
-    private var playerStateTypeMutable = MutableLiveData<PlayerStateType>()
-    var playerState: LiveData<PlayerStateType> = playerStateTypeMutable
 
-    private var playerTimerMutable = MutableLiveData<String>()
-    var playerTimer: LiveData<String> = playerTimerMutable
+    private val playerStatusLiveDataMutable = MutableLiveData<PlayerStatus>()
+    fun observerPlayer(): LiveData<PlayerStatus> = playerStatusLiveDataMutable
 
-
-    private var currentTrackMutable = MutableLiveData<Track>()
-    val currentTrack: LiveData<Track> = currentTrackMutable
 
     fun fillPlayer(track: Track) {
-        currentTrackMutable.value = track
-        playerStateTypeMutable.value = PlayerStateType.DEFAULT
+        changePlayerStatus(
+            PlayerStatus.Default(track)
+        )
+        prepareMediaPlayer(track.previewUrl)
     }
 
     fun prepareMediaPlayer(previewUrl: String) {
@@ -40,25 +37,29 @@ class AudioplayerViewModel : ViewModel() {
         mediaPlayer.prepareAsync()
 
         mediaPlayer.setOnPreparedListener {
-            playerStateTypeMutable.value = PlayerStateType.PREPARED
+            changePlayerStatus(
+                PlayerStatus.Prepared
+            )
         }
 
         mediaPlayer.setOnCompletionListener {
-            playerStateTypeMutable.value = PlayerStateType.PREPARED
+            changePlayerStatus(
+                PlayerStatus.Prepared
+            )
         }
     }
 
     fun playbackControl() {
-        when (playerStateTypeMutable.value) {
-            PlayerStateType.PLAYING -> {
+        when (playerStatusLiveDataMutable.value) {
+            is PlayerStatus.Playing -> {
                 pauseMediaPlayer()
             }
 
-            PlayerStateType.PREPARED, PlayerStateType.PAUSED -> {
+            is PlayerStatus.Prepared, PlayerStatus.Paused -> {
                 startMediaPlayer()
             }
 
-            else -> {}
+            else -> null
         }
     }
 
@@ -68,29 +69,39 @@ class AudioplayerViewModel : ViewModel() {
 
     fun pauseMediaPlayer() {
         mediaPlayer.pause()
-        playerStateTypeMutable.value = PlayerStateType.PAUSED
+
+        changePlayerStatus(
+            PlayerStatus.Paused
+        )
     }
 
     private fun startMediaPlayer() {
         mediaPlayer.start()
-        playerStateTypeMutable.value = PlayerStateType.PLAYING
+
+        changePlayerStatus(
+            PlayerStatus.Playing
+        )
+
         handler.post(durationTimer())
     }
 
     private fun durationTimer(): Runnable {
         return object : Runnable {
             override fun run() {
-                if (playerStateTypeMutable.value == PlayerStateType.PLAYING) {
-                    playerTimerMutable.value = DateFormater.mmSS(mediaPlayer.currentPosition)
+                if (playerStatusLiveDataMutable.value is PlayerStatus.Playing) {
+                    PlayerStatus.Playing.timer = DateFormater.mmSS(mediaPlayer.currentPosition)
+                    playerStatusLiveDataMutable.postValue(PlayerStatus.Playing)
                     handler.postDelayed(this, TIMER_UPD)
                 } else {
                     handler.removeCallbacks(this)
                 }
-
-
             }
 
         }
 
+    }
+
+    private fun changePlayerStatus(status: PlayerStatus) {
+        playerStatusLiveDataMutable.postValue(status)
     }
 }

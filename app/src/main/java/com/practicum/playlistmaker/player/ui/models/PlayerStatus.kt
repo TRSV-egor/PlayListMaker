@@ -6,10 +6,7 @@ sealed interface PlayerStatus {
 
     data class Default(val track: Track) : PlayerStatus
     data object Prepared : PlayerStatus
-
     data object Paused : PlayerStatus
-
-    //data class Playing(var timer: String) : PlayerStatus
     data object Playing : PlayerStatus {
         var timer: String = "00:00"
     }

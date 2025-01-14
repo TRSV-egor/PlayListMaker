@@ -1,5 +1,7 @@
-package com.practicum.playlistmaker.search.domain
+package com.practicum.playlistmaker.search.domain.impl
 
+import com.practicum.playlistmaker.search.domain.TracksInteractor
+import com.practicum.playlistmaker.search.domain.TracksRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.util.Resource
 import java.util.concurrent.Executors

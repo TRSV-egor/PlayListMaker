@@ -1,11 +1,12 @@
 package com.practicum.playlistmaker.player.ui.view_model
 
-import android.media.MediaPlayer
+
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.player.ui.models.PlayerStatus
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.util.DateFormater
@@ -18,7 +19,7 @@ class AudioPlayerViewModel : ViewModel() {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private var mediaPlayer = MediaPlayer()
+    private var mediaPlayer = Creator.provideAudioPlayerInteractor()
 
 
     private val playerStatusLiveDataMutable = MutableLiveData<PlayerStatus>()
@@ -32,21 +33,13 @@ class AudioPlayerViewModel : ViewModel() {
         prepareMediaPlayer(track.previewUrl)
     }
 
-    fun prepareMediaPlayer(previewUrl: String) {
-        mediaPlayer.setDataSource(previewUrl)
-        mediaPlayer.prepareAsync()
-
-        mediaPlayer.setOnPreparedListener {
+    private fun prepareMediaPlayer(previewUrl: String) {
+        mediaPlayer.prepare(previewUrl) {
             changePlayerStatus(
                 PlayerStatus.Prepared
             )
         }
 
-        mediaPlayer.setOnCompletionListener {
-            changePlayerStatus(
-                PlayerStatus.Prepared
-            )
-        }
     }
 
     fun playbackControl() {
@@ -59,7 +52,7 @@ class AudioPlayerViewModel : ViewModel() {
                 startMediaPlayer()
             }
 
-            else -> null
+            else -> {}
         }
     }
 
@@ -89,7 +82,7 @@ class AudioPlayerViewModel : ViewModel() {
         return object : Runnable {
             override fun run() {
                 if (playerStatusLiveDataMutable.value is PlayerStatus.Playing) {
-                    PlayerStatus.Playing.timer = DateFormater.mmSS(mediaPlayer.currentPosition)
+                    PlayerStatus.Playing.timer = DateFormater.mmSS(mediaPlayer.getCurrentPosition())
                     playerStatusLiveDataMutable.postValue(PlayerStatus.Playing)
                     handler.postDelayed(this, TIMER_UPD)
                 } else {

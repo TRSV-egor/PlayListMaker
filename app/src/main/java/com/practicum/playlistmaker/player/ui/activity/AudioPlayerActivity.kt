@@ -40,16 +40,11 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         audioPlayerViewModel = ViewModelProvider(this)[AudioPlayerViewModel::class.java]
 
-        //val track = intent.getSerializableExtra(SearchActivity.TRACK_BUNDLE) as Track
-
         audioPlayerViewModel.fillPlayer(intent.getSerializableExtra(SearchActivity.TRACK_BUNDLE) as Track)
-        //audioPlayerViewModel.prepareMediaPlayer(track.previewUrl)
 
         audioPlayerViewModel.observerPlayer().observe(this) {
             render(it)
         }
-
-
 
         binding.buttonPlay.setOnClickListener {
             audioPlayerViewModel.playbackControl()
@@ -82,7 +77,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun render(status: PlayerStatus) {
         when (status) {
             is PlayerStatus.Default -> default(status.track)
-            is PlayerStatus.Prepared -> prepeared()
+            is PlayerStatus.Prepared -> prepared()
             is PlayerStatus.Paused -> paused()
             is PlayerStatus.Playing -> playing(status.timer)
         }
@@ -126,7 +121,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun prepeared() {
+    private fun prepared() {
         binding.buttonPlay.background = getDrawable(R.drawable.audioplayer_play)
         binding.buttonPlay.isEnabled = true
     }

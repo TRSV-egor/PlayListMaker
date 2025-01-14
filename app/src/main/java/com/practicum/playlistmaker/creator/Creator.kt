@@ -3,11 +3,16 @@ package com.practicum.playlistmaker.creator
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
+import com.practicum.playlistmaker.player.data.impl.AudioPlayerRepositoryImpl
+import com.practicum.playlistmaker.player.data.media_player.MediaPlayerClientImpl
+import com.practicum.playlistmaker.player.domain.AudioPlayerInteractor
+import com.practicum.playlistmaker.player.domain.AudioPlayerRepository
+import com.practicum.playlistmaker.player.domain.impl.AudioPlayerInteractorImpl
 import com.practicum.playlistmaker.search.data.impl.TracksRepositoryImpl
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.search.data.sharedpref.SharedPrefLocalData
 import com.practicum.playlistmaker.search.domain.TracksInteractor
-import com.practicum.playlistmaker.search.domain.TracksInteractorImpl
+import com.practicum.playlistmaker.search.domain.impl.TracksInteractorImpl
 import com.practicum.playlistmaker.search.domain.TracksRepository
 import com.practicum.playlistmaker.settings.data.SettingsRepository
 import com.practicum.playlistmaker.settings.data.impl.SettingsRepositoryImpl
@@ -59,6 +64,15 @@ object Creator {
 
     fun provideSharingInteractor(): SharingInteractor {
         return SharingInteractorImpl(getExternalNavigatorImpl(), application)
+    }
+
+    //MediaPlayer
+    private fun getAudioPlayerRepository(): AudioPlayerRepository {
+        return AudioPlayerRepositoryImpl(MediaPlayerClientImpl())
+    }
+
+    fun provideAudioPlayerInteractor(): AudioPlayerInteractor {
+        return AudioPlayerInteractorImpl(getAudioPlayerRepository())
     }
     
 }

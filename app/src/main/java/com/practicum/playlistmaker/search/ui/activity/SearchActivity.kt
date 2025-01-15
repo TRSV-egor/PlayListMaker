@@ -23,8 +23,8 @@ import com.practicum.playlistmaker.search.ui.SearchHistoryAdapter
 import com.practicum.playlistmaker.search.ui.TrackAdapter
 import com.practicum.playlistmaker.search.ui.models.SearchStatus
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
+import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel.Companion.getViewModelFactory
 import java.io.Serializable
-
 
 
 class SearchActivity : AppCompatActivity() {
@@ -37,10 +37,14 @@ class SearchActivity : AppCompatActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private var adapterFound = TrackAdapter()
+    private var adapterFound = TrackAdapter { item ->
+        onTrackClick(item)
+    }
 
 
-    private var adapterHistory = SearchHistoryAdapter()
+    private var adapterHistory = SearchHistoryAdapter { item ->
+        onTrackClick(item)
+    }
 
 
     private var _binding: ActivitySearchBinding? = null
@@ -56,7 +60,8 @@ class SearchActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
 
-        searchViewModel = ViewModelProvider(this)[SearchViewModel::class.java]
+        searchViewModel =
+            ViewModelProvider(this, getViewModelFactory())[SearchViewModel::class.java]
 
         binding.viewTrackFoundRecycleView.layoutManager = LinearLayoutManager(this)
         binding.viewTrackFoundRecycleView.adapter = adapterFound
@@ -95,7 +100,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (s.isNullOrEmpty()){
+                if (s.isNullOrEmpty()) {
                     searchViewModel.searchClearPressed(adapterHistory.itemCount)
                 } else {
                     searchViewModel.searchDebounce(
@@ -119,13 +124,13 @@ class SearchActivity : AppCompatActivity() {
         }
 
 
-        adapterFound.onClick = { item ->
-            onTrackClick(item)
-        }
+//        adapterFound.onClick = { item ->
+//            onTrackClick(item)
+//        }
 
-        adapterHistory.onClick = { item ->
-            onTrackClick(item)
-        }
+//        adapterHistory.onClick = { item ->
+//            onTrackClick(item)
+//        }
 
         val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
         setSupportActionBar(toolbar)
@@ -189,7 +194,7 @@ class SearchActivity : AppCompatActivity() {
         binding.searchNotFound.isVisible = true
     }
 
-    private fun showContent(tracks: ArrayList<Track>){
+    private fun showContent(tracks: ArrayList<Track>) {
         adapterFound.foundTracks.clear()
         adapterFound.foundTracks.addAll(tracks)
         adapterFound.notifyDataSetChanged()
@@ -220,7 +225,7 @@ class SearchActivity : AppCompatActivity() {
         return current
     }
 
-    private fun onTrackClick(track: Track){
+    private fun onTrackClick(track: Track) {
 
         if (clickDebounce()) {
             searchViewModel.addTrackToHistory(track, adapterHistory.historyTracks)

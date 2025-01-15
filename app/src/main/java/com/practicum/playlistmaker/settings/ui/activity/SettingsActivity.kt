@@ -25,7 +25,7 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         settingsViewModel =
-            ViewModelProvider(this, getViewModelFactory()).get(SettingsViewModel::class.java)
+            ViewModelProvider(this, getViewModelFactory())[SettingsViewModel::class.java]
 
         val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
         setSupportActionBar(toolbar)

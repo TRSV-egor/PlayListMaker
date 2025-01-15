@@ -41,7 +41,10 @@ object Creator {
 
     //Track search
     private fun getTracksRepository(): TracksRepository {
-        return TracksRepositoryImpl(RetrofitNetworkClient(), SharedPrefLocalData())
+        return TracksRepositoryImpl(
+            RetrofitNetworkClient(),
+            SharedPrefLocalData(provideSharedPreferences())
+        )
     }
 
     fun provideTracksInteractor(): TracksInteractor {
@@ -50,7 +53,7 @@ object Creator {
 
     //Settings: theme
     private fun getSettingsRepository(): SettingsRepository {
-        return SettingsRepositoryImpl(SettingsSharedPrefLocalData())
+        return SettingsRepositoryImpl(SettingsSharedPrefLocalData(provideSharedPreferences()))
     }
 
     fun provideSettingsInteractor(): SettingsInteractor {

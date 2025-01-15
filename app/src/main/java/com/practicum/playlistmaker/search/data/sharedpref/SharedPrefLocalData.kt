@@ -1,31 +1,14 @@
 package com.practicum.playlistmaker.search.data.sharedpref
 
+import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.search.data.LocalData
 import com.practicum.playlistmaker.search.data.dto.TrackDto
 
 
 const val TRACKHISTORY = "track_history"
-const val NIGHTTHEME = "night_theme"
 
-class SharedPrefLocalData : LocalData {
-
-    private val sharedPref = Creator.provideSharedPreferences()
-
-//    override fun changeDarkTheme(bool: Boolean) {
-//        sharedPref.edit()
-//            .putBoolean(NIGHTTHEME, bool)
-//            .apply()
-//    }
-//
-//    override fun getDarkTheme(): Boolean {
-//        return sharedPref.getBoolean(NIGHTTHEME, false)
-//    }
-//
-//    override fun checkDarkTheme(): Boolean {
-//        return sharedPref.contains(NIGHTTHEME)
-//    }
+class SharedPrefLocalData(private val sharedPref: SharedPreferences) : LocalData {
 
     override fun getTracksHistory(): Array<TrackDto> {
         val json = sharedPref.getString(TRACKHISTORY, "")

@@ -1,26 +1,27 @@
 package com.practicum.playlistmaker.settings.data.sharedpref
 
-import com.practicum.playlistmaker.creator.Creator
+import android.content.SharedPreferences
 import com.practicum.playlistmaker.settings.data.SettingsLocalData
 
-const val NIGHTTHEME = "night_theme"
 
-class SettingsSharedPrefLocalData : SettingsLocalData {
+class SettingsSharedPrefLocalData(private val sharedPref: SharedPreferences) : SettingsLocalData {
 
-    private val sharedPref = Creator.provideSharedPreferences()
+    companion object {
+        const val NIGHT_THEME = "night_theme"
+    }
 
     override fun changeDarkTheme(bool: Boolean) {
         sharedPref.edit()
-            .putBoolean(NIGHTTHEME, bool)
+            .putBoolean(NIGHT_THEME, bool)
             .apply()
     }
 
     override fun checkRecordDarkTheme(): Boolean {
-        return sharedPref.contains(NIGHTTHEME)
+        return sharedPref.contains(NIGHT_THEME)
     }
 
     override fun getDarkTheme(): Boolean {
-        return sharedPref.getBoolean(NIGHTTHEME, false)
+        return sharedPref.getBoolean(NIGHT_THEME, false)
     }
 
 }

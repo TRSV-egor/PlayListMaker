@@ -6,13 +6,18 @@ import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.practicum.playlistmaker.creator.Creator.provideTracksInteractor
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.search.domain.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.models.SearchStatus
 
 
-class SearchViewModel : ViewModel() {
+class SearchViewModel(
+    private val tracksInteractor: TracksInteractor
+) : ViewModel() {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
@@ -20,10 +25,18 @@ class SearchViewModel : ViewModel() {
         const val SEARCH_FIELD_DEF = ""
         const val DEF_SEARCH = "song"
         const val MAX_HISTORY = 10
+
+        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                SearchViewModel(
+                    Creator.provideTracksInteractor()
+                )
+            }
+        }
     }
 
     private val handler = Handler(Looper.getMainLooper())
-    private val tracksInteractor = provideTracksInteractor()
+    //private val tracksInteractor = provideTracksInteractor()
 
     private val stateLiveData = MutableLiveData<SearchStatus>()
     fun observeState(): LiveData<SearchStatus> = stateLiveData
@@ -124,35 +137,38 @@ class SearchViewModel : ViewModel() {
             tracksInteractor.searchTracks(
                 DEF_SEARCH,
                 newSearchText,
-                object : TracksInteractor.TracksConsumer {
-                    override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
+                getTracksConsumer()
+            )
+        }
 
-                        if (foundTracks != null) {
+    }
 
-                            when {
-                                foundTracks.isEmpty() -> {
-                                    renderState(
-                                        SearchStatus.Empty
-                                    )
-                                }
+    private fun getTracksConsumer(): TracksInteractor.TracksConsumer {
+        return object : TracksInteractor.TracksConsumer {
+            override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
 
-                                else -> {
-                                    renderState(
-                                        SearchStatus.Content(
-                                            tracks = ArrayList(foundTracks),
-                                        )
-                                    )
-                                }
-                            }
-
-                        } else if (errorMessage != null) {
-                            renderState(
-                                SearchStatus.Error
-                            )
-                        }
-
+                when {
+                    foundTracks.isNullOrEmpty() -> {
+                        renderState(
+                            SearchStatus.Empty
+                        )
                     }
-                })
+
+                    !errorMessage.isNullOrEmpty() -> {
+                        renderState(
+                            SearchStatus.Error
+                        )
+                    }
+
+                    else -> {
+                        renderState(
+                            SearchStatus.Content(
+                                tracks = ArrayList(foundTracks),
+                            )
+                        )
+                    }
+                }
+            }
         }
     }
 

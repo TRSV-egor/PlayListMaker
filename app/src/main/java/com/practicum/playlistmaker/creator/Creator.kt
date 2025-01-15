@@ -12,8 +12,8 @@ import com.practicum.playlistmaker.search.data.impl.TracksRepositoryImpl
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.search.data.sharedpref.SharedPrefLocalData
 import com.practicum.playlistmaker.search.domain.TracksInteractor
-import com.practicum.playlistmaker.search.domain.impl.TracksInteractorImpl
 import com.practicum.playlistmaker.search.domain.TracksRepository
+import com.practicum.playlistmaker.search.domain.impl.TracksInteractorImpl
 import com.practicum.playlistmaker.settings.data.SettingsRepository
 import com.practicum.playlistmaker.settings.data.impl.SettingsRepositoryImpl
 import com.practicum.playlistmaker.settings.data.sharedpref.SettingsSharedPrefLocalData
@@ -54,7 +54,7 @@ object Creator {
     }
 
     fun provideSettingsInteractor(): SettingsInteractor {
-        return SettingsInteractorImpl(getSettingsRepository(), application)
+        return SettingsInteractorImpl(getSettingsRepository())
     }
 
     //Settings: sharing

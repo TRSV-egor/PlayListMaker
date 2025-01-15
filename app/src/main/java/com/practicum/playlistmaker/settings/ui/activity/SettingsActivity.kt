@@ -10,6 +10,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel.Companion.getViewModelFactory
+import com.practicum.playlistmaker.util.App
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -40,11 +41,13 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
-        settingsViewModel.checkDarkTheme()
+
+        settingsViewModel.checkDarkTheme((application as App).darkTheme)
 
         binding.themeSwitcher.isChecked = settingsViewModel.darkThemeLive.value ?: false
 
         binding.themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
+            (application as App).switchTheme(isChecked)
             settingsViewModel.toggleTheme(isChecked)
         }
 

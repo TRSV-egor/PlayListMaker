@@ -33,8 +33,13 @@ class SettingsViewModel(
     private val darkThemeLiveMutable = MutableLiveData<Boolean>()
     val darkThemeLive: LiveData<Boolean> = darkThemeLiveMutable
 
-    fun checkDarkTheme() {
-        darkThemeLiveMutable.value = settingsInteractor.checkThemeSettings().darkTheme
+    fun checkDarkTheme(systemDarkTheme: Boolean) {
+        if (settingsInteractor.checkThemeSettings()) {
+            darkThemeLiveMutable.value = settingsInteractor.getDarkTheme().darkTheme
+        } else {
+            darkThemeLiveMutable.value = systemDarkTheme
+        }
+
     }
 
     fun toggleTheme(isChecked: Boolean) {
@@ -52,5 +57,6 @@ class SettingsViewModel(
     fun agreement() {
         sharingInteractor.openTerms()
     }
+
 
 }

@@ -4,11 +4,13 @@ import com.practicum.playlistmaker.search.domain.models.Track
 
 sealed interface PlayerStatus {
 
-    data class Default(val track: Track) : PlayerStatus
-    data object Prepared : PlayerStatus
-    data object Paused : PlayerStatus
-    data object Playing : PlayerStatus {
-        var timer: String = "00:00"
+    companion object {
+        const val ZERO_TIMER = "00:00"
     }
+
+    data class Default(val track: Track) : PlayerStatus
+    data class Prepared(val isTrackCompleted: Boolean) : PlayerStatus
+    data object Paused : PlayerStatus
+    data class Playing(val timer: String) : PlayerStatus
 
 }

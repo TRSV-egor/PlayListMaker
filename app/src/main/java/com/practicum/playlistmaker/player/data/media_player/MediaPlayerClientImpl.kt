@@ -3,9 +3,11 @@ package com.practicum.playlistmaker.player.data.media_player
 import android.media.MediaPlayer
 import com.practicum.playlistmaker.player.data.MediaPlayerClient
 
-class MediaPlayerClientImpl : MediaPlayerClient {
+class MediaPlayerClientImpl(
+    private var mediaPlayer: MediaPlayer
+) : MediaPlayerClient {
 
-    private var mediaPlayer = MediaPlayer()
+
 
     override fun pause() {
         mediaPlayer.pause()
@@ -15,15 +17,15 @@ class MediaPlayerClientImpl : MediaPlayerClient {
         mediaPlayer.release()
     }
 
-    override fun prepare(url: String, onPrepared: () -> Unit) {
+    override fun prepare(url: String, onPrepared: (Boolean) -> Unit) {
         mediaPlayer.apply {
             setDataSource(url)
             setOnPreparedListener {
-                onPrepared()
+                onPrepared(false)
             }
             prepareAsync()
             setOnCompletionListener {
-                onPrepared()
+                onPrepared(true)
             }
         }
     }

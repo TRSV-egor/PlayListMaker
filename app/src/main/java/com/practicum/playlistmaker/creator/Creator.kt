@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.creator
 
 import android.app.Application
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import com.practicum.playlistmaker.player.data.impl.AudioPlayerRepositoryImpl
 import com.practicum.playlistmaker.player.data.media_player.MediaPlayerClientImpl
@@ -71,7 +72,7 @@ object Creator {
 
     //MediaPlayer
     private fun getAudioPlayerRepository(): AudioPlayerRepository {
-        return AudioPlayerRepositoryImpl(MediaPlayerClientImpl())
+        return AudioPlayerRepositoryImpl(MediaPlayerClientImpl(MediaPlayer()))
     }
 
     fun provideAudioPlayerInteractor(): AudioPlayerInteractor {

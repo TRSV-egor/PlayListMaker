@@ -5,7 +5,7 @@ import com.practicum.playlistmaker.player.domain.AudioPlayerRepository
 
 class AudioPlayerRepositoryImpl(private val mediaPlayerClient: MediaPlayerClient) :
     AudioPlayerRepository {
-    override fun prepare(url: String, onPrepared: () -> Unit) {
+    override fun prepare(url: String, onPrepared: (Boolean) -> Unit) {
         mediaPlayerClient.prepare(url, onPrepared)
     }
 

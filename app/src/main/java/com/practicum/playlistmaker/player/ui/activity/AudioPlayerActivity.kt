@@ -12,6 +12,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityAudioplayerBinding
 import com.practicum.playlistmaker.player.ui.models.PlayerStatus
 import com.practicum.playlistmaker.player.ui.view_model.AudioPlayerViewModel
+import com.practicum.playlistmaker.player.ui.view_model.AudioPlayerViewModel.Companion.getViewModelFactory
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.activity.SearchActivity
 import com.practicum.playlistmaker.search.ui.dpToPx
@@ -27,6 +28,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         private const val TIMER_TRACK_DURATION = 30000L
         private const val DESCRIPTION_YEAR_VALUE_INDEX_START = 0
         private const val DESCRIPTION_YEAR_VALUE_INDEX_END = 4
+
     }
 
     private lateinit var binding: ActivityAudioplayerBinding
@@ -38,7 +40,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
 
-        audioPlayerViewModel = ViewModelProvider(this)[AudioPlayerViewModel::class.java]
+        audioPlayerViewModel =
+            ViewModelProvider(this, getViewModelFactory())[AudioPlayerViewModel::class.java]
 
         audioPlayerViewModel.fillPlayer(intent.getSerializableExtra(SearchActivity.TRACK_BUNDLE) as Track)
 
@@ -77,7 +80,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun render(status: PlayerStatus) {
         when (status) {
             is PlayerStatus.Default -> default(status.track)
-            is PlayerStatus.Prepared -> prepared()
+            is PlayerStatus.Prepared -> prepared(status.isTrackCompleted)
             is PlayerStatus.Paused -> paused()
             is PlayerStatus.Playing -> playing(status.timer)
         }
@@ -121,9 +124,11 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun prepared() {
+    private fun prepared(isTrackCompleted: Boolean) {
         binding.buttonPlay.background = getDrawable(R.drawable.audioplayer_play)
         binding.buttonPlay.isEnabled = true
+        if (isTrackCompleted) binding.trackTimer.text = PlayerStatus.ZERO_TIMER
+
     }
 
     private fun paused() {

@@ -3,8 +3,9 @@ package com.practicum.playlistmaker.player.domain.impl
 import com.practicum.playlistmaker.player.domain.AudioPlayerInteractor
 import com.practicum.playlistmaker.player.domain.AudioPlayerRepository
 
-class AudioPlayerInteractorImpl(private val repository: AudioPlayerRepository) :
-    AudioPlayerInteractor {
+class AudioPlayerInteractorImpl(
+    private val repository: AudioPlayerRepository
+) : AudioPlayerInteractor {
 
     override fun pause() {
         repository.pause()

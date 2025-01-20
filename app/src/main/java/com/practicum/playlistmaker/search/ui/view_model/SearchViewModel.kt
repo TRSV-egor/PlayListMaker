@@ -6,10 +6,6 @@ import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.search.domain.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.models.SearchStatus
@@ -25,18 +21,9 @@ class SearchViewModel(
         const val SEARCH_FIELD_DEF = ""
         const val DEF_SEARCH = "song"
         const val MAX_HISTORY = 10
-
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(
-                    Creator.provideTracksInteractor()
-                )
-            }
-        }
     }
 
     private val handler = Handler(Looper.getMainLooper())
-    //private val tracksInteractor = provideTracksInteractor()
 
     private val stateLiveData = MutableLiveData<SearchStatus>()
     fun observeState(): LiveData<SearchStatus> = stateLiveData
@@ -163,7 +150,7 @@ class SearchViewModel(
                     else -> {
                         renderState(
                             SearchStatus.Content(
-                                tracks = ArrayList(foundTracks),
+                                tracks = ArrayList(foundTracks)
                             )
                         )
                     }

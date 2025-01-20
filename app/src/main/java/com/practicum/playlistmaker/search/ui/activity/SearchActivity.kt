@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
@@ -23,7 +22,7 @@ import com.practicum.playlistmaker.search.ui.SearchHistoryAdapter
 import com.practicum.playlistmaker.search.ui.TrackAdapter
 import com.practicum.playlistmaker.search.ui.models.SearchStatus
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
-import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel.Companion.getViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.Serializable
 
 
@@ -50,7 +49,7 @@ class SearchActivity : AppCompatActivity() {
     private var _binding: ActivitySearchBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var searchViewModel: SearchViewModel
+    private val searchViewModel: SearchViewModel by viewModel()
 
     private var isClickAllowed = true
 
@@ -59,9 +58,6 @@ class SearchActivity : AppCompatActivity() {
         _binding = ActivitySearchBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
-
-        searchViewModel =
-            ViewModelProvider(this, getViewModelFactory())[SearchViewModel::class.java]
 
         binding.viewTrackFoundRecycleView.layoutManager = LinearLayoutManager(this)
         binding.viewTrackFoundRecycleView.adapter = adapterFound
@@ -123,14 +119,6 @@ class SearchActivity : AppCompatActivity() {
             searchViewModel.clearHistory()
         }
 
-
-//        adapterFound.onClick = { item ->
-//            onTrackClick(item)
-//        }
-
-//        adapterHistory.onClick = { item ->
-//            onTrackClick(item)
-//        }
 
         val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
         setSupportActionBar(toolbar)

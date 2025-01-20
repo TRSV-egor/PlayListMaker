@@ -5,17 +5,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
-import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel.Companion.getViewModelFactory
 import com.practicum.playlistmaker.util.App
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
-    private lateinit var settingsViewModel: SettingsViewModel
+    private val settingsViewModel: SettingsViewModel by viewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,9 +22,6 @@ class SettingsActivity : AppCompatActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
-
-        settingsViewModel =
-            ViewModelProvider(this, getViewModelFactory())[SettingsViewModel::class.java]
 
         val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
         setSupportActionBar(toolbar)
@@ -40,7 +36,6 @@ class SettingsActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
 
         settingsViewModel.checkDarkTheme((application as App).darkTheme)
 

@@ -5,19 +5,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityAudioplayerBinding
 import com.practicum.playlistmaker.player.ui.models.PlayerStatus
 import com.practicum.playlistmaker.player.ui.view_model.AudioPlayerViewModel
-import com.practicum.playlistmaker.player.ui.view_model.AudioPlayerViewModel.Companion.getViewModelFactory
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.activity.SearchActivity
 import com.practicum.playlistmaker.search.ui.dpToPx
 import com.practicum.playlistmaker.util.DateFormater
 import com.practicum.playlistmaker.util.GetCoverArtworkLink
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class AudioPlayerActivity : AppCompatActivity() {
@@ -32,16 +31,13 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityAudioplayerBinding
-    private lateinit var audioPlayerViewModel: AudioPlayerViewModel
+    private val audioPlayerViewModel: AudioPlayerViewModel by viewModel<AudioPlayerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAudioplayerBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
-
-        audioPlayerViewModel =
-            ViewModelProvider(this, getViewModelFactory())[AudioPlayerViewModel::class.java]
 
         audioPlayerViewModel.fillPlayer(intent.getSerializableExtra(SearchActivity.TRACK_BUNDLE) as Track)
 

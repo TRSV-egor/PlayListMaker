@@ -12,8 +12,6 @@ class TrackAdapter(
 
     var foundTracks = ArrayList<Track>()
 
-    //var onClick: (Track) -> Unit = {}
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val binding = ViewTrackBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TrackViewHolder(binding)

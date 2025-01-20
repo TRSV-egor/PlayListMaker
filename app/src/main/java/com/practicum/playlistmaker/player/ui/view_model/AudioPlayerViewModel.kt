@@ -1,15 +1,10 @@
 package com.practicum.playlistmaker.player.ui.view_model
 
-
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.player.domain.AudioPlayerInteractor
 import com.practicum.playlistmaker.player.ui.models.PlayerStatus
 import com.practicum.playlistmaker.search.domain.models.Track
@@ -19,18 +14,8 @@ class AudioPlayerViewModel(
     private var mediaPlayer: AudioPlayerInteractor
 ) : ViewModel() {
 
-
-
     companion object {
         private const val TIMER_UPD = 500L
-
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                AudioPlayerViewModel(
-                    Creator.provideAudioPlayerInteractor()
-                )
-            }
-        }
     }
 
     private val handler = Handler(Looper.getMainLooper())
@@ -102,7 +87,13 @@ class AudioPlayerViewModel(
 //                    bug: (плавающая ошибка) при повторном начале воспроизведения таймер меняется 00:00, 00:29, 00:01
 //                    связано с тем что mediaPlayer.getCurrentPosition() не успевает обновить значение 00:29 на 00:00 к моменту
 //                    начала воспроизведения. На некоторых устройствах проявляется, а на некоторых нет
-                    playerStatusLiveDataMutable.postValue(PlayerStatus.Playing(DateFormater.mmSS(mediaPlayer.getCurrentPosition())))
+                    playerStatusLiveDataMutable.postValue(
+                        PlayerStatus.Playing(
+                            DateFormater.mmSS(
+                                mediaPlayer.getCurrentPosition()
+                            )
+                        )
+                    )
                     handler.postDelayed(this, TIMER_UPD)
                 } else {
                     handler.removeCallbacks(this)

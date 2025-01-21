@@ -29,8 +29,8 @@ val interactorModule = module {
 
     single<SharingInteractor> {
         SharingInteractorImpl(
-            externalNavigator = get(),
-            application = get())
+            externalNavigator = get()
+        )
     }
 
 }

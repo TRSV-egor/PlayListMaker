@@ -12,8 +12,6 @@ import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.search.data.sharedpref.SharedPrefLocalData
 import com.practicum.playlistmaker.settings.data.SettingsLocalData
 import com.practicum.playlistmaker.settings.data.sharedpref.SettingsSharedPrefLocalData
-import com.practicum.playlistmaker.sharing.data.ExternalNavigator
-import com.practicum.playlistmaker.sharing.data.impl.ExternalNavigatorImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -61,7 +59,4 @@ val dataModule = module {
         SettingsSharedPrefLocalData(sharedPref = get())
     }
 
-    single<ExternalNavigator>{
-        ExternalNavigatorImpl()
-    }
 }

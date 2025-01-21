@@ -1,5 +1,7 @@
 package com.practicum.playlistmaker.settings.ui.activity
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -7,12 +9,17 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
-import com.practicum.playlistmaker.settings.ui.model.ReceivedIntent
+import com.practicum.playlistmaker.settings.ui.model.EmailData
+import com.practicum.playlistmaker.settings.ui.model.IntentType
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
 import com.practicum.playlistmaker.util.App
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
+
+    companion object {
+        const val MAIL_TO = "mailto:"
+    }
 
     private lateinit var binding: ActivitySettingsBinding
     private val settingsViewModel: SettingsViewModel by viewModel()
@@ -51,33 +58,62 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         binding.share.setOnClickListener {
-            settingsViewModel.share(
+            settingsViewModel.shareApp(
                 applicationContext.getString(R.string.course_url)
             )
         }
 
         binding.support.setOnClickListener {
-            settingsViewModel.support(
-                applicationContext.getString(R.string.email_subject),
-                applicationContext.getString(R.string.email_text),
-                applicationContext.getString(R.string.my_email),
-
+            settingsViewModel.getHelp(
+                EmailData(
+                    email = applicationContext.getString(R.string.my_email),
+                    subject = applicationContext.getString(R.string.email_subject),
+                    text = applicationContext.getString(R.string.email_text),
                 )
+            )
         }
 
         binding.userAgreement.setOnClickListener {
-            settingsViewModel.agreement(
+            settingsViewModel.userAgreement(
                 applicationContext.getString(R.string.practicum_offer)
             )
         }
     }
 
-    private fun openActivity(intentStatus: ReceivedIntent) {
-        if (!intentStatus.isLaunched) {
-            startActivity(intentStatus.intent)
-            settingsViewModel.changeIntentStatus()
+    private fun generateIntent(intentType: IntentType): Intent {
+        when (intentType) {
+            is IntentType.ShareApp -> {
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.putExtra(Intent.EXTRA_TEXT, intentType.link)
+                intent.setType("text/plain")
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                return intent
+            }
+
+            is IntentType.GetHelp -> {
+                val intent = Intent(Intent.ACTION_SENDTO)
+                intent.data = Uri.parse(MAIL_TO)
+                intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(intentType.emailData.email))
+                intent.putExtra(Intent.EXTRA_SUBJECT, intentType.emailData.subject)
+                intent.putExtra(Intent.EXTRA_TEXT, intentType.emailData.text)
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                return intent
+            }
+
+            is IntentType.UserAgreement -> {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse(intentType.link)
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                return intent
+            }
         }
     }
 
+    private fun openActivity(receivedIntent: IntentType) {
+        if (!receivedIntent.isLaunched) {
+            startActivity(generateIntent(receivedIntent))
+            settingsViewModel.changeIntentStatus()
+        }
+    }
 
 }

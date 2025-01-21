@@ -5,20 +5,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.practicum.playlistmaker.settings.domain.SettingsInteractor
 import com.practicum.playlistmaker.settings.domain.model.ThemeSettings
-import com.practicum.playlistmaker.settings.ui.model.ReceivedIntent
-import com.practicum.playlistmaker.sharing.domain.SharingInteractor
+import com.practicum.playlistmaker.settings.ui.model.EmailData
+import com.practicum.playlistmaker.settings.ui.model.IntentType
 
 class SettingsViewModel(
     private val settingsInteractor: SettingsInteractor,
-    private val sharingInteractor: SharingInteractor,
 ) : ViewModel() {
-
 
     private val darkThemeLiveMutable = MutableLiveData<Boolean>()
     val darkThemeLive: LiveData<Boolean> = darkThemeLiveMutable
 
-    private val intentLiveDataMutable = MutableLiveData<ReceivedIntent>()
-    val intentLiveData: LiveData<ReceivedIntent> = intentLiveDataMutable
+    private val intentLiveDataMutable = MutableLiveData<IntentType>()
+    val intentLiveData: LiveData<IntentType> = intentLiveDataMutable
 
     fun checkDarkTheme(systemDarkTheme: Boolean) {
         if (settingsInteractor.checkThemeSettings()) {
@@ -32,25 +30,20 @@ class SettingsViewModel(
         settingsInteractor.updateThemeSettings(ThemeSettings(isChecked))
     }
 
-    fun share(courseUrl: String) {
-        intentLiveDataMutable.value = ReceivedIntent(sharingInteractor.shareApp(courseUrl), false)
+    fun shareApp(courseUrl: String) {
+        intentLiveDataMutable.value = IntentType.ShareApp(courseUrl)
     }
 
-    fun support(subject: String, text: String, mail: String) {
-        intentLiveDataMutable.value = ReceivedIntent(
-            sharingInteractor.openSupport(
-                subject, text, mail
-            ), false
-        )
+    fun getHelp(emailData: EmailData) {
+        intentLiveDataMutable.value = IntentType.GetHelp(emailData)
     }
 
-    fun agreement(practicumOffer: String) {
-        intentLiveDataMutable.value =
-            ReceivedIntent(sharingInteractor.openTerms(practicumOffer), false)
+    fun userAgreement(practicumOffer: String) {
+        intentLiveDataMutable.value = IntentType.UserAgreement(practicumOffer)
     }
 
     fun changeIntentStatus() {
-        (intentLiveDataMutable.value as ReceivedIntent).isLaunched = true
+        (intentLiveDataMutable.value as IntentType).isLaunched = true
     }
 
 }

@@ -18,8 +18,8 @@ val viewModelModule = module {
 
     viewModel<SettingsViewModel> {
         SettingsViewModel(
-            settingsInteractor = get(),
-            sharingInteractor = get())
+            settingsInteractor = get()
+        )
     }
 
 }

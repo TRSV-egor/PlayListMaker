@@ -7,8 +7,6 @@ class MediaPlayerClientImpl(
     private var mediaPlayer: MediaPlayer
 ) : MediaPlayerClient {
 
-
-
     override fun pause() {
         mediaPlayer.pause()
     }

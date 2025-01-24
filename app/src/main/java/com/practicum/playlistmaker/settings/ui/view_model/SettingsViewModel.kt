@@ -3,35 +3,20 @@ package com.practicum.playlistmaker.settings.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.settings.domain.SettingsInteractor
 import com.practicum.playlistmaker.settings.domain.model.ThemeSettings
-import com.practicum.playlistmaker.sharing.domain.SharingInteractor
+import com.practicum.playlistmaker.settings.ui.model.EmailData
+import com.practicum.playlistmaker.settings.ui.model.IntentType
 
 class SettingsViewModel(
     private val settingsInteractor: SettingsInteractor,
-    private val sharingInteractor: SharingInteractor,
 ) : ViewModel() {
-
-    companion object {
-
-        const val MAIL_TO = "mailto:"
-
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SettingsViewModel(
-                    Creator.provideSettingsInteractor(),
-                    Creator.provideSharingInteractor()
-                )
-            }
-        }
-    }
 
     private val darkThemeLiveMutable = MutableLiveData<Boolean>()
     val darkThemeLive: LiveData<Boolean> = darkThemeLiveMutable
+
+    private val intentLiveDataMutable = MutableLiveData<IntentType>()
+    val intentLiveData: LiveData<IntentType> = intentLiveDataMutable
 
     fun checkDarkTheme(systemDarkTheme: Boolean) {
         if (settingsInteractor.checkThemeSettings()) {
@@ -39,24 +24,26 @@ class SettingsViewModel(
         } else {
             darkThemeLiveMutable.value = systemDarkTheme
         }
-
     }
 
     fun toggleTheme(isChecked: Boolean) {
         settingsInteractor.updateThemeSettings(ThemeSettings(isChecked))
     }
 
-    fun share() {
-        sharingInteractor.shareApp()
+    fun shareApp(courseUrl: String) {
+        intentLiveDataMutable.value = IntentType.ShareApp(courseUrl)
     }
 
-    fun support() {
-        sharingInteractor.openSupport()
+    fun getHelp(emailData: EmailData) {
+        intentLiveDataMutable.value = IntentType.GetHelp(emailData)
     }
 
-    fun agreement() {
-        sharingInteractor.openTerms()
+    fun userAgreement(practicumOffer: String) {
+        intentLiveDataMutable.value = IntentType.UserAgreement(practicumOffer)
     }
 
+    fun changeIntentStatus() {
+        (intentLiveDataMutable.value as IntentType).isLaunched = true
+    }
 
 }

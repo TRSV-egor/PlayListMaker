@@ -3,7 +3,12 @@ package com.practicum.playlistmaker.util
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import com.practicum.playlistmaker.creator.Creator
+import com.practicum.playlistmaker.di.dataModule
+import com.practicum.playlistmaker.di.interactorModule
+import com.practicum.playlistmaker.di.repositoryModule
+import com.practicum.playlistmaker.di.viewModelModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 class App : Application() {
 
@@ -12,7 +17,11 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        Creator.initApplication(this)
+        startKoin {
+            androidContext(this@App)
+            modules(dataModule, interactorModule, repositoryModule, viewModelModule)
+        }
+
 
         when (resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_NO -> darkTheme = false

@@ -4,7 +4,8 @@
     android:id="@+id/media"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:theme="@style/Media">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -15,12 +16,14 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        app:tabMode="fixed"
+        android:background="@color/search_buton_update"
         app:tabTextColor="@color/toolbar"
         app:tabIndicatorColor="@color/toolbar"
-        app:tabIndicatorFullWidth="true"
-        app:tabMode="fixed"
-        app:tabRippleColor="@color/gray"/>
+        app:tabSelectedTextColor="@color/toolbar"
+        app:tabRippleColor="@color/search_buton_update">
+
+    </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"

@@ -9,6 +9,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityMediaBinding
 import com.practicum.playlistmaker.media.ui.fragments.MediaViewPagerAdapter
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MediaActivity : AppCompatActivity() {
@@ -16,7 +17,7 @@ class MediaActivity : AppCompatActivity() {
     private var _binding: ActivityMediaBinding? = null
     private val binding get() = _binding!!
     private lateinit var tabMediator: TabLayoutMediator
-
+    private val viewModel: MediaViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

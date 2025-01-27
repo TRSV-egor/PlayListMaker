@@ -54,6 +54,6 @@
     <dimen name="audioplayer_separator">30dp</dimen>
 
     <dimen name="media_fragment_margin_top">106dp</dimen>
-    <dimen name="media_fragment_image_margintop">46dp</dimen>
+    <dimen name="media_fragment_image_margintop">34dp</dimen>
 
 </resources>

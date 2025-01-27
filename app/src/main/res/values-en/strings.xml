@@ -20,4 +20,10 @@
     <string name="audioplayer_description_year">Year</string>
     <string name="audioplayer_description_album">Album</string>
     <string name="audioplayer_description_duration">Duration</string>
+    <string name="media_fragment_playlist_empty">You haven\'t created\nany playlists</string>
+    <string name="media_fragment_favorites_empty">Your media library is empty</string>
+    <string name="media_name">Media library</string>
+    <string name="media_button_new_playlist">New playlist</string>
+    <string name="media_tab_favorites">Favorites tracks</string>
+    <string name="media_tab_playlist">Playlists</string>
 </resources>

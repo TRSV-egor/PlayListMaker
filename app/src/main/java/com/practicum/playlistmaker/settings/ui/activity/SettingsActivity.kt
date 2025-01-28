@@ -48,14 +48,19 @@ class SettingsActivity : AppCompatActivity() {
             openActivity(it)
         }
 
+        settingsViewModel.darkThemeLive.observe(this) {
+            binding.themeSwitcher.isChecked = it
+        }
+
+        (application as App).checkTheme()
         settingsViewModel.checkDarkTheme((application as App).darkTheme)
 
-        binding.themeSwitcher.isChecked = settingsViewModel.darkThemeLive.value ?: false
 
         binding.themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
             (application as App).switchTheme(isChecked)
             settingsViewModel.toggleTheme(isChecked)
         }
+
 
         binding.share.setOnClickListener {
             settingsViewModel.shareApp(

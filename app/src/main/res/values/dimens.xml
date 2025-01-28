@@ -53,4 +53,7 @@
     <dimen name="audioplayer_track_timer_margin_top">4dp</dimen>
     <dimen name="audioplayer_separator">30dp</dimen>
 
+    <dimen name="media_fragment_margin_top">106dp</dimen>
+    <dimen name="media_fragment_image_margintop">34dp</dimen>
+
 </resources>

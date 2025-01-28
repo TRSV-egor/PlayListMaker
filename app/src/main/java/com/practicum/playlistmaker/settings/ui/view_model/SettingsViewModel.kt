@@ -19,11 +19,12 @@ class SettingsViewModel(
     val intentLiveData: LiveData<IntentType> = intentLiveDataMutable
 
     fun checkDarkTheme(systemDarkTheme: Boolean) {
-        if (settingsInteractor.checkThemeSettings()) {
-            darkThemeLiveMutable.value = settingsInteractor.getDarkTheme().darkTheme
-        } else {
-            darkThemeLiveMutable.value = systemDarkTheme
-        }
+//        if (settingsInteractor.checkThemeSettings()) {
+//            darkThemeLiveMutable.value = settingsInteractor.getDarkTheme().darkTheme
+//        } else {
+//            darkThemeLiveMutable.value = systemDarkTheme
+//        }
+        darkThemeLiveMutable.value = systemDarkTheme
     }
 
     fun toggleTheme(isChecked: Boolean) {

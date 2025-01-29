@@ -40,6 +40,13 @@ android {
 }
 
 dependencies {
+
+    implementation ("com.google.android.material:material:1.8.0")
+
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
+    implementation("androidx.fragment:fragment-ktx:1.5.6")
+
     implementation ("com.github.bumptech.glide:glide:4.14.2")
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.viewpager2)

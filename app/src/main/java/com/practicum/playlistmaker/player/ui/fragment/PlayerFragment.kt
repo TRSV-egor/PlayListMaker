@@ -1,66 +1,65 @@
-package com.practicum.playlistmaker.player.ui.activity
+package com.practicum.playlistmaker.player.ui.fragment
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivityAudioplayerBinding
+import com.practicum.playlistmaker.databinding.FragmentPlayerBinding
 import com.practicum.playlistmaker.player.ui.models.PlayerStatus
 import com.practicum.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.activity.SearchActivity
 import com.practicum.playlistmaker.search.ui.dpToPx
+import com.practicum.playlistmaker.search.ui.fragment.SearchFragment.Companion.TRACK_BUNDLE
 import com.practicum.playlistmaker.util.DateFormater
 import com.practicum.playlistmaker.util.GetCoverArtworkLink
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+class PlayerFragment : Fragment() {
 
-class AudioPlayerActivity : AppCompatActivity() {
+    private var track: Track? = null
 
-    companion object {
-        private const val AUDIOPLAYER_IMAGE_RESOLUTION = 512
-        private const val AUDIOPLAYER_IMAGE_ROUNDED_CORNER = 8f
-        private const val TIMER_TRACK_DURATION = 30000L
-        private const val DESCRIPTION_YEAR_VALUE_INDEX_START = 0
-        private const val DESCRIPTION_YEAR_VALUE_INDEX_END = 4
 
-    }
-
-    private lateinit var binding: ActivityAudioplayerBinding
+    private lateinit var binding: FragmentPlayerBinding
     private val audioPlayerViewModel: AudioPlayerViewModel by viewModel<AudioPlayerViewModel>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAudioplayerBinding.inflate(layoutInflater)
-        enableEdgeToEdge()
-        setContentView(binding.root)
+        arguments?.let {
+            track = it.getSerializable(TRACK_BUNDLE) as Track
+        }
 
-        audioPlayerViewModel.fillPlayer(intent.getSerializableExtra(SearchActivity.TRACK_BUNDLE) as Track)
+    }
 
-        audioPlayerViewModel.observerPlayer().observe(this) {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        audioPlayerViewModel.fillPlayer(track ?: return)
+
+        audioPlayerViewModel.observerPlayer().observe(viewLifecycleOwner) {
             render(it)
         }
 
         binding.buttonPlay.setOnClickListener {
             audioPlayerViewModel.playbackControl()
         }
-
-        val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
-        setSupportActionBar(toolbar)
-        setTitle("")
-        toolbar.setNavigationIcon(R.drawable.toolbar_arrowback)
-        toolbar.setTitleTextAppearance(this, R.style.ToolbarStyle)
-        toolbar.setNavigationOnClickListener { finish() }
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.audioplayer_main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        binding.arrowBack.setOnClickListener {
+            findNavController().navigateUp()
         }
+
     }
 
     override fun onPause() {
@@ -68,9 +67,14 @@ class AudioPlayerActivity : AppCompatActivity() {
         audioPlayerViewModel.pauseMediaPlayer()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        audioPlayerViewModel.releaseAudioPlayer()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        audioPlayerViewModel.releaseAudioPlayer()
+
     }
 
     private fun render(status: PlayerStatus) {
@@ -83,7 +87,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun default(track: Track) {
-        binding.buttonPlay.background = getDrawable(R.drawable.audioplayer_play_not_ready)
+        binding.buttonPlay.background = requireContext().getDrawable(R.drawable.audioplayer_play_not_ready)
         binding.buttonPlay.isEnabled = false
 
         with(binding) {
@@ -121,22 +125,45 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun prepared(isTrackCompleted: Boolean) {
-        binding.buttonPlay.background = getDrawable(R.drawable.audioplayer_play)
+        binding.buttonPlay.background = requireContext().getDrawable(R.drawable.audioplayer_play)
         binding.buttonPlay.isEnabled = true
         if (isTrackCompleted) binding.trackTimer.text = PlayerStatus.ZERO_TIMER
 
     }
 
     private fun paused() {
-        binding.buttonPlay.background = getDrawable(R.drawable.audioplayer_play)
+        binding.buttonPlay.background = requireContext().getDrawable(R.drawable.audioplayer_play)
         binding.buttonPlay.isEnabled = true
     }
 
     private fun playing(timer: String) {
-        binding.buttonPlay.background = getDrawable(R.drawable.audioplayer_pause)
+        binding.buttonPlay.background = requireContext().getDrawable(R.drawable.audioplayer_pause)
         binding.buttonPlay.isEnabled = true
         binding.trackTimer.text = timer
     }
 
-
+    companion object {
+        private const val AUDIOPLAYER_IMAGE_RESOLUTION = 512
+        private const val AUDIOPLAYER_IMAGE_ROUNDED_CORNER = 8f
+        private const val TIMER_TRACK_DURATION = 30000L
+        private const val DESCRIPTION_YEAR_VALUE_INDEX_START = 0
+        private const val DESCRIPTION_YEAR_VALUE_INDEX_END = 4
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment using the provided parameters.
+         *
+         * @param param1 Parameter 1.
+         * @param param2 Parameter 2.
+         * @return A new instance of fragment PlayerFragment.
+         */
+        // TODO: Rename and change types and number of parameters
+        @JvmStatic
+        fun newInstance(param1: String, param2: String) =
+            PlayerFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable(TRACK_BUNDLE, track)
+                    //putString(ARG_PARAM2, param2)
+                }
+            }
+    }
 }

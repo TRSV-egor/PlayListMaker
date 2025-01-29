@@ -8,6 +8,9 @@
     <color name="toolbar">#1A1B22</color>
     <color name="settings_switcher_thumb">#AEAFB4</color>
     <color name="settings_switcher_track">#E6E8EB</color>
+    <color name="theme_white_black">#FFFFFF</color>
+
+
 
 
     <color name="audioplayer_description">#AEAFB4</color>

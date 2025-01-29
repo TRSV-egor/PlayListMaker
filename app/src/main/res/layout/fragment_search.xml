@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/search"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".search.ui.activity.SearchActivity">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    tools:context=".search.ui.fragment.SearchFragment"
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -111,14 +105,14 @@
             android:textSize="@dimen/search_error_button_text_size" />
     </LinearLayout>
 
-<ProgressBar
-    android:id="@+id/search_progress_bar"
-    android:layout_width="44dp"
-    android:layout_height="44dp"
-    android:layout_gravity="center"
-    android:layout_marginTop="140dp"
-    android:visibility="gone"
-    />
+    <ProgressBar
+        android:id="@+id/search_progress_bar"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="140dp"
+        android:visibility="gone"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/view_track_found_recycle_view"
@@ -163,6 +157,5 @@
                 android:textSize="@dimen/search_error_button_text_size" />
         </LinearLayout>
     </ScrollView>
-
 
 </LinearLayout>

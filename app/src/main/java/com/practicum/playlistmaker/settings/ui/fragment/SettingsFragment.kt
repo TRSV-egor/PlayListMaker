@@ -1,88 +1,76 @@
-package com.practicum.playlistmaker.settings.ui.activity
+package com.practicum.playlistmaker.settings.ui.fragment
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
+import com.practicum.playlistmaker.databinding.FragmentSettingsBinding
 import com.practicum.playlistmaker.settings.ui.model.EmailData
 import com.practicum.playlistmaker.settings.ui.model.IntentType
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
 import com.practicum.playlistmaker.util.App
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment : Fragment() {
 
-    companion object {
-        const val MAIL_TO = "mailto:"
-    }
-
-    private lateinit var binding: ActivitySettingsBinding
+    private lateinit var binding: FragmentSettingsBinding
     private val settingsViewModel: SettingsViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        enableEdgeToEdge()
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
-        setSupportActionBar(toolbar)
-        setTitle(R.string.settings_name)
-        toolbar.setTitleTextAppearance(this, R.style.ToolbarStyle)
-        toolbar.setNavigationIcon(R.drawable.toolbar_arrowback)
-        toolbar.setNavigationOnClickListener { finish() }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.settings) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
-        settingsViewModel.intentLiveData.observe(this) {
+        settingsViewModel.intentLiveData.observe(viewLifecycleOwner) {
             openActivity(it)
         }
 
-        settingsViewModel.darkThemeLive.observe(this) {
+        settingsViewModel.darkThemeLive.observe(viewLifecycleOwner) {
             binding.themeSwitcher.isChecked = it
         }
 
-        (application as App).checkTheme()
-        settingsViewModel.checkDarkTheme((application as App).darkTheme)
+        (requireContext().applicationContext as App).checkTheme()
+        settingsViewModel.checkDarkTheme((requireContext().applicationContext as App).darkTheme)
 
 
         binding.themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
-            (application as App).switchTheme(isChecked)
+            (requireActivity().applicationContext as App).switchTheme(isChecked)
             settingsViewModel.toggleTheme(isChecked)
         }
 
 
         binding.share.setOnClickListener {
             settingsViewModel.shareApp(
-                applicationContext.getString(R.string.course_url)
+                requireContext().getString(R.string.course_url)
             )
         }
 
         binding.support.setOnClickListener {
             settingsViewModel.getHelp(
                 EmailData(
-                    email = applicationContext.getString(R.string.my_email),
-                    subject = applicationContext.getString(R.string.email_subject),
-                    text = applicationContext.getString(R.string.email_text),
+                    email = requireContext().getString(R.string.my_email),
+                    subject = requireContext().getString(R.string.email_subject),
+                    text = requireContext().getString(R.string.email_text),
                 )
             )
         }
 
         binding.userAgreement.setOnClickListener {
             settingsViewModel.userAgreement(
-                applicationContext.getString(R.string.practicum_offer)
+                requireContext().getString(R.string.practicum_offer)
             )
         }
+
     }
 
     private fun generateIntent(intentType: IntentType): Intent {
@@ -121,4 +109,7 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    companion object {
+        const val MAIL_TO = "mailto:"
+    }
 }

@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.search.ui.activity
+package com.practicum.playlistmaker.search.ui.fragment
 
 import android.content.Context
 import android.content.Intent
@@ -7,32 +7,29 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivitySearchBinding
-import com.practicum.playlistmaker.player.ui.activity.AudioPlayerActivity
+
+import com.practicum.playlistmaker.databinding.FragmentSearchBinding
+
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.SearchHistoryAdapter
 import com.practicum.playlistmaker.search.ui.TrackAdapter
+
 import com.practicum.playlistmaker.search.ui.models.SearchStatus
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.Serializable
 
 
-class SearchActivity : AppCompatActivity() {
-
-    companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-        const val TRACK_BUNDLE = "track"
-    }
-
+class SearchFragment : Fragment() {
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -45,29 +42,36 @@ class SearchActivity : AppCompatActivity() {
         onTrackClick(item)
     }
 
-
-    private var _binding: ActivitySearchBinding? = null
-    private val binding get() = _binding!!
-
     private val searchViewModel: SearchViewModel by viewModel()
 
     private var isClickAllowed = true
 
+    private lateinit var binding: FragmentSearchBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivitySearchBinding.inflate(layoutInflater)
-        enableEdgeToEdge()
-        setContentView(binding.root)
+    }
 
-        binding.viewTrackFoundRecycleView.layoutManager = LinearLayoutManager(this)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.viewTrackFoundRecycleView.layoutManager = LinearLayoutManager(requireContext())
         binding.viewTrackFoundRecycleView.adapter = adapterFound
 
-        binding.viewTrackHistoryRecycleView.layoutManager = LinearLayoutManager(this)
+        binding.viewTrackHistoryRecycleView.layoutManager = LinearLayoutManager(requireContext())
         binding.viewTrackHistoryRecycleView.adapter = adapterHistory
 
         binding.searchClear.isVisible = false
 
-        searchViewModel.observeState().observe(this) {
+        searchViewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
 
@@ -79,7 +83,7 @@ class SearchActivity : AppCompatActivity() {
 
 
             val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
         }
 
@@ -117,20 +121,6 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchClearHistory.setOnClickListener {
             searchViewModel.clearHistory()
-        }
-
-
-        val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
-        setSupportActionBar(toolbar)
-        toolbar.setNavigationIcon(R.drawable.toolbar_arrowback)
-        setTitle(R.string.search_name)
-        toolbar.setTitleTextAppearance(this, R.style.ToolbarStyle)
-        toolbar.setNavigationOnClickListener { finish() }
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.search) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
         }
     }
 
@@ -218,10 +208,36 @@ class SearchActivity : AppCompatActivity() {
         if (clickDebounce()) {
             searchViewModel.addTrackToHistory(track, adapterHistory.historyTracks)
             adapterHistory.notifyDataSetChanged()
-            val intent = Intent(this@SearchActivity, AudioPlayerActivity::class.java)
-            intent.putExtra(TRACK_BUNDLE, track as Serializable)
-            startActivity(intent)
+            findNavController().navigate(
+                R.id.action_searchFragment_to_playerFragment,
+                bundleOf(TRACK_BUNDLE to track)
+            )
+//            val intent = Intent(this@SearchActivity, AudioPlayerActivity::class.java)
+//            intent.putExtra(TRACK_BUNDLE, track as Serializable)
+//            startActivity(intent)
         }
     }
 
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val TRACK_BUNDLE = "track"
+
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment using the provided parameters.
+         *
+         * @param param1 Parameter 1.
+         * @param param2 Parameter 2.
+         * @return A new instance of fragment SearchFragment.
+         */
+        // TODO: Rename and change types and number of parameters
+//        @JvmStatic
+//        fun newInstance(param1: String, param2: String) =
+//            SearchFragment().apply {
+//                arguments = Bundle().apply {
+//                    putString(ARG_PARAM1, param1)
+//                    putString(ARG_PARAM2, param2)
+//                }
+//            }
+    }
 }

@@ -48,6 +48,9 @@
 
         android:theme="@style/BottomNavigationBar"
 
+        app:itemIconTint="@color/nav_bar_color"
+        app:itemTextColor="@color/nav_bar_color"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

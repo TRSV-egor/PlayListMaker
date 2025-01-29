@@ -1,20 +1,16 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
-    <!-- <style name="Base.Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">-->
     <style name="Base.Theme.PlaylistMaker" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/toolbar</item>
         <item name="android:windowBackground">@color/theme_white_black</item>
         <item name="android:textColor">@color/black</item>
-
         <item name="android:fontFamily">@font/ys_display_medium</item>
-
     </style>
-
 
     <style name="BottomNavigationBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:background">@color/theme_white_black</item>
-        <item name="colorPrimary">@color/blue</item>
-
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
 </resources>

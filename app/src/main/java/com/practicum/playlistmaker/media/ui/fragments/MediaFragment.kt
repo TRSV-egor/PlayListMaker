@@ -1,22 +1,24 @@
 package com.practicum.playlistmaker.media.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.practicum.playlistmaker.R
-
 import com.practicum.playlistmaker.databinding.FragmentMediaBinding
 import com.practicum.playlistmaker.media.ui.MediaViewPagerAdapter
+import com.practicum.playlistmaker.media.ui.view_model.MediaViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-private lateinit var binding: FragmentMediaBinding
-private lateinit var tabMediator: TabLayoutMediator
-//private val viewModel: MediaViewModel by viewModel()
 
 class MediaFragment : Fragment() {
 
+    private lateinit var binding: FragmentMediaBinding
+    private lateinit var tabMediator: TabLayoutMediator
+
+    private val mediaViewModel: MediaViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.player.ui.fragment
 
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -31,7 +32,11 @@ class PlayerFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            track = it.getSerializable(TRACK_BUNDLE) as Track
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                track = it.getParcelable(TRACK_BUNDLE, Track::class.java)
+            } else {
+                track = it.getParcelable(TRACK_BUNDLE)
+            }
         }
 
     }
@@ -70,11 +75,6 @@ class PlayerFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         audioPlayerViewModel.releaseAudioPlayer()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
     }
 
     private fun render(status: PlayerStatus) {
@@ -148,21 +148,12 @@ class PlayerFragment : Fragment() {
         private const val TIMER_TRACK_DURATION = 30000L
         private const val DESCRIPTION_YEAR_VALUE_INDEX_START = 0
         private const val DESCRIPTION_YEAR_VALUE_INDEX_END = 4
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PlayerFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(track: Track) =
             PlayerFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(TRACK_BUNDLE, track)
-                    //putString(ARG_PARAM2, param2)
+                    putParcelable(TRACK_BUNDLE, track)
                 }
             }
     }

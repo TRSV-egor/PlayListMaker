@@ -23,6 +23,7 @@ class MediaPlayerClientImpl(
             }
             prepareAsync()
             setOnCompletionListener {
+                mediaPlayer.seekTo(0)
                 onPrepared(true)
             }
         }

@@ -4,44 +4,50 @@ import com.practicum.playlistmaker.search.domain.TracksInteractor
 import com.practicum.playlistmaker.search.domain.TracksRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.util.concurrent.ExecutorService
 
 
 class TracksInteractorImpl(
     private val repository: TracksRepository,
-    private val executor : ExecutorService) : TracksInteractor {
+    private val executor: ExecutorService
+) : TracksInteractor {
 
 
     override fun searchTracks(
         searchType: String,
         expression: String,
-        consumer: TracksInteractor.TracksConsumer
-    ) {
-        executor.execute {
-            when (val resource = repository.searchTracks(searchType, expression)) {
+    ): Flow<Pair<List<Track>?, String?>> {
+        return repository.searchTracks(searchType, expression).map { result ->
+            when (result) {
                 is Resource.Success -> {
-                    consumer.consume(resource.data, null)
+                    Pair(result.data, null)
                 }
 
                 is Resource.Error -> {
-                    consumer.consume(null, resource.message)
+                    Pair(null, result.message)
                 }
             }
+
         }
     }
 
-    override fun getTracksHistory(consumer: TracksInteractor.TracksConsumer) {
-        executor.execute {
-            when (val resource = repository.getHistoryTracks()) {
+    override fun getTracksHistory(): Flow<Pair<List<Track>?, String?>> {
+
+        return repository.getHistoryTracks().map { result ->
+            when (result) {
                 is Resource.Success -> {
-                    consumer.consume(resource.data, null)
+                    Pair(result.data, null)
                 }
 
                 is Resource.Error -> {
-                    consumer.consume(null, resource.message)
+                    Pair(null, result.message)
                 }
             }
+
         }
+
     }
 
     override fun saveTracksToHistory(arrayListTracks: ArrayList<Track>) {

@@ -1,10 +1,7 @@
 package com.practicum.playlistmaker.search.ui.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
@@ -14,29 +11,26 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
-
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
-
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.SearchHistoryAdapter
 import com.practicum.playlistmaker.search.ui.TrackAdapter
-
 import com.practicum.playlistmaker.search.ui.models.SearchStatus
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
+import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SearchFragment : Fragment() {
 
-    private val handler = Handler(Looper.getMainLooper())
 
     private var adapterFound = TrackAdapter { item ->
         onTrackClick(item)
     }
-
 
     private var adapterHistory = SearchHistoryAdapter { item ->
         onTrackClick(item)
@@ -48,9 +42,10 @@ class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val clickDebounce =
+        debounce<Boolean>(CLICK_DEBOUNCE_DELAY, lifecycleScope, false) { allowed ->
+            isClickAllowed = allowed
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,20 +88,23 @@ class SearchFragment : Fragment() {
 
 
         val simpleTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.searchClear.isVisible = clearButtonVisibility(s)
             }
 
             override fun afterTextChanged(s: Editable?) {
+
                 if (s.isNullOrEmpty()) {
                     searchViewModel.searchClearPressed(adapterHistory.itemCount)
-                } else {
-                    searchViewModel.searchDebounce(
-                        query = s.toString()
-                    )
                 }
+
+                searchViewModel.searchDebounce(
+                    query = s.toString()
+                )
 
             }
         }
@@ -198,7 +196,7 @@ class SearchFragment : Fragment() {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            clickDebounce(true)
         }
         return current
     }
@@ -212,32 +210,11 @@ class SearchFragment : Fragment() {
                 R.id.action_searchFragment_to_playerFragment,
                 bundleOf(TRACK_BUNDLE to track)
             )
-//            val intent = Intent(this@SearchActivity, AudioPlayerActivity::class.java)
-//            intent.putExtra(TRACK_BUNDLE, track as Serializable)
-//            startActivity(intent)
         }
     }
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         const val TRACK_BUNDLE = "track"
-
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SearchFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-//        @JvmStatic
-//        fun newInstance(param1: String, param2: String) =
-//            SearchFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString(ARG_PARAM1, param1)
-//                    putString(ARG_PARAM2, param2)
-//                }
-//            }
     }
 }

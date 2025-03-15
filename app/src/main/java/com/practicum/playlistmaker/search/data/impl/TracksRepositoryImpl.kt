@@ -8,6 +8,8 @@ import com.practicum.playlistmaker.search.data.dto.TracksSearchResponse
 import com.practicum.playlistmaker.search.domain.TracksRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -18,12 +20,12 @@ class TracksRepositoryImpl(
     private val localData: LocalData
 ) : TracksRepository {
 
-    override fun searchTracks(searchType: String, expression: String): Resource<List<Track>> {
+    override fun searchTracks(searchType: String, expression: String): Flow<Resource<List<Track>>> = flow {
         val networkClientResponse =
             networkClient.doRequest(TracksSearchRequest(searchType, expression))
         when (networkClientResponse.resultCode) {
             200 -> {
-                return Resource.Success((networkClientResponse as TracksSearchResponse).tracksList.map {
+                emit(Resource.Success((networkClientResponse as TracksSearchResponse).tracksList.map {
                     with(it) {
                         Track(
                             trackId,
@@ -38,21 +40,21 @@ class TracksRepositoryImpl(
                             previewUrl ?: "",
                         )
                     }
-                })
+                }))
 
             }
 
             408 -> {
-                return Resource.Error("Проверьте подключение к интернету")
+                emit(Resource.Error("Проверьте подключение к интернету"))
             }
 
             else -> {
-                return Resource.Error("Ошибка сервера")
+                emit(Resource.Error("Ошибка сервера"))
             }
         }
     }
 
-    override fun getHistoryTracks(): Resource<List<Track>> {
+    override fun getHistoryTracks(): Flow<Resource<List<Track>>> = flow {
 
         val arrayList: ArrayList<Track> = arrayListOf()
 
@@ -73,7 +75,7 @@ class TracksRepositoryImpl(
             }
         })
 
-        return Resource.Success(arrayList)
+        emit(Resource.Success(arrayList))
     }
 
     override fun clearTrackHistory() {

@@ -5,6 +5,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/media_favorite_recycle_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/search_field_margin_horizontal" />
+
     <ImageView
         android:layout_marginTop="@dimen/media_fragment_margin_top"
         android:layout_width="wrap_content"

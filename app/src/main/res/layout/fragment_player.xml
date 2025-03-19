@@ -241,7 +241,7 @@
         android:id="@+id/button_favorites"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/audioplayer_favorites"
+        android:background="@drawable/audioplayer_favorites_off"
         app:layout_constraintBottom_toBottomOf="@id/button_play"
         app:layout_constraintEnd_toStartOf="@id/rightBorder"
         app:layout_constraintStart_toEndOf="@id/button_play"

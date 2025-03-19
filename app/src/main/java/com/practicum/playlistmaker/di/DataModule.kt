@@ -3,6 +3,8 @@ package com.practicum.playlistmaker.di
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.media.MediaPlayer
+import androidx.room.Room
+import com.practicum.playlistmaker.media.data.db.AppDatabase
 import com.practicum.playlistmaker.player.data.MediaPlayerClient
 import com.practicum.playlistmaker.player.data.media_player.MediaPlayerClientImpl
 import com.practicum.playlistmaker.search.data.LocalData
@@ -57,6 +59,15 @@ val dataModule = module {
 
     single<SettingsLocalData>{
         SettingsSharedPrefLocalData(sharedPref = get())
+    }
+
+    single {
+        Room.databaseBuilder(
+            context = androidContext(),
+            klass = AppDatabase::class.java,
+            name = "database.db"
+        )
+            .build()
     }
 
 }

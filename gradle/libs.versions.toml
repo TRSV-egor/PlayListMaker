@@ -16,6 +16,7 @@ glide = "4.14.2"
 koin = "3.3.0"
 retrofit = "2.9.0"
 coroutines = "1.6.4"
+room_version = "2.5.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,6 +36,9 @@ koin = {group = "io.insert-koin", name = "koin-android" , version.ref = "koin"}
 retrofit = {group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit"}
 converter-gson = {group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit"}
 coroutines = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android" , version.ref = "coroutines"}
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room_version" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room_version" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room_version" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

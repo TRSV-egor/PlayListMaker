@@ -37,6 +37,7 @@ class AudioPlayerViewModel(
             PlayerStatus.Default(track)
         )
         prepareMediaPlayer(track.previewUrl)
+        checkFavoriteStatus(track)
     }
 
     private fun prepareMediaPlayer(previewUrl: String) {

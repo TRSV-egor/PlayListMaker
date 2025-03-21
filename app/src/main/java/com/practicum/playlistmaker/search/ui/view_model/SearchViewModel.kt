@@ -55,7 +55,7 @@ class SearchViewModel(
         if (
             hasFocus && empty
         ) {
-            getHistory()
+            //getHistory()
         }
     }
 

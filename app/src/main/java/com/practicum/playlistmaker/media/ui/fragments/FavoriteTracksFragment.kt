@@ -78,6 +78,8 @@ class FavoriteTracksFragment : Fragment() {
         favoriteViewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
+
+        favoriteViewModel.getFavorites()
     }
 
     private fun render(state: FavoriteStatus) {

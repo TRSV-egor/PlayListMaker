@@ -17,7 +17,7 @@ interface FavoriteTrackDao {
     suspend fun remove(track: TrackEntity)
 
     @Query("SELECT * FROM fav_track_table WHERE trackId = :trackId")
-    suspend fun contains(trackId: String): Boolean
+    suspend fun contains(trackId: String): TrackEntity
 
 
     @Query("SELECT * FROM fav_track_table")

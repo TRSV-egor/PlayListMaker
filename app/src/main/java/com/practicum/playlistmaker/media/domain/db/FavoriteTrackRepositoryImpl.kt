@@ -26,7 +26,12 @@ class FavoriteTrackRepositoryImpl(
     }
 
     override suspend fun contains(track: Track): Boolean {
-        return appDatabase.favoriteTrackDao().contains(track.trackId)
+        if (appDatabase.favoriteTrackDao().contains(track.trackId) == null){
+            return false
+        } else {
+            return true
+        }
+
         //как вернуть значение?
 
     }

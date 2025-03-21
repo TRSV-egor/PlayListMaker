@@ -4,13 +4,13 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -126,7 +126,7 @@ class SearchFragment : Fragment() {
         return !s.isNullOrEmpty()
     }
 
-    private fun showHistory(tracks: ArrayList<Track>) {
+    private fun showHistory(tracks: List<Track>) {
         adapterHistory.historyTracks.clear()
         adapterHistory.historyTracks.addAll(tracks)
         adapterHistory.notifyDataSetChanged()
@@ -170,7 +170,7 @@ class SearchFragment : Fragment() {
         binding.searchNotFound.isVisible = true
     }
 
-    private fun showContent(tracks: ArrayList<Track>) {
+    private fun showContent(tracks: List<Track>) {
         adapterFound.foundTracks.clear()
         adapterFound.foundTracks.addAll(tracks)
         adapterFound.notifyDataSetChanged()

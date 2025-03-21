@@ -17,19 +17,19 @@ val repositoryModule = module {
         AudioPlayerRepositoryImpl(mediaPlayerClient = get())
     }
 
-    single<TracksRepository>{
+    factory<TracksRepository> {
         TracksRepositoryImpl(
             localData = get(),
             networkClient = get())
     }
 
-    single<SettingsRepository>{
+    factory<SettingsRepository> {
         SettingsRepositoryImpl(settingsLocalData = get())
     }
 
     factory { TrackDbConvertor() }
 
-    single<FavoriteTrackRepository> {
+    factory<FavoriteTrackRepository> {
         FavoriteTrackRepositoryImpl(appDatabase = get(), trackDbConvertor = get())
     }
 

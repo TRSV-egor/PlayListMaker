@@ -89,11 +89,11 @@ class FavoriteTracksFragment : Fragment() {
         when (state) {
             is FavoriteStatus.Loading -> showProgressBar()
             is FavoriteStatus.Empty -> showEmpty()
-            is FavoriteStatus.Favorites -> showContent(ArrayList(state.tracks))
+            is FavoriteStatus.Favorites -> showContent(state.tracks)
         }
     }
 
-    private fun showContent(tracks: ArrayList<Track>) {
+    private fun showContent(tracks: List<Track>) {
         if (tracks.isNullOrEmpty()) {
             showEmpty()
         } else {

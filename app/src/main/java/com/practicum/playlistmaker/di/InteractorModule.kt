@@ -16,18 +16,18 @@ val interactorModule = module {
         AudioPlayerInteractorImpl(repository = get())
     }
 
-    single<TracksInteractor>{
+    factory<TracksInteractor> {
         TracksInteractorImpl(
             repository = get(),
             executor = get()
         )
     }
 
-    single<SettingsInteractor> {
+    factory<SettingsInteractor> {
         SettingsInteractorImpl(repository = get())
     }
 
-    single<FavoriteTrackInteractor> {
+    factory<FavoriteTrackInteractor> {
         FavoriteTrackInteractorImpl(favoriteTrackRepository = get())
     }
 

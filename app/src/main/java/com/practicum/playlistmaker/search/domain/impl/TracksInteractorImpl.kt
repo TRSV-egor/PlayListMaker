@@ -50,9 +50,9 @@ class TracksInteractorImpl(
 
     }
 
-    override fun saveTracksToHistory(arrayListTracks: ArrayList<Track>) {
+    override fun saveTracksToHistory(listTracks: List<Track>) {
         executor.execute {
-            repository.saveTrackToHistory(arrayListTracks)
+            repository.saveTrackToHistory(listTracks)
         }
     }
 

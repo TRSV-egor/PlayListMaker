@@ -4,4 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 
 class TracksSearchResponse(
-    @SerializedName("results") val tracksList: ArrayList<TrackDto>) : Response()
+    @SerializedName("results") val tracksList: List<TrackDto>
+) : Response()

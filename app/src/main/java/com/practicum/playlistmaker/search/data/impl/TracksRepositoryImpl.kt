@@ -56,10 +56,10 @@ class TracksRepositoryImpl(
 
     override fun getHistoryTracks(): Flow<Resource<List<Track>>> = flow {
 
-        val arrayList: ArrayList<Track> = arrayListOf()
+        val mutableListTracks = mutableListOf<Track>()
 
 
-        arrayList.addAll(localData.getTracksHistory().map {
+        mutableListTracks.addAll(localData.getTracksHistory().map {
             with(it) {
                 Track(
                     trackId,
@@ -76,16 +76,16 @@ class TracksRepositoryImpl(
             }
         })
 
-        emit(Resource.Success(arrayList))
+        emit(Resource.Success(mutableListTracks))
     }
 
     override fun clearTrackHistory() {
         localData.clearTrackHistory()
     }
 
-    override fun saveTrackToHistory(arrayListTracks: ArrayList<Track>) {
+    override fun saveTrackToHistory(listTracks: List<Track>) {
         localData.saveTrackToHistory(
-            arrayListTracks.map {
+            listTracks.map {
                 TrackDto(
                     it.trackId,
                     it.trackName,

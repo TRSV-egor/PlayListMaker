@@ -10,7 +10,7 @@ class SearchHistoryAdapter(
     var onClick: (Track) -> Unit
 ) : RecyclerView.Adapter<TrackViewHolder>() {
 
-    var historyTracks = ArrayList<Track>()
+    var historyTracks = mutableListOf<Track>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val binding = ViewTrackBinding.inflate(LayoutInflater.from(parent.context), parent, false)

@@ -10,7 +10,7 @@ import com.practicum.playlistmaker.search.ui.TrackViewHolder
 class FavoriteAdapter ( var onClick: (Track) -> Unit
 ) : RecyclerView.Adapter<TrackViewHolder>() {
 
-    var favoriteTracks = ArrayList<Track>()
+    var favoriteTracks = mutableListOf<Track>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val binding = ViewTrackBinding.inflate(LayoutInflater.from(parent.context), parent, false)

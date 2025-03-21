@@ -26,7 +26,7 @@ class FavoriteTrackRepositoryImpl(
     }
 
     override suspend fun contains(track: Track): Boolean {
-        appDatabase.favoriteTrackDao().
+        return appDatabase.favoriteTrackDao().contains(track.trackId)
         //как вернуть значение?
 
     }

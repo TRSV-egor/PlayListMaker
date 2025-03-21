@@ -13,11 +13,11 @@ class FavoriteTrackInteractorImpl(
 
     override suspend fun addOrRemoveFavoriteTrack(track: Track): Boolean {
         if (favoriteTrackRepository.contains(track)) {
-            favoriteTrackRepository.add(track)
-            return true
-        } else {
             favoriteTrackRepository.remove(track)
             return false
+        } else {
+            favoriteTrackRepository.add(track)
+            return true
         }
     }
 

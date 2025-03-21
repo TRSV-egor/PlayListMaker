@@ -31,9 +31,6 @@ class FavoriteTrackRepositoryImpl(
         } else {
             return true
         }
-
-        //как вернуть значение?
-
     }
 
     private fun convertFromTrackEntity(tracks: List<TrackEntity>): List<Track> {

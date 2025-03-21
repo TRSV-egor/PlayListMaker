@@ -9,6 +9,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentFavoriteBinding
 import com.practicum.playlistmaker.media.ui.FavoriteAdapter
@@ -21,6 +22,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteTracksFragment : Fragment() {
 
+    companion object {
+        fun newInstance() = FavoriteTracksFragment()
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+    }
+
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
 
@@ -30,13 +36,14 @@ class FavoriteTracksFragment : Fragment() {
         onTrackClick(item)
     }
 
+    private var isClickAllowed = true
+
     private val clickDebounce =
         debounce<Boolean>(CLICK_DEBOUNCE_DELAY, lifecycleScope, false) { allowed ->
             isClickAllowed = allowed
         }
 
     private fun onTrackClick(track: Track) {
-
         if (clickDebounce()) {
             adapterFavorites.notifyDataSetChanged()
             findNavController().navigate(
@@ -55,14 +62,6 @@ class FavoriteTracksFragment : Fragment() {
         return current
     }
 
-    private var isClickAllowed = true
-
-
-    companion object {
-        fun newInstance() = FavoriteTracksFragment()
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -79,7 +78,11 @@ class FavoriteTracksFragment : Fragment() {
             render(it)
         }
 
+        binding.fragmentFavoriteContent.layoutManager = LinearLayoutManager(requireContext())
+        binding.fragmentFavoriteContent.adapter = adapterFavorites
+
         favoriteViewModel.getFavorites()
+
     }
 
     private fun render(state: FavoriteStatus) {
@@ -91,12 +94,17 @@ class FavoriteTracksFragment : Fragment() {
     }
 
     private fun showContent(tracks: ArrayList<Track>) {
-        adapterFavorites.favoriteTracks.clear()
-        adapterFavorites.favoriteTracks.addAll(tracks)
-        adapterFavorites.notifyDataSetChanged()
-        binding.favoriteProgressBar.isVisible = false
-        binding.fragmentFavoriteContent.isVisible = true
-        binding.fragmentFavoriteEmpty.isVisible = false
+        if (tracks.isNullOrEmpty()) {
+            showEmpty()
+        } else {
+            adapterFavorites.favoriteTracks.clear()
+            adapterFavorites.favoriteTracks.addAll(tracks)
+            adapterFavorites.favoriteTracks.reverse()
+            adapterFavorites.notifyDataSetChanged()
+            binding.favoriteProgressBar.isVisible = false
+            binding.fragmentFavoriteContent.isVisible = true
+            binding.fragmentFavoriteEmpty.isVisible = false
+        }
     }
 
     private fun showProgressBar() {

@@ -16,7 +16,7 @@ class SharedPrefLocalData(private val sharedPref: SharedPreferences) : LocalData
     override fun getTracksHistory(): Array<TrackDto> {
         val json = sharedPref.getString(TRACK_HISTORY, "")
         return try {
-            Gson().fromJson(json, Array<TrackDto>::class.java)
+            Gson().fromJson(json, Array<TrackDto>::class.java) ?: arrayOf()
         } catch (e: NullPointerException){
             arrayOf()
         }

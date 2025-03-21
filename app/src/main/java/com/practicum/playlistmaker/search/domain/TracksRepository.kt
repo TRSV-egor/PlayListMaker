@@ -9,7 +9,7 @@ interface TracksRepository {
 
     fun getHistoryTracks(): Flow<Resource<List<Track>>>
     fun clearTrackHistory()
-    fun saveTrackToHistory(arrayListTracks: ArrayList<Track>)
+    fun saveTrackToHistory(listTracks: List<Track>)
 
 
 }

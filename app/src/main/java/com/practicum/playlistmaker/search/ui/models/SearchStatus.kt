@@ -10,11 +10,11 @@ sealed interface SearchStatus {
     data object Clean : SearchStatus
 
     data class Content(
-        val tracks: ArrayList<Track>
+        val tracks: List<Track>
     ) : SearchStatus
 
     data class History(
-        val historyTracks: ArrayList<Track>
+        val historyTracks: List<Track>
     ) : SearchStatus
 
 }

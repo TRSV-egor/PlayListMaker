@@ -1,22 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_favorite"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_marginTop="@dimen/media_fragment_margin_top"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragment_favorite_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:src="@drawable/search_404" />
+        android:layout_marginTop="@dimen/search_field_margin_horizontal" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ProgressBar
+        android:id="@+id/favorite_progress_bar"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/search_error_text_layout_marginTop"
-        android:text="@string/media_fragment_favorites_empty"
-        android:textSize="@dimen/search_error_text_size" />
+        android:layout_marginTop="140dp"
+        android:visibility="gone"
+        />
+
+    <LinearLayout
+        android:id="@+id/fragment_favorite_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <ImageView
+            android:layout_marginTop="@dimen/media_fragment_margin_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/search_404" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/search_error_text_layout_marginTop"
+            android:text="@string/media_fragment_favorites_empty"
+            android:textSize="@dimen/search_error_text_size" />
+    </LinearLayout>
+
 </LinearLayout>

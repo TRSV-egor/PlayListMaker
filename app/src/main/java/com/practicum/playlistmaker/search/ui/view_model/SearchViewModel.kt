@@ -66,7 +66,7 @@ class SearchViewModel(
         )
     }
 
-    fun addTrackToHistory(track: Track, historyTracksArray: ArrayList<Track>) {
+    fun addTrackToHistory(track: Track, historyTracksArray: MutableList<Track>) {
         if (historyTracksArray.contains(track)) {
             historyTracksArray.remove(track)
         }
@@ -101,7 +101,7 @@ class SearchViewModel(
 
         if (tracks.isNotEmpty()) {
             renderState(
-                SearchStatus.History(ArrayList(foundTracks))
+                SearchStatus.History(foundTracks ?: listOf())
             )
 
         } else {
@@ -161,7 +161,7 @@ class SearchViewModel(
             else -> {
                 renderState(
                     SearchStatus.Content(
-                        tracks = ArrayList(tracks)
+                        tracks = tracks
                     )
                 )
             }

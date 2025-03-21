@@ -2,10 +2,11 @@ package com.practicum.playlistmaker.player.ui.fragment
 
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -58,12 +59,27 @@ class PlayerFragment : Fragment() {
             render(it)
         }
 
+        audioPlayerViewModel.observerFavoriteTrack().observe(viewLifecycleOwner) {
+            if (it) {
+                binding.buttonFavorites.background = AppCompatResources.getDrawable(
+                    requireContext(),
+                    R.drawable.audioplayer_favorites_on
+                )
+            } else {
+                binding.buttonFavorites.background = AppCompatResources.getDrawable(
+                    requireContext(),
+                    R.drawable.audioplayer_favorites_off
+                )
+            }
+        }
+
         binding.buttonPlay.setOnClickListener {
             audioPlayerViewModel.playbackControl()
         }
         binding.arrowBack.setOnClickListener {
             findNavController().navigateUp()
         }
+
 
     }
 
@@ -89,6 +105,13 @@ class PlayerFragment : Fragment() {
     private fun default(track: Track) {
         binding.buttonPlay.background = requireContext().getDrawable(R.drawable.audioplayer_play_not_ready)
         binding.buttonPlay.isEnabled = false
+
+        audioPlayerViewModel.checkFavoriteStatus(track)
+
+        binding.buttonFavorites.setOnClickListener {
+            audioPlayerViewModel.changeFavoriteStatus(track)
+        }
+
 
         with(binding) {
             Glide.with(trackImage.context)
@@ -122,6 +145,8 @@ class PlayerFragment : Fragment() {
             descriptionStyleValue.text = track.primaryGenreName
             descriptionCountryValue.text = track.country
         }
+
+        binding.buttonFavorites.isEnabled = true
     }
 
     private fun prepared(isTrackCompleted: Boolean) {

@@ -33,4 +33,12 @@
         android:name="com.practicum.playlistmaker.player.ui.fragment.PlayerFragment"
         android:label="fragment_player"
         tools:layout="@layout/fragment_player" />
+    <fragment
+        android:id="@+id/favoriteTracksFragment"
+        android:name="com.practicum.playlistmaker.media.ui.fragments.FavoriteTracksFragment"
+        android:label="FavoriteTracksFragment" />
+    <fragment
+        android:id="@+id/playlistFragment"
+        android:name="com.practicum.playlistmaker.media.ui.fragments.PlaylistFragment"
+        android:label="PlaylistFragment" />
 </navigation>

@@ -8,84 +8,41 @@
     android:orientation="vertical"
     tools:context=".media.ui.fragments.NewPlaylistFragment">
 
-    <ImageButton
-        android:id="@+id/arrow_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:backgroundTint="@color/theme_white_black"
-        android:padding="20dp"
-        android:src="@drawable/toolbar_arrowback"
-        app:layout_constraintEnd_toStartOf="@id/header"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
-        android:id="@+id/header"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:fontFamily="@font/ys_display_medium"
-        android:paddingStart="12dp"
-        android:paddingTop="14dp"
-        android:paddingBottom="16dp"
-        android:text="Новый плейлист"
-        android:textSize="22sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/arrow_back"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:layout_width="0dp"
-        android:id="@+id/placeholder"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="26dp"
-        android:background="@color/theme_white_black"
-        android:clickable="true"
-        android:src="@drawable/playlist_placeholder"
-        app:layout_constraintBottom_toTopOf="@id/name"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/arrow_back" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/name"
+        android:id="@+id/button_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="26dp"
-        android:hint="Название*"
-        app:boxStrokeColor="@color/blue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:hintTextColor="@color/blue"
-        app:layout_constraintBottom_toTopOf="@id/description"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/placeholder">
+        android:layout_marginHorizontal="@dimen/fragment_playlist_new_button_save_layout_marginHorizontal"
+        android:layout_marginBottom="@dimen/fragment_playlist_new_button_save_layout_marginBottom"
+        android:background="@drawable/playlist_button"
+        android:clickable="true"
+        android:enabled="false"
+        android:fontFamily="@font/ys_display_medium"
+        android:gravity="center"
+        android:text="@string/fragment_playlist_new_button_description"
+        android:textColor="@color/theme_white_black"
+        android:textSize="@dimen/fragment_playlist_new_textSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/separator" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/name_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/ys_display_regular"
-            android:inputType="text"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="18dp"
-            android:paddingBottom="19dp"
-            android:textColorHint="@color/toolbar"
-            android:textSize="16sp" />
-    </com.google.android.material.textfield.TextInputLayout>
+    <View
+        android:id="@+id/separator"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/fragment_playlist_new_separator_layout_height"
+        app:layout_constraintBottom_toTopOf="@id/button_save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/description" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="10dp"
-        android:hint="Описание"
-        app:boxStrokeColor="@color/blue"
+        android:layout_marginHorizontal="@dimen/fragment_playlist_new_field_layout_marginHorizontal_paddingHorizontal"
+        android:layout_marginTop="@dimen/fragment_playlist_new_field_layout_layout_marginTop"
+        android:hint="@string/fragment_playlist_new_field_description"
+        android:textColorHint="@color/toolbar"
+        app:boxStrokeColor="@color/textfield_boxstrokecolor_multicolor"
         app:hintTextColor="@color/blue"
         app:layout_constraintBottom_toTopOf="@id/separator"
         app:layout_constraintEnd_toEndOf="parent"
@@ -98,38 +55,88 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/ys_display_regular"
             android:inputType="text"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="18dp"
-            android:paddingBottom="19dp"
+            android:paddingHorizontal="@dimen/fragment_playlist_new_field_layout_marginHorizontal_paddingHorizontal"
+            android:paddingTop="@dimen/fragment_playlist_new_paddingTop"
+            android:paddingBottom="@dimen/fragment_playlist_new_paddingBottom"
+            android:textColor="@color/toolbar"
             android:textColorHint="@color/toolbar"
-            android:textSize="16sp" />
+            android:textSize="@dimen/fragment_playlist_new_textSize" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <View
-        android:id="@+id/separator"
-        android:layout_width="0dp"
-        android:layout_height="170dp"
-        app:layout_constraintBottom_toTopOf="@id/button_save"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/description" />
-
-    <TextView
-        android:layout_marginHorizontal="17dp"
-        android:id="@+id/button_save"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginHorizontal="@dimen/fragment_playlist_new_field_layout_marginHorizontal_paddingHorizontal"
+        android:layout_marginTop="@dimen/fragment_playlist_new_field_layout_marginTop"
+        android:hint="@string/fragment_playlist_new_field_name"
+        android:textColorHint="@color/toolbar"
+        app:boxStrokeColor="@color/textfield_boxstrokecolor_multicolor"
+        app:hintTextColor="@color/blue"
+        app:layout_constraintBottom_toTopOf="@id/description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/placeholder">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/name_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ys_display_regular"
+            android:inputType="text"
+            android:paddingHorizontal="@dimen/fragment_playlist_new_field_layout_marginHorizontal_paddingHorizontal"
+            android:paddingTop="@dimen/fragment_playlist_new_paddingTop"
+            android:paddingBottom="@dimen/fragment_playlist_new_paddingBottom"
+            android:textColor="@color/toolbar"
+            android:textColorHint="@color/toolbar"
+            android:textSize="@dimen/fragment_playlist_new_textSize" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageButton
+        android:id="@+id/placeholder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="@dimen/fragment_playlist_new_placeholder_layout_marginHorizontal"
+        android:layout_marginTop="@dimen/fragment_playlist_new_placeholder_layout_marginTop"
+        android:background="@color/theme_white_black"
         android:clickable="true"
-        android:background="@drawable/playlist_button"
-        android:enabled="false"
+        android:cropToPadding="true"
+        android:src="@drawable/playlist_placeholder"
+        app:layout_constraintBottom_toTopOf="@id/name"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/arrow_back" />
+
+    <ImageButton
+        android:id="@+id/arrow_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/fragment_playlist_new_arrow_back_layout_marginTop"
+        android:backgroundTint="@color/theme_white_black"
+        android:padding="@dimen/fragment_playlist_new_arrow_back_padding"
+        android:src="@drawable/toolbar_arrowback"
+        app:layout_constraintEnd_toStartOf="@id/header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/fragment_playlist_new_arrow_back_layout_marginTop"
         android:fontFamily="@font/ys_display_medium"
-        android:gravity="center"
-        android:text="Создать"
-        android:textColor="@color/theme_white_black"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/separator" />
+        android:paddingStart="@dimen/fragment_playlist_new_header_paddingStart"
+        android:paddingEnd="0dp"
+        android:paddingTop="@dimen/fragment_playlist_new_header_paddingTop"
+        android:paddingBottom="@dimen/fragment_playlist_new_header_paddingBottom"
+        android:text="@string/fragment_playlist_new_header"
+        android:textSize="@dimen/fragment_playlist_new_header_textSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/arrow_back"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 

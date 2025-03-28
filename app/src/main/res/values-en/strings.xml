@@ -26,4 +26,8 @@
     <string name="media_button_new_playlist">New playlist</string>
     <string name="media_tab_favorites">Favorites tracks</string>
     <string name="media_tab_playlist">Playlists</string>
+    <string name="fragment_playlist_new_field_name">Name*</string>
+    <string name="fragment_playlist_new_field_description">Description</string>
+    <string name="fragment_playlist_new_button_description">Save</string>
+    <string name="fragment_playlist_new_header">New playlist</string>
 </resources>

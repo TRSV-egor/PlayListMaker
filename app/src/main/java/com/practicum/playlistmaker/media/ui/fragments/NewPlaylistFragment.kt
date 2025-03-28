@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,7 +36,7 @@ class NewPlaylistFragment : Fragment() {
     }
 
     private var imageIsLoaded = false
-//    private lateinit var imageUri
+    private var imageUri: Uri? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,15 +50,13 @@ class NewPlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.arrowBack.setOnClickListener {
-            dialogBeforeExit()
-        }
-
+        //ОБрабатываем нажатие аппаратного назад
         requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 dialogBeforeExit()
             }
         })
+
 
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -65,25 +64,30 @@ class NewPlaylistFragment : Fragment() {
                 if (uri != null) {
                     binding.placeholder.setImageURI(uri)
                     imageIsLoaded = true
-                    saveImageToPrivateStorage(uri)
+                    imageUri = uri
+                    //saveImageToPrivateStorage(uri)
                 } else {
                     Log.d("PhotoPicker", "No media selected")
                 }
             }
 
+        binding.arrowBack.setOnClickListener {
+            dialogBeforeExit()
+        }
+
         binding.placeholder.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
+        binding.buttonSave.setOnClickListener {
+            saveAndExit(binding.nameField.text.toString())
+        }
+
 
         val simpleTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
                 if (s.isNullOrEmpty()) {
@@ -98,7 +102,17 @@ class NewPlaylistFragment : Fragment() {
 
     }
 
-    private fun saveImageToPrivateStorage(uri: Uri) {
+    private fun saveAndExit(fileName: String) {
+        imageUri?.let { saveImageToPrivateStorage(it, fileName) }
+        showToast(fileName)
+        findNavController().navigateUp()
+    }
+
+    private fun showToast(fileName: String) {
+        Toast.makeText(requireContext(), "Плейлист $fileName создан", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun saveImageToPrivateStorage(uri: Uri, fileName: String) {
         //создаём экземпляр класса File, который указывает на нужный каталог
         val filePath = File(
             requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
@@ -109,9 +123,7 @@ class NewPlaylistFragment : Fragment() {
             filePath.mkdirs()
         }
         //создаём экземпляр класса File, который указывает на файл внутри каталога
-        //TODO взять из название
-
-        val file = File(filePath, "first_cover.jpg")
+        val file = File(filePath, "$fileName.jpg")
         // создаём входящий поток байтов из выбранной картинки
         val inputStream = requireActivity().contentResolver.openInputStream(uri)
         // создаём исходящий поток байтов в созданный выше файл
@@ -130,25 +142,13 @@ class NewPlaylistFragment : Fragment() {
         ) {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Завершить создание плейлиста?") // Заголовок диалога
-                //.setMessage("Описание") // Описание диалога
-//            .setNeutralButton("Отмена") { dialog, which -> // Добавляет кнопку «Отмена»
-//                // Действия, выполняемые при нажатии на кнопку «Отмена»
-//            }
-                .setNegativeButton("Отмена") { dialog, which -> // Добавляет кнопку «Нет»
-                    // Действия, выполняемые при нажатии на кнопку «Нет»
-                }
-                .setPositiveButton("Завершить") { dialog, which -> // Добавляет кнопку «Да»
+                .setNegativeButton("Отмена") { dialog, which -> }
+                .setPositiveButton("Завершить") { dialog, which ->
                     findNavController().navigateUp()
                 }
                 .show()
         } else {
             findNavController().navigateUp()
         }
-
-
-    }
-
-    private fun saveButton() {
-        findNavController().navigateUp()
     }
 }

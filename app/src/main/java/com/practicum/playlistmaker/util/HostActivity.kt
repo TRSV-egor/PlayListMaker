@@ -33,6 +33,11 @@ class HostActivity : AppCompatActivity() {
                     bottomNavigationView.visibility = View.GONE
                     binding.toolbar.visibility = View.GONE
                 }
+                R.id.newPlaylistFragment -> {
+                    binding.bottomNaviLine.visibility = View.GONE
+                    bottomNavigationView.visibility = View.GONE
+                    binding.toolbar.visibility = View.GONE
+                }
                 R.id.mediaFragment -> {
                     binding.bottomNaviLine.visibility = View.VISIBLE
                     binding.toolbar.title = getString(R.string.media_name)

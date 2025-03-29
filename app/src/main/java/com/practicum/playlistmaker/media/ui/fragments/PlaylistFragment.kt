@@ -75,8 +75,9 @@ class PlaylistFragment : Fragment() {
             )
         }
 
-        binding.mediaRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.mediaRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         binding.mediaRecyclerView.adapter = adapterPlaylists
+
 
         //TODO ошибка улетает в бесконечность
         viewModel.observeState().observe(viewLifecycleOwner) {
@@ -84,6 +85,7 @@ class PlaylistFragment : Fragment() {
                 binding.mediaRecyclerView.isVisible = false
                 binding.mediaNoPlaylists.isVisible = true
             } else {
+                adapterPlaylists.playlistList.clear()
                 adapterPlaylists.playlistList.addAll(it)
                 adapterPlaylists.notifyDataSetChanged()
                 binding.mediaRecyclerView.isVisible = true

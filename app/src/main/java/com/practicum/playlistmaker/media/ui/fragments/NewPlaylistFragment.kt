@@ -107,8 +107,12 @@ class NewPlaylistFragment : Fragment() {
 
     private fun saveAndExit(fileName: String) {
 
+        var pathToFile: String
+
         if (imageUri.isNotEmpty()) {
-            saveImageToPrivateStorage(imageUri.toUri(), fileName)
+            pathToFile = saveImageToPrivateStorage(imageUri.toUri(), fileName).toString()
+        } else {
+            pathToFile = ""
         }
 
         showToast(fileName)
@@ -117,7 +121,7 @@ class NewPlaylistFragment : Fragment() {
             PlaylistModel(
                 tracks = listOf(),
                 name = binding.nameField.text.toString(),
-                path = imageUri,
+                path = pathToFile,
                 description = binding.descriptionField.text.toString()
             )
         )
@@ -129,7 +133,7 @@ class NewPlaylistFragment : Fragment() {
         Toast.makeText(requireContext(), "Плейлист $fileName создан", Toast.LENGTH_SHORT).show()
     }
 
-    private fun saveImageToPrivateStorage(uri: Uri, fileName: String) {
+    private fun saveImageToPrivateStorage(uri: Uri, fileName: String): File {
         //создаём экземпляр класса File, который указывает на нужный каталог
         val filePath = File(
             requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
@@ -149,6 +153,8 @@ class NewPlaylistFragment : Fragment() {
         BitmapFactory
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+
+        return file
     }
 
     private fun dialogBeforeExit() {

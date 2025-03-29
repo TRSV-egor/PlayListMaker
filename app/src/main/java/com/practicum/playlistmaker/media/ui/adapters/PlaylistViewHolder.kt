@@ -1,8 +1,13 @@
 package com.practicum.playlistmaker.media.ui.adapters
 
+import android.net.Uri
+import android.os.Environment
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.databinding.ViewPlaylistBinding
 import com.practicum.playlistmaker.media.domain.model.PlaylistModel
+import com.practicum.playlistmaker.media.ui.fragments.NewPlaylistFragment
+import java.io.File
+import androidx.core.net.toUri
 
 
 class PlaylistViewHolder(
@@ -14,11 +19,10 @@ class PlaylistViewHolder(
         with(binding) {
 
             //TODO каким то макаром вытащить пикчу, по URI
-            //placeholder = model.path
+            placeholder.setImageURI(model.path.toUri())
             name.text = model.name
             //TODO склонения
             count.text = "${model.tracks.size} трек"
-
         }
     }
 }

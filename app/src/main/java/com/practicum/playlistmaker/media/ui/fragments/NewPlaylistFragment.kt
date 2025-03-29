@@ -15,10 +15,14 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.databinding.FragmentPlaylistNewBinding
+import com.practicum.playlistmaker.media.domain.model.PlaylistModel
+import com.practicum.playlistmaker.media.ui.view_model.NewPlaylistViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 
@@ -28,15 +32,14 @@ class NewPlaylistFragment : Fragment() {
     private var _binding: FragmentPlaylistNewBinding? = null
     private val binding get() = _binding!!
 
-    //private val audioPlayerViewModel: AudioPlayerViewModel by viewModel<AudioPlayerViewModel>()
-
     companion object {
-        fun newInstance() = NewPlaylistFragment()
         const val PLAYLIST_ALBUM_PIC_FOLDER = "playlist_album_pic"
     }
 
+    private val viewModel: NewPlaylistViewModel by viewModel()
+
     private var imageIsLoaded = false
-    private var imageUri: Uri? = null
+    private var imageUri: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +60,9 @@ class NewPlaylistFragment : Fragment() {
             }
         })
 
+        binding.arrowBack.setOnClickListener {
+            dialogBeforeExit()
+        }
 
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -64,16 +70,13 @@ class NewPlaylistFragment : Fragment() {
                 if (uri != null) {
                     binding.placeholder.setImageURI(uri)
                     imageIsLoaded = true
-                    imageUri = uri
+                    imageUri = uri.toString()
                     //saveImageToPrivateStorage(uri)
                 } else {
+                    //TODO что-то с этим сделать
                     Log.d("PhotoPicker", "No media selected")
                 }
             }
-
-        binding.arrowBack.setOnClickListener {
-            dialogBeforeExit()
-        }
 
         binding.placeholder.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
@@ -103,8 +106,22 @@ class NewPlaylistFragment : Fragment() {
     }
 
     private fun saveAndExit(fileName: String) {
-        imageUri?.let { saveImageToPrivateStorage(it, fileName) }
+
+        if (imageUri.isNotEmpty()) {
+            saveImageToPrivateStorage(imageUri.toUri(), fileName)
+        }
+
         showToast(fileName)
+
+        viewModel.save(
+            PlaylistModel(
+                tracks = listOf(),
+                name = binding.nameField.text.toString(),
+                path = imageUri,
+                description = binding.descriptionField.text.toString()
+            )
+        )
+
         findNavController().navigateUp()
     }
 

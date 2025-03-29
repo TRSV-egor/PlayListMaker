@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/blue">
+
+    <ImageView
+        android:scaleType="centerCrop"
+        android:id="@+id/placeholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/playlist_view_placeholder"
+        android:layout_gravity="center"
+        android:paddingHorizontal="28dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="33dp" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Best Song Ever !"
+        android:textSize="12sp"
+        android:fontFamily="@font/ys_display_regular"
+        android:gravity="start" />
+
+    <TextView
+        android:id="@+id/count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1 трек"
+        android:textSize="12sp"
+        android:fontFamily="@font/ys_display_regular"
+        android:gravity="start" />
+
+</LinearLayout>

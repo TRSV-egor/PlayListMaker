@@ -15,26 +15,26 @@ class PlaylistRepositoryImpl(
 
     override fun getAll(): Flow<List<PlaylistModel>> = flow {
         val playlists = appDatabase.playlistDao().getAll()
-        emit(convertFromTrackEntity(playlists))
+        emit(convertFromPlaylistEntity(playlists))
     }
 
     override suspend fun add(playlist: PlaylistModel) {
-        appDatabase.playlistDao().add(convertToTrackEntity(playlist))
+        appDatabase.playlistDao().add(convertToPlaylistEntity(playlist))
     }
 
     override suspend fun remove(playlist: PlaylistModel) {
-        appDatabase.playlistDao().remove(convertToTrackEntity(playlist))
+        appDatabase.playlistDao().remove(convertToPlaylistEntity(playlist))
     }
 
     override suspend fun update(playlist: PlaylistModel) {
-        appDatabase.playlistDao().update(convertToTrackEntity(playlist))
+        appDatabase.playlistDao().update(convertToPlaylistEntity(playlist))
     }
 
-    private fun convertFromTrackEntity(playlists: List<PlaylistEntity>): List<PlaylistModel> {
+    private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<PlaylistModel> {
         return playlists.map { playlist -> playlistDbConvertor.map(playlist) }
     }
 
-    private fun convertToTrackEntity(playlist: PlaylistModel): PlaylistEntity {
+    private fun convertToPlaylistEntity(playlist: PlaylistModel): PlaylistEntity {
         return playlistDbConvertor.map(playlist)
     }
 

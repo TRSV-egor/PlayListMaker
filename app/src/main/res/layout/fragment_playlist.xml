@@ -18,19 +18,38 @@
         android:textColor="@color/search_buton_update"
         android:textSize="@dimen/search_error_button_text_size" />
 
-    <ImageView
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/media_recycler_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/media_fragment_image_margintop"
-        android:src="@drawable/search_404" />
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:layout_marginHorizontal="16dp"></androidx.recyclerview.widget.RecyclerView>
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/search_error_text_layout_marginTop"
-        android:text="@string/media_fragment_playlist_empty"
-        android:gravity="center"
-        android:textSize="@dimen/search_error_text_size" />
+        android:id="@+id/media_no_playlists"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/media_fragment_image_margintop"
+            android:src="@drawable/search_404" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/search_error_text_layout_marginTop"
+            android:text="@string/media_fragment_playlist_empty"
+            android:gravity="center"
+            android:textSize="@dimen/search_error_text_size" />
+
+    </LinearLayout>
+
 </LinearLayout>

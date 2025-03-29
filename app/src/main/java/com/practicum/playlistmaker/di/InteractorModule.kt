@@ -33,8 +33,8 @@ val interactorModule = module {
         FavoriteTrackInteractorImpl(favoriteTrackRepository = get())
     }
 
-    factory<PlaylistInteractor> {
-        PlaylistInteractorImpl(playlistInteractor = get())
+    single<PlaylistInteractor> {
+        PlaylistInteractorImpl(playlistRepository = get())
     }
 
 }

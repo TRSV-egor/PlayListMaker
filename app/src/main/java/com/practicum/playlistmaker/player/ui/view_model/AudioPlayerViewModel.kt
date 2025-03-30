@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.media.domain.db.FavoriteTrackInteractor
 import com.practicum.playlistmaker.media.domain.db.PlaylistInteractor
+import com.practicum.playlistmaker.media.domain.model.PlaylistModel
 
 import com.practicum.playlistmaker.player.domain.AudioPlayerInteractor
 import com.practicum.playlistmaker.player.ui.models.PlayerStatus
@@ -33,6 +34,8 @@ class AudioPlayerViewModel(
     private val trackIsFavoriteLiveDataMutable = MutableLiveData<Boolean>()
     fun observerFavoriteTrack(): LiveData<Boolean> = trackIsFavoriteLiveDataMutable
 
+    private val playLiveData = MutableLiveData<MutableList<PlaylistModel>>()
+    fun observePlaylist(): LiveData<MutableList<PlaylistModel>> = playLiveData
 
     fun fillPlayer(track: Track) {
         changePlayerStatus(
@@ -126,5 +129,22 @@ class AudioPlayerViewModel(
         viewModelScope.launch {
             trackIsFavoriteLiveDataMutable.value = favoriteTrackInteractor.checkFavoriteTrack(track)
         }
+    }
+
+    fun getPlaylists() {
+        viewModelScope.launch {
+            playlistInteractor
+                .getAllPlaylists()
+                .collect { playlists ->
+                    playLiveData.value = playlists.toMutableList()
+                }
+        }
+    }
+
+    fun addTrackToPlaylist(track: Track, playlistModel: PlaylistModel) {
+        viewModelScope.launch {
+            playlistInteractor.update(track, playlistModel)
+        }
+
     }
 }

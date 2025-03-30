@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.media.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistBinding
 import com.practicum.playlistmaker.media.domain.model.PlaylistModel
-import com.practicum.playlistmaker.media.ui.adapters.PlaylistAdapter
+import com.practicum.playlistmaker.media.ui.adapters.FullscreenPlaylistAdapter
 import com.practicum.playlistmaker.media.ui.view_model.PlaylistViewModel
 import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -29,8 +30,8 @@ class PlaylistFragment : Fragment() {
 
     private val viewModel: PlaylistViewModel by viewModel()
 
-    private var adapterPlaylists = PlaylistAdapter { item ->
-//        onPlaylistClick(item)
+    private var adapterPlaylists = FullscreenPlaylistAdapter { item ->
+        onPlaylistClick(item)
     }
 
     private var isClickAllowed = true
@@ -40,12 +41,12 @@ class PlaylistFragment : Fragment() {
             isClickAllowed = allowed
         }
 
-    private fun onTrackClick(playlistModel: PlaylistModel) {
+    private fun onPlaylistClick(playlistModel: PlaylistModel) {
         if (clickDebounce()) {
-            adapterPlaylists.notifyDataSetChanged()
 //            findNavController().navigate(
 //
 //            )
+            Log.i("My", "Open playlist")
         }
     }
 
@@ -75,11 +76,10 @@ class PlaylistFragment : Fragment() {
             )
         }
 
-        binding.mediaRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
+        binding.mediaRecyclerView.layoutManager =
+            GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         binding.mediaRecyclerView.adapter = adapterPlaylists
 
-
-        //TODO ошибка улетает в бесконечность
         viewModel.observeState().observe(viewLifecycleOwner) {
             if (it.size == 0) {
                 binding.mediaRecyclerView.isVisible = false
@@ -92,7 +92,6 @@ class PlaylistFragment : Fragment() {
                 binding.mediaNoPlaylists.isVisible = false
             }
         }
-
 
         viewModel.getPlaylists()
     }

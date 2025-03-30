@@ -8,4 +8,5 @@
     <color name="settings_switcher_thumb">#3772E7</color>
     <color name="settings_switcher_track">#9FBBF3</color>
     <color name="theme_white_black">#1A1B22</color>
+    <color name="bottom_sheet_line">#FFFFFF</color>
 </resources>

@@ -125,7 +125,7 @@ class NewPlaylistFragment : Fragment() {
                 description = binding.descriptionField.text.toString()
             )
         )
-
+        //TODO now working
         findNavController().navigateUp()
     }
 
@@ -171,6 +171,7 @@ class NewPlaylistFragment : Fragment() {
                 }
                 .show()
         } else {
+            //TODO now working
             findNavController().navigateUp()
         }
     }

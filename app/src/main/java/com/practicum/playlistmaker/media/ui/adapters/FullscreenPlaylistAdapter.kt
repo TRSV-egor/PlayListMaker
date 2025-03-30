@@ -6,19 +6,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.databinding.ViewPlaylistBinding
 import com.practicum.playlistmaker.media.domain.model.PlaylistModel
 
-class PlaylistAdapter(
+class FullscreenPlaylistAdapter(
     var onClick: (PlaylistModel) -> Unit
-) : RecyclerView.Adapter<PlaylistViewHolder>() {
+) : RecyclerView.Adapter<FullscreenPlaylistViewHolder>() {
 
     var playlistList = mutableListOf<PlaylistModel>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): FullscreenPlaylistViewHolder {
         val binding =
             ViewPlaylistBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PlaylistViewHolder(binding)
+        return FullscreenPlaylistViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FullscreenPlaylistViewHolder, position: Int) {
         holder.bind(playlistList[position])
         holder.itemView.setOnClickListener {
             onClick(playlistList[position])

@@ -142,7 +142,7 @@ class PlayerFragment : Fragment() {
             findNavController().navigateUp()
         }
         binding.mediaButtonNewPlaylist.setOnClickListener {
-            //bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             findNavController().navigate(
                 R.id.action_playerFragment_to_newPlaylistFragment,
             )
@@ -155,7 +155,9 @@ class PlayerFragment : Fragment() {
 
         audioPlayerViewModel.fillPlayer(track ?: return)
 
+
     }
+
 
     override fun onPause() {
         super.onPause()

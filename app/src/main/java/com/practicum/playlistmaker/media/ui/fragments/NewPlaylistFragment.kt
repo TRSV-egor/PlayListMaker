@@ -54,10 +54,13 @@ class NewPlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //Это вызывает краш приложения при использовании аппаратной кнопки закрытия на других фрагментах
+        //Вызывает краш на других фрагментах при использовании аппаратной кнопки
 //        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
 //            override fun handleOnBackPressed() {
-//                dialogBeforeExit()
+//                if ((findNavController().currentDestination as FragmentNavigator.Destination).className == "com.practicum.playlistmaker.media.ui.fragments.NewPlaylistFragment"){
+//                    dialogBeforeExit()
+//                }
+//
 //            }
 //        })
 

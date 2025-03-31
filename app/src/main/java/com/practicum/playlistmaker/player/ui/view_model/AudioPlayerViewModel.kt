@@ -57,6 +57,17 @@ class AudioPlayerViewModel(
 
     }
 
+    fun pauseMediaPlayer() {
+
+        mediaPlayer.pause()
+
+        timerJob?.cancel()
+
+        changePlayerStatus(
+            PlayerStatus.Paused
+        )
+    }
+
     fun playbackControl() {
         when (playerStatusLiveDataMutable.value) {
             is PlayerStatus.Playing -> {
@@ -75,15 +86,7 @@ class AudioPlayerViewModel(
         mediaPlayer.release()
     }
 
-    fun pauseMediaPlayer() {
-        mediaPlayer.pause()
 
-        timerJob?.cancel()
-
-        changePlayerStatus(
-            PlayerStatus.Paused
-        )
-    }
 
     private fun startMediaPlayer() {
 

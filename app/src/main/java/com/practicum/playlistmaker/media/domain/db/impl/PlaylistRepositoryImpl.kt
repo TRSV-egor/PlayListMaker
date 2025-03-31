@@ -18,8 +18,18 @@ class PlaylistRepositoryImpl(
         emit(convertFromPlaylistEntity(playlists))
     }
 
-    override suspend fun add(playlist: PlaylistModel) {
-        appDatabase.playlistDao().add(convertToPlaylistEntity(playlist))
+    override suspend fun add(name: String, path: String, description: String) {
+
+        val result = PlaylistEntity(
+            name = name,
+            description = description,
+            path = path,
+            tracks = "[]",
+            count = 0,
+        )
+        appDatabase.playlistDao().add(result)
+
+        //appDatabase.playlistDao().add(convertToPlaylistEntity(playlist))
     }
 
     override suspend fun remove(playlist: PlaylistModel) {

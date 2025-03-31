@@ -10,6 +10,7 @@ class PlaylistDBConvertor {
     fun map(playlistModel: PlaylistModel): PlaylistEntity {
         return with(playlistModel) {
             PlaylistEntity(
+                id = id,
                 name = name,
                 description = description,
                 path = path,
@@ -22,6 +23,7 @@ class PlaylistDBConvertor {
     fun map(playlistEntity: PlaylistEntity): PlaylistModel {
         return with(playlistEntity) {
             PlaylistModel(
+                id = id,
                 name = name,
                 description = description,
                 path = path,

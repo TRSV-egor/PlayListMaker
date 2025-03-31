@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface PlaylistRepository {
 
-    suspend fun add(playlist: PlaylistModel)
+    suspend fun add(name: String, path: String, description: String)
 
     suspend fun update(playlist: PlaylistModel)
 

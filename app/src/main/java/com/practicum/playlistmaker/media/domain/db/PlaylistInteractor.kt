@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface PlaylistInteractor {
 
-    suspend fun add(playlist: PlaylistModel)
+    suspend fun add(name: String, path: String, description: String)
 
-    suspend fun update(track: Track, playlist: PlaylistModel)
+    suspend fun update(track: Track, playlist: PlaylistModel): Boolean
 
     suspend fun remove(playlist: PlaylistModel)
 

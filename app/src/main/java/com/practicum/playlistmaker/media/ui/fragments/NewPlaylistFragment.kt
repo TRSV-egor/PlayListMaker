@@ -7,12 +7,10 @@ import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
@@ -20,7 +18,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.databinding.FragmentPlaylistNewBinding
-import com.practicum.playlistmaker.media.domain.model.PlaylistModel
 import com.practicum.playlistmaker.media.ui.view_model.NewPlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
@@ -50,15 +47,19 @@ class NewPlaylistFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //ОБрабатываем нажатие аппаратного назад
-        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                dialogBeforeExit()
-            }
-        })
+        //Это вызывает краш приложения при использовании аппаратной кнопки закрытия на других фрагментах
+//        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                dialogBeforeExit()
+//            }
+//        })
 
         binding.arrowBack.setOnClickListener {
             dialogBeforeExit()
@@ -66,15 +67,10 @@ class NewPlaylistFragment : Fragment() {
 
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                //обрабатываем событие выбора пользователем фотографии
                 if (uri != null) {
                     binding.placeholder.setImageURI(uri)
                     imageIsLoaded = true
                     imageUri = uri.toString()
-                    //saveImageToPrivateStorage(uri)
-                } else {
-                    //TODO что-то с этим сделать
-                    Log.d("PhotoPicker", "No media selected")
                 }
             }
 
@@ -107,25 +103,20 @@ class NewPlaylistFragment : Fragment() {
 
     private fun saveAndExit(fileName: String) {
 
-        var pathToFile: String
-
-        if (imageUri.isNotEmpty()) {
-            pathToFile = saveImageToPrivateStorage(imageUri.toUri(), fileName).toString()
+        val pathToFile: String = if (imageUri.isNotEmpty()) {
+            saveImageToPrivateStorage(imageUri.toUri(), fileName).toString()
         } else {
-            pathToFile = ""
+            ""
         }
 
         showToast(fileName)
 
         viewModel.save(
-            PlaylistModel(
-                tracks = listOf(),
-                name = binding.nameField.text.toString(),
-                path = pathToFile,
-                description = binding.descriptionField.text.toString()
-            )
+            name = binding.nameField.text.toString(),
+            path = pathToFile,
+            description = binding.descriptionField.text.toString()
         )
-        //TODO now working
+
         findNavController().navigateUp()
     }
 
@@ -133,23 +124,24 @@ class NewPlaylistFragment : Fragment() {
         Toast.makeText(requireContext(), "Плейлист $fileName создан", Toast.LENGTH_SHORT).show()
     }
 
+
     private fun saveImageToPrivateStorage(uri: Uri, fileName: String): File {
-        //создаём экземпляр класса File, который указывает на нужный каталог
+
         val filePath = File(
             requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
             PLAYLIST_ALBUM_PIC_FOLDER
         )
-        //создаем каталог, если он не создан
+
         if (!filePath.exists()) {
             filePath.mkdirs()
         }
-        //создаём экземпляр класса File, который указывает на файл внутри каталога
+
         val file = File(filePath, "$fileName.jpg")
-        // создаём входящий поток байтов из выбранной картинки
+
         val inputStream = requireActivity().contentResolver.openInputStream(uri)
-        // создаём исходящий поток байтов в созданный выше файл
+
         val outputStream = FileOutputStream(file)
-        // записываем картинку с помощью BitmapFactory
+
         BitmapFactory
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
@@ -164,14 +156,14 @@ class NewPlaylistFragment : Fragment() {
             !binding.descriptionField.text.isNullOrEmpty() || imageIsLoaded
         ) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Завершить создание плейлиста?") // Заголовок диалога
+                .setTitle("Завершить создание плейлиста?")
+                .setMessage("Все несохраненные данные будут потеряны")
                 .setNegativeButton("Отмена") { dialog, which -> }
                 .setPositiveButton("Завершить") { dialog, which ->
                     findNavController().navigateUp()
                 }
                 .show()
         } else {
-            //TODO now working
             findNavController().navigateUp()
         }
     }

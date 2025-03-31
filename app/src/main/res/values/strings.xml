@@ -37,4 +37,11 @@
     <string name="fragment_playlist_new_field_description">Описание</string>
     <string name="fragment_playlist_new_button_description">Создать</string>
     <string name="fragment_playlist_new_header">Новый плейлист</string>
+    <string name="fragment_playlist_new_toast_1">"Плейлист "</string>
+    <string name="fragment_playlist_new_toast_2">" создан"</string>
+    <string name="fragment_playlist_new_dialog_title">"Завершить создание плейлиста?"</string>
+    <string name="fragment_playlist_new_dialog_message">"Все несохраненные данные будут потеряны"</string>
+    <string name="fragment_playlist_new_dialog_nevative">"Отмена"</string>
+    <string name="fragment_playlist_new_dialog_positive">"Завершить"</string>
+
 </resources>

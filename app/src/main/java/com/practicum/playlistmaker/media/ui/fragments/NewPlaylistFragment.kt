@@ -11,18 +11,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistNewBinding
 import com.practicum.playlistmaker.media.ui.view_model.NewPlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
-
 
 class NewPlaylistFragment : Fragment() {
 
@@ -47,22 +48,15 @@ class NewPlaylistFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //Вызывает краш на других фрагментах при использовании аппаратной кнопки
-//        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
-//            override fun handleOnBackPressed() {
-//                if ((findNavController().currentDestination as FragmentNavigator.Destination).className == "com.practicum.playlistmaker.media.ui.fragments.NewPlaylistFragment"){
-//                    dialogBeforeExit()
-//                }
-//
-//            }
-//        })
+        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                dialogBeforeExit()
+                isEnabled = false
+            }
+        })
 
         binding.arrowBack.setOnClickListener {
             dialogBeforeExit()
@@ -71,9 +65,7 @@ class NewPlaylistFragment : Fragment() {
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
-                    binding.placeholder.setImageURI(uri)
-                    imageIsLoaded = true
-                    imageUri = uri.toString()
+                    viewModel.imageLoaded(uri.toString())
                 }
             }
 
@@ -102,6 +94,14 @@ class NewPlaylistFragment : Fragment() {
 
         binding.nameField.addTextChangedListener(simpleTextWatcher)
 
+        viewModel.observeState().observe(viewLifecycleOwner) {
+            imageUri = it.first
+            imageIsLoaded = it.second
+
+            if (imageIsLoaded) {
+                binding.placeholder.setImageURI(imageUri.toUri())
+            }
+        }
     }
 
     private fun saveAndExit(fileName: String) {
@@ -124,7 +124,11 @@ class NewPlaylistFragment : Fragment() {
     }
 
     private fun showToast(fileName: String) {
-        Toast.makeText(requireContext(), "Плейлист $fileName создан", Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            requireContext(),
+            getString(R.string.fragment_playlist_new_toast_1) + fileName + getString(R.string.fragment_playlist_new_toast_2),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
 
@@ -159,10 +163,10 @@ class NewPlaylistFragment : Fragment() {
             !binding.descriptionField.text.isNullOrEmpty() || imageIsLoaded
         ) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Завершить создание плейлиста?")
-                .setMessage("Все несохраненные данные будут потеряны")
-                .setNegativeButton("Отмена") { dialog, which -> }
-                .setPositiveButton("Завершить") { dialog, which ->
+                .setTitle(getString(R.string.fragment_playlist_new_dialog_title))
+                .setMessage(getString(R.string.fragment_playlist_new_dialog_message))
+                .setNegativeButton(getString(R.string.fragment_playlist_new_dialog_nevative)) { dialog, which -> }
+                .setPositiveButton(getString(R.string.fragment_playlist_new_dialog_positive)) { dialog, which ->
                     findNavController().navigateUp()
                 }
                 .show()

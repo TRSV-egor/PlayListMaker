@@ -56,6 +56,11 @@ class HostActivity : AppCompatActivity() {
                     binding.toolbar.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.VISIBLE
                 }
+                R.id.playlistFragment -> {
+                    binding.bottomNaviLine.visibility = View.GONE
+                    bottomNavigationView.visibility = View.GONE
+                    binding.toolbar.visibility = View.GONE
+                }
 
                 else -> {
                     binding.bottomNaviLine.visibility = View.VISIBLE

@@ -149,7 +149,7 @@ class AudioPlayerViewModel(
     fun addTrackToPlaylist(track: Track, playlistModel: PlaylistModel) {
 
         viewModelScope.launch {
-            if (playlistInteractor.update(track, playlistModel)) {
+            if (playlistInteractor.addTrack(track, playlistModel)) {
                 messageStatus.value = Pair(true, "Добавлено в плейлист ${playlistModel.name}")
             } else {
                 messageStatus.value =

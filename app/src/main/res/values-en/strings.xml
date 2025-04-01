@@ -36,4 +36,10 @@
     <string name="fragment_playlist_new_dialog_message">All unsaved data will be lost</string>
     <string name="fragment_playlist_new_dialog_nevative">No</string>
     <string name="fragment_playlist_new_dialog_positive">Yes</string>
+    <string name="playlist_tracks_1">track</string>
+    <string name="playlist_tracks_2_3_4">tracks</string>
+    <string name="playlist_tracks_else">tracks</string>
+    <string name="playlist_minutes_1">minute</string>
+    <string name="playlist_minutes_2_3_4">minutes</string>
+    <string name="playlist_minutes_else">minutes</string>
 </resources>

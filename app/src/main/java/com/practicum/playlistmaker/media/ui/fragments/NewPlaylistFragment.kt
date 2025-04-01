@@ -57,16 +57,12 @@ class NewPlaylistFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.updateFromDataBase()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentPlaylistNewBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -107,11 +103,7 @@ class NewPlaylistFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                if (s.isNullOrEmpty()) {
-                    binding.buttonSave.isEnabled = false
-                } else {
-                    binding.buttonSave.isEnabled = true
-                }
+                binding.buttonSave.isEnabled = !s.isNullOrEmpty()
             }
         }
 
@@ -128,16 +120,19 @@ class NewPlaylistFragment : Fragment() {
 
         viewModel.observerEditor().observe(viewLifecycleOwner) {
             if (it == null) {
-                binding.buttonSave.text = "Создать"
+                binding.buttonSave.text =
+                    getString(R.string.fragment_playlist_new_button_description)
             } else {
-                binding.header.text = "Редактировать"
-                binding.buttonSave.text = "Сохранить"
+                binding.header.text = getString(R.string.fragment_playlist_new_header2)
+                binding.buttonSave.text =
+                    getString(R.string.fragment_playlist_new_button_description2)
                 if (it.path != "") binding.placeholder.setImageURI(it.path.toUri())
                 binding.name.editText?.setText(it.name)
                 binding.description.editText?.setText(it.description)
             }
         }
     }
+
 
     private fun saveAndExit() {
 
@@ -223,10 +218,10 @@ class NewPlaylistFragment : Fragment() {
             !binding.descriptionField.text.isNullOrEmpty() || imageIsLoaded
         ) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.fragment_playlist_new_dialog_title))
-                .setMessage(getString(R.string.fragment_playlist_new_dialog_message))
-                .setNegativeButton(getString(R.string.fragment_playlist_new_dialog_nevative)) { dialog, which -> }
-                .setPositiveButton(getString(R.string.fragment_playlist_new_dialog_positive)) { dialog, which ->
+                .setTitle(getString(R.string.fragment_playlist_new_dialog_title_1))
+                .setMessage(getString(R.string.fragment_playlist_new_dialog_message_1))
+                .setNegativeButton(getString(R.string.fragment_playlist_new_dialog_nevative_1)) { _, _ -> }
+                .setPositiveButton(getString(R.string.fragment_playlist_new_dialog_positive_1)) { _, _ ->
                     findNavController().navigateUp()
                 }
                 .show()

@@ -42,6 +42,7 @@
 
         <TextView
             android:id="@+id/name"
+            android:textColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginHorizontal="16dp"
@@ -56,6 +57,7 @@
             />
 
         <TextView
+            android:textColor="@color/black"
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -82,6 +84,7 @@
 
 
         <TextView
+            android:textColor="@color/black"
             android:id="@+id/summary_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -94,6 +97,7 @@
             app:layout_constraintTop_toBottomOf="@id/description" />
 
         <TextView
+            android:textColor="@color/black"
             android:id="@+id/track_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -156,6 +160,29 @@
             android:paddingTop="8dp"
             android:paddingBottom="12dp"
             android:src="@drawable/audioplayer_bottobsheet_line" />
+
+
+        <LinearLayout
+            android:id="@+id/empty_playlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="46dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/search_404"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Этот плейлист пуст"
+                android:gravity="center"
+                android:textSize="19sp" />
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/playlist_recyclerview"
@@ -255,10 +282,10 @@
         </FrameLayout>
 
         <TextView
-            android:clickable="true"
             android:id="@+id/menu_share"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="true"
             android:fontFamily="@font/ys_display_regular"
             android:paddingVertical="21dp"
             android:paddingStart="16dp"
@@ -267,10 +294,10 @@
             android:textSize="16dp" />
 
         <TextView
-            android:clickable="true"
             android:id="@+id/menu_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="true"
             android:fontFamily="@font/ys_display_regular"
             android:paddingVertical="21dp"
             android:paddingStart="16dp"
@@ -279,10 +306,10 @@
             android:textSize="16dp" />
 
         <TextView
-            android:clickable="true"
             android:id="@+id/menu_delete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="true"
             android:fontFamily="@font/ys_display_regular"
             android:paddingVertical="21dp"
             android:paddingStart="16dp"

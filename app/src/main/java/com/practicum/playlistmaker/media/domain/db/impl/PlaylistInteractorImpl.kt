@@ -1,7 +1,7 @@
 package com.practicum.playlistmaker.media.domain.db.impl
 
-import com.practicum.playlistmaker.media.domain.db.PlaylistInteractor
-import com.practicum.playlistmaker.media.domain.db.PlaylistRepository
+import com.practicum.playlistmaker.media.domain.db.interfaces.PlaylistInteractor
+import com.practicum.playlistmaker.media.domain.db.interfaces.PlaylistRepository
 import com.practicum.playlistmaker.media.domain.model.PlaylistModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
@@ -74,4 +74,7 @@ class PlaylistInteractorImpl(
         return playlistRepository.getAll()
     }
 
+    override fun receivePlaylistById(id: Long): Flow<PlaylistModel> {
+        return playlistRepository.findById(id)
+    }
 }

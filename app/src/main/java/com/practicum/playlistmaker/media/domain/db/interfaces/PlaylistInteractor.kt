@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.media.domain.db
+package com.practicum.playlistmaker.media.domain.db.interfaces
 
 import com.practicum.playlistmaker.media.domain.model.PlaylistModel
 import com.practicum.playlistmaker.search.domain.models.Track
@@ -15,6 +15,8 @@ interface PlaylistInteractor {
     suspend fun remove(playlist: PlaylistModel)
 
     suspend fun update(playlist: PlaylistModel)
+
+    fun receivePlaylistById(id: Long): Flow<PlaylistModel>
 
     fun getAllPlaylists(): Flow<List<PlaylistModel>>
 

@@ -51,6 +51,13 @@ class PlaylistListFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.observeState().isInitialized) {
+            viewModel.getPlaylists()
+        }
+    }
+
     private fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {

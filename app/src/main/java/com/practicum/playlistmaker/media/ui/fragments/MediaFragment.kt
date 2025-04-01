@@ -9,29 +9,17 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentMediaBinding
 import com.practicum.playlistmaker.media.ui.MediaViewPagerAdapter
-import com.practicum.playlistmaker.media.ui.view_model.MediaViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MediaFragment : Fragment() {
 
-
     private lateinit var binding: FragmentMediaBinding
     private lateinit var tabMediator: TabLayoutMediator
-
-    private val mediaViewModel: MediaViewModel by viewModel()
-
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentMediaBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -42,14 +30,13 @@ class MediaFragment : Fragment() {
         binding.viewPager.adapter = MediaViewPagerAdapter(childFragmentManager, lifecycle)
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            when(position) {
+            when (position) {
                 0 -> tab.text = getString(R.string.media_tab_favorites)
                 1 -> tab.text = getString(R.string.media_tab_playlist)
             }
         }
 
         tabMediator.attach()
-
 
     }
 

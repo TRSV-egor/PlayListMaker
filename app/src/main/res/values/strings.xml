@@ -36,12 +36,31 @@
     <string name="fragment_playlist_new_field_name">Название*</string>
     <string name="fragment_playlist_new_field_description">Описание</string>
     <string name="fragment_playlist_new_button_description">Создать</string>
+    <string name="fragment_playlist_new_button_description2">Сохранить</string>
     <string name="fragment_playlist_new_header">Новый плейлист</string>
+    <string name="fragment_playlist_new_header2">Редактировать</string>
     <string name="fragment_playlist_new_toast_1">"Плейлист "</string>
     <string name="fragment_playlist_new_toast_2">" создан"</string>
     <string name="fragment_playlist_new_dialog_title">"Завершить создание плейлиста?"</string>
     <string name="fragment_playlist_new_dialog_message">"Все несохраненные данные будут потеряны"</string>
     <string name="fragment_playlist_new_dialog_nevative">"Отмена"</string>
     <string name="fragment_playlist_new_dialog_positive">"Завершить"</string>
+
+
+    <string name="fragment_playlist_new_dialog_title_1">"Удалить трек"</string>
+    <string name="fragment_playlist_new_dialog_message_1">"Вы уверены, что хотите удалить трек из плейлиста?"</string>
+    <string name="fragment_playlist_new_dialog_nevative_1">"НЕТ"</string>
+    <string name="fragment_playlist_new_dialog_positive_1">"ДА"</string>
+    <string name="fragment_playlist_new_dialog_toast">"В этом плейлисте нет списка треков, которым можно поделиться"</string>
+    <string name="fragment_playlist_new_dialog_title_delete">"Хотите удалить плейлист"</string>
+
+
+    <string name="playlist_tracks_1">трек</string>
+    <string name="playlist_tracks_2_3_4">трека</string>
+    <string name="playlist_tracks_else">треков</string>
+    <string name="playlist_minutes_1">минута</string>
+    <string name="playlist_minutes_2_3_4">минуты</string>
+    <string name="playlist_minutes_else">минут</string>
+
 
 </resources>

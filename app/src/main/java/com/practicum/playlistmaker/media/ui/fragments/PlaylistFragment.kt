@@ -2,7 +2,6 @@ package com.practicum.playlistmaker.media.ui.fragments
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -55,18 +55,23 @@ class PlaylistFragment : Fragment() {
             isClickAllowed = allowed
         }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.updateFromDataBase()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 viewModel.fillPlaylistViewer(
                     it.getParcelable(
-                        PlaylistListFragment.PLAYLIST_BUNDLE,
+                        PLAYLIST_BUNDLE,
                         PlaylistModel::class.java
                     )
                 )
             } else {
-                viewModel.fillPlaylistViewer(it.getParcelable(PlaylistListFragment.PLAYLIST_BUNDLE))
+                viewModel.fillPlaylistViewer(it.getParcelable(PLAYLIST_BUNDLE))
             }
         }
     }
@@ -75,7 +80,7 @@ class PlaylistFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentPlaylistViewerBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -149,12 +154,14 @@ class PlaylistFragment : Fragment() {
             binding.name.text = it.name
             binding.description.text = it.description
             val summaryTime = summaryTimeOfPlaylist(it)
-            binding.summaryTime.text = "${summaryTime} ${getMinutes(summaryTime)}"
+            binding.summaryTime.text = "$summaryTime ${getMinutes(summaryTime)}"
             binding.trackCount.text = "${it.tracks.size} ${Declination.getTracks(it.tracks.size)}"
 
             adapterPlaylistContent.foundTracks.clear()
-            adapterPlaylistContent.foundTracks.addAll(it.tracks)
+            adapterPlaylistContent.foundTracks.addAll(it.tracks.reversed())
             adapterPlaylistContent.notifyDataSetChanged()
+            binding.emptyPlaylist.isVisible = adapterPlaylistContent.foundTracks.size == 0
+
 
             binding.menuName.text = it.name
             binding.menuCount.text = "${it.tracks.size} ${Declination.getTracks(it.tracks.size)}"
@@ -162,22 +169,20 @@ class PlaylistFragment : Fragment() {
         }
 
         binding.share.setOnClickListener {
-            if (adapterPlaylistContent.foundTracks.size == 0) {
-                Toast.makeText(
-                    requireContext(),
-                    "В этом плейлисте нет списка треков, которым можно поделиться",
-                    Toast.LENGTH_LONG
-                ).show()
-            } else {
-                //TODO
-            }
+            share()
         }
 
         binding.menu.setOnClickListener {
             mainMenuBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
+        binding.menuShare.setOnClickListener {
+            share()
+            mainMenuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
         binding.menuDelete.setOnClickListener {
+            mainMenuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             confirmDelete()
         }
 
@@ -186,15 +191,15 @@ class PlaylistFragment : Fragment() {
                 R.id.action_playlistFragment_to_newPlaylistFragment,
                 bundleOf(PLAYLIST_BUNDLE to viewModel.observerPlaylist().value)
             )
-            Log.i("EEE", "start")
         }
+
 
     }
 
     private fun summaryTimeOfPlaylist(playlistModel: PlaylistModel): Int {
         var result = 0L
 
-        playlistModel.tracks.forEach { it ->
+        playlistModel.tracks.forEach {
             result += DateFormater.toLong(it.trackTime)
         }
 
@@ -206,14 +211,11 @@ class PlaylistFragment : Fragment() {
 
         if (clickDebounce()) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Хотите удалить трек?")
-                //TODO в ресурсы
-                .setNegativeButton("НЕТ") { dialog, which -> }
-                .setPositiveButton("ДА") { dialog, which ->
-
+                .setTitle(getString(R.string.fragment_playlist_new_dialog_title))
+                .setMessage(getString(R.string.fragment_playlist_new_dialog_message))
+                .setNegativeButton(getString(R.string.fragment_playlist_new_dialog_nevative)) { _, _ -> }
+                .setPositiveButton(getString(R.string.fragment_playlist_new_dialog_positive)) { _, _ ->
                     viewModel.removeTrackFromPlaylist(track)
-
-
                 }
                 .show()
         }
@@ -240,14 +242,25 @@ class PlaylistFragment : Fragment() {
 
     private fun confirmDelete() {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Хотите удалить плейлист ${viewModel.observerPlaylist().value?.name}?")
-            //TODO в ресурсы
-            .setNegativeButton("НЕТ") { dialog, which -> }
-            .setPositiveButton("ДА") { dialog, which ->
+            .setTitle("${getString(R.string.fragment_playlist_new_dialog_title_delete)} ${viewModel.observerPlaylist().value?.name}?")
+            .setNegativeButton(getString(R.string.fragment_playlist_new_dialog_nevative)) { _, _ -> }
+            .setPositiveButton(getString(R.string.fragment_playlist_new_dialog_positive)) { _, _ ->
                 viewModel.delete()
                 findNavController().navigateUp()
             }
             .show()
+    }
+
+    private fun share() {
+        if (adapterPlaylistContent.foundTracks.size == 0) {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.fragment_playlist_new_dialog_toast),
+                Toast.LENGTH_LONG
+            ).show()
+        } else {
+            startActivity(viewModel.generateIntent())
+        }
     }
 
 }

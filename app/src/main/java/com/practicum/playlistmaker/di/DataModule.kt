@@ -4,7 +4,6 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.media.MediaPlayer
 import androidx.room.Room
-import com.practicum.playlistmaker.media.data.converters.TrackDbConvertor
 import com.practicum.playlistmaker.media.data.db.AppDatabase
 import com.practicum.playlistmaker.player.data.MediaPlayerClient
 import com.practicum.playlistmaker.player.data.media_player.MediaPlayerClientImpl
@@ -66,7 +65,10 @@ val dataModule = module {
         Room.databaseBuilder(
             name = "database.db",
             klass = AppDatabase::class.java,
-            context = androidContext()).build()
+            context = androidContext()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
 }

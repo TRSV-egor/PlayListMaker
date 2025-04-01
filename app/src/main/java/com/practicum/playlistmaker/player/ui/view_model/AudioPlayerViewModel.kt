@@ -5,7 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.media.domain.db.FavoriteTrackInteractor
-
+import com.practicum.playlistmaker.media.domain.db.PlaylistInteractor
+import com.practicum.playlistmaker.media.domain.model.PlaylistModel
 import com.practicum.playlistmaker.player.domain.AudioPlayerInteractor
 import com.practicum.playlistmaker.player.ui.models.PlayerStatus
 import com.practicum.playlistmaker.search.domain.models.Track
@@ -16,7 +17,8 @@ import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(
     private var mediaPlayer: AudioPlayerInteractor,
-    private val favoriteTrackInteractor: FavoriteTrackInteractor
+    private val favoriteTrackInteractor: FavoriteTrackInteractor,
+    private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
 
     companion object {
@@ -31,6 +33,11 @@ class AudioPlayerViewModel(
     private val trackIsFavoriteLiveDataMutable = MutableLiveData<Boolean>()
     fun observerFavoriteTrack(): LiveData<Boolean> = trackIsFavoriteLiveDataMutable
 
+    private val playLiveData = MutableLiveData<MutableList<PlaylistModel>>()
+    fun observePlaylist(): LiveData<MutableList<PlaylistModel>> = playLiveData
+
+    private val messageStatus = MutableLiveData<Pair<Boolean, String>>()
+    fun observeMessageStatus(): LiveData<Pair<Boolean, String>> = messageStatus
 
     fun fillPlayer(track: Track) {
         changePlayerStatus(
@@ -48,6 +55,17 @@ class AudioPlayerViewModel(
             timerJob?.cancel()
         }
 
+    }
+
+    fun pauseMediaPlayer() {
+
+        mediaPlayer.pause()
+
+        timerJob?.cancel()
+
+        changePlayerStatus(
+            PlayerStatus.Paused
+        )
     }
 
     fun playbackControl() {
@@ -68,15 +86,7 @@ class AudioPlayerViewModel(
         mediaPlayer.release()
     }
 
-    fun pauseMediaPlayer() {
-        mediaPlayer.pause()
 
-        timerJob?.cancel()
-
-        changePlayerStatus(
-            PlayerStatus.Paused
-        )
-    }
 
     private fun startMediaPlayer() {
 
@@ -124,5 +134,31 @@ class AudioPlayerViewModel(
         viewModelScope.launch {
             trackIsFavoriteLiveDataMutable.value = favoriteTrackInteractor.checkFavoriteTrack(track)
         }
+    }
+
+    fun getPlaylists() {
+        viewModelScope.launch {
+            playlistInteractor
+                .getAllPlaylists()
+                .collect { playlists ->
+                    playLiveData.value = playlists.toMutableList()
+                }
+        }
+    }
+
+    fun addTrackToPlaylist(track: Track, playlistModel: PlaylistModel) {
+
+        viewModelScope.launch {
+            if (playlistInteractor.update(track, playlistModel)) {
+                messageStatus.value = Pair(true, "Добавлено в плейлист ${playlistModel.name}")
+            } else {
+                messageStatus.value =
+                    Pair(true, "Трек уже добавлен в плейлист ${playlistModel.name}")
+            }
+        }
+    }
+
+    fun messageBeenSend() {
+        messageStatus.value = Pair(false, "")
     }
 }

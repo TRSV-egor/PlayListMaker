@@ -47,5 +47,4 @@
         <item name="android:layout_marginBottom">8dp</item>
         <item name="android:textColor">@color/audioplayer_description</item>
     </style>
-
 </resources>

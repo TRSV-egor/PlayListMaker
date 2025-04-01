@@ -56,4 +56,23 @@
     <dimen name="media_fragment_margin_top">106dp</dimen>
     <dimen name="media_fragment_image_margintop">34dp</dimen>
 
+    <dimen name="fragment_playlist_new_button_save_layout_marginHorizontal">17dp</dimen>
+    <dimen name="fragment_playlist_new_button_save_layout_marginBottom">32dp</dimen>
+    <dimen name="fragment_playlist_new_textSize">16sp</dimen>
+    <dimen name="fragment_playlist_new_separator_layout_height">170dp</dimen>
+    <dimen name="fragment_playlist_new_field_layout_marginHorizontal_paddingHorizontal">16dp</dimen>
+    <dimen name="fragment_playlist_new_field_layout_layout_marginTop">10dp</dimen>
+    <dimen name="fragment_playlist_new_paddingTop">18dp</dimen>
+    <dimen name="fragment_playlist_new_paddingBottom">19dp</dimen>
+    <dimen name="fragment_playlist_new_field_layout_marginTop">26dp</dimen>
+    <dimen name="fragment_playlist_new_placeholder_layout_marginHorizontal">24dp</dimen>
+    <dimen name="fragment_playlist_new_placeholder_layout_marginTop">26dp</dimen>
+    <dimen name="fragment_playlist_new_arrow_back_layout_marginTop">25dp</dimen>
+    <dimen name="fragment_playlist_new_arrow_back_padding">20dp</dimen>
+    <dimen name="fragment_playlist_new_header_paddingStart">12dp</dimen>
+    <dimen name="fragment_playlist_new_header_paddingTop">14dp</dimen>
+    <dimen name="fragment_playlist_new_header_paddingBottom">15dp</dimen>
+    <dimen name="fragment_playlist_new_header_textSize">22sp</dimen>
+
+
 </resources>

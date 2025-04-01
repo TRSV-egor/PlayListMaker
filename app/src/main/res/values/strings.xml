@@ -32,6 +32,16 @@
     <string name="media_button_new_playlist">Новый плейлист</string>
     <string name="media_tab_favorites">"Избранные треки"</string>
     <string name="media_tab_playlist">"Плейлисты"</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="fragment_playlist_new_field_name">Название*</string>
+    <string name="fragment_playlist_new_field_description">Описание</string>
+    <string name="fragment_playlist_new_button_description">Создать</string>
+    <string name="fragment_playlist_new_header">Новый плейлист</string>
+    <string name="fragment_playlist_new_toast_1">"Плейлист "</string>
+    <string name="fragment_playlist_new_toast_2">" создан"</string>
+    <string name="fragment_playlist_new_dialog_title">"Завершить создание плейлиста?"</string>
+    <string name="fragment_playlist_new_dialog_message">"Все несохраненные данные будут потеряны"</string>
+    <string name="fragment_playlist_new_dialog_nevative">"Отмена"</string>
+    <string name="fragment_playlist_new_dialog_positive">"Завершить"</string>
+
 </resources>

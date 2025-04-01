@@ -9,13 +9,10 @@
     <color name="settings_switcher_thumb">#AEAFB4</color>
     <color name="settings_switcher_track">#E6E8EB</color>
     <color name="theme_white_black">#FFFFFF</color>
+    <color name="bottom_sheet_line">#E6E8EB</color>
+
     <color name="favorite_on">#F56B6C</color>
-
-
-
-
     <color name="audioplayer_description">#AEAFB4</color>
-
 
     <color name="black">#1A1B22</color>
     <color name="white">#FFFFFF</color>

@@ -211,10 +211,10 @@ class PlaylistFragment : Fragment() {
 
         if (clickDebounce()) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.fragment_playlist_new_dialog_title))
-                .setMessage(getString(R.string.fragment_playlist_new_dialog_message))
-                .setNegativeButton(getString(R.string.fragment_playlist_new_dialog_nevative)) { _, _ -> }
-                .setPositiveButton(getString(R.string.fragment_playlist_new_dialog_positive)) { _, _ ->
+                .setTitle(getString(R.string.fragment_playlist_new_dialog_on_long_clic_title))
+                .setMessage(getString(R.string.fragment_playlist_new_dialog_on_long_clic_message))
+                .setNegativeButton(getString(R.string.fragment_playlist_new_dialog_nevative_no)) { _, _ -> }
+                .setPositiveButton(getString(R.string.fragment_playlist_new_dialog_positive_yes)) { _, _ ->
                     viewModel.removeTrackFromPlaylist(track)
                 }
                 .show()
@@ -242,9 +242,10 @@ class PlaylistFragment : Fragment() {
 
     private fun confirmDelete() {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("${getString(R.string.fragment_playlist_new_dialog_title_delete)} ${viewModel.observerPlaylist().value?.name}?")
-            .setNegativeButton(getString(R.string.fragment_playlist_new_dialog_nevative)) { _, _ -> }
-            .setPositiveButton(getString(R.string.fragment_playlist_new_dialog_positive)) { _, _ ->
+            .setTitle(getString(R.string.fragment_playlist_new_dialog_message_delete_playlist))
+            .setMessage(getString(R.string.fragment_playlist_new_dialog_title_delete))
+            .setNegativeButton(getString(R.string.fragment_playlist_new_dialog_nevative_no)) { _, _ -> }
+            .setPositiveButton(getString(R.string.fragment_playlist_new_dialog_positive_yes)) { _, _ ->
                 viewModel.delete()
                 findNavController().navigateUp()
             }

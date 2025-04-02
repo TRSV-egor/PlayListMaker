@@ -9,6 +9,7 @@ import com.practicum.playlistmaker.media.domain.db.interfaces.PlaylistInteractor
 import com.practicum.playlistmaker.media.domain.model.PlaylistModel
 import com.practicum.playlistmaker.player.domain.AudioPlayerInteractor
 import com.practicum.playlistmaker.player.ui.models.PlayerStatus
+import com.practicum.playlistmaker.player.ui.models.PlaylistStatus
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.util.DateFormater
 import kotlinx.coroutines.Job
@@ -36,8 +37,11 @@ class AudioPlayerViewModel(
     private val playLiveData = MutableLiveData<MutableList<PlaylistModel>>()
     fun observePlaylist(): LiveData<MutableList<PlaylistModel>> = playLiveData
 
-    private val messageStatus = MutableLiveData<Pair<Boolean, String>>()
-    fun observeMessageStatus(): LiveData<Pair<Boolean, String>> = messageStatus
+//    private val messageStatus = MutableLiveData<Pair<Boolean, String>>()
+//    fun observeMessageStatus(): LiveData<Pair<Boolean, String>> = messageStatus
+
+    private val messageStatus = MutableLiveData<PlaylistStatus>()
+    fun observeMessageStatus(): LiveData<PlaylistStatus> = messageStatus
 
     fun fillPlayer(track: Track) {
         changePlayerStatus(
@@ -150,15 +154,16 @@ class AudioPlayerViewModel(
 
         viewModelScope.launch {
             if (playlistInteractor.addTrack(track, playlistModel)) {
-                messageStatus.value = Pair(true, "Добавлено в плейлист ${playlistModel.name}")
+                messageStatus.value =
+                    PlaylistStatus.Added(true, "Добавлено в плейлист ${playlistModel.name}")
             } else {
                 messageStatus.value =
-                    Pair(true, "Трек уже добавлен в плейлист ${playlistModel.name}")
+                    PlaylistStatus.Exist(true, "Трек уже добавлен в плейлист ${playlistModel.name}")
             }
         }
     }
 
     fun messageBeenSend() {
-        messageStatus.value = Pair(false, "")
+        messageStatus.value = PlaylistStatus.Default(false, "")
     }
 }

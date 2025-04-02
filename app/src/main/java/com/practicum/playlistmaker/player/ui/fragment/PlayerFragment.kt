@@ -20,6 +20,7 @@ import com.practicum.playlistmaker.databinding.FragmentPlayerBinding
 import com.practicum.playlistmaker.media.domain.model.PlaylistModel
 import com.practicum.playlistmaker.player.ui.adapters.BottomsheetPlaylistAdapter
 import com.practicum.playlistmaker.player.ui.models.PlayerStatus
+import com.practicum.playlistmaker.player.ui.models.PlaylistStatus
 import com.practicum.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.dpToPx
@@ -114,9 +115,21 @@ class PlayerFragment : Fragment() {
         }
 
         audioPlayerViewModel.observeMessageStatus().observe(viewLifecycleOwner) {
-            if (it.first) {
-                Toast.makeText(requireContext(), it.second, Toast.LENGTH_SHORT).show()
-                audioPlayerViewModel.messageBeenSend()
+            when (it) {
+                is PlaylistStatus.Default -> {}
+                is PlaylistStatus.Exist -> {
+                    if (it.notify) {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                is PlaylistStatus.Added -> {
+                    if (it.notify) {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                    }
+                    audioPlayerViewModel.messageBeenSend()
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                }
             }
         }
 
@@ -249,7 +262,6 @@ class PlayerFragment : Fragment() {
 
     private fun onPlaylistClick(playlistModel: PlaylistModel) {
         track?.let { audioPlayerViewModel.addTrackToPlaylist(it, playlistModel) }
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     private fun clickDebounce(): Boolean {

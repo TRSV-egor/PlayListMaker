@@ -55,6 +55,7 @@
         </ImageButton>
 
         <TextView
+            android:layout_marginBottom="25dp"
             android:id="@+id/description_country_value"
             style="@style/AudioplayerActivityDescriptionValue"
             android:layout_width="0dp"
@@ -71,6 +72,7 @@
             app:layout_constraintTop_toBottomOf="@id/description_style_value" />
 
         <TextView
+            android:layout_marginBottom="25dp"
             android:id="@+id/description_country"
             style="@style/AudioplayerActivityDescription"
             android:layout_width="0dp"
@@ -314,7 +316,7 @@
         android:background="@drawable/bottom_sheet_bg"
         android:orientation="vertical"
         app:behavior_hideable="true"
-        app:behavior_peekHeight="240dp"
+        app:behavior_peekHeight="500dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <ImageView

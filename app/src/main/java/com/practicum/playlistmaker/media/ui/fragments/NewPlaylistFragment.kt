@@ -41,6 +41,8 @@ class NewPlaylistFragment : Fragment() {
     private var imageIsLoaded = false
     private var imageUri: String = ""
 
+    private var backPressedCallback: OnBackPressedCallback? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -67,18 +69,30 @@ class NewPlaylistFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        backPressedCallback?.remove()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+        backPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                dialogBeforeExit()
-                isEnabled = false
+                dialogBeforeExit() { isClosed ->
+                    if (isClosed) {
+                        isEnabled = false
+                    }
+                }
             }
-        })
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            backPressedCallback!!
+        )
 
         binding.arrowBack.setOnClickListener {
-            dialogBeforeExit()
+            dialogBeforeExit() { _ -> }
         }
 
         val pickMedia =
@@ -206,11 +220,12 @@ class NewPlaylistFragment : Fragment() {
         return file
     }
 
-    private fun dialogBeforeExit() {
+    private fun dialogBeforeExit(isClosed: (Boolean) -> Unit) {
+
 
         if (viewModel.observerEditor().isInitialized) {
+            isClosed(false)
             findNavController().navigateUp()
-            return
         }
 
         if (
@@ -218,15 +233,20 @@ class NewPlaylistFragment : Fragment() {
             !binding.descriptionField.text.isNullOrEmpty() || imageIsLoaded
         ) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.fragment_playlist_new_dialog_title_1))
-                .setMessage(getString(R.string.fragment_playlist_new_dialog_message_1))
-                .setNegativeButton(getString(R.string.fragment_playlist_new_dialog_nevative_1)) { _, _ -> }
-                .setPositiveButton(getString(R.string.fragment_playlist_new_dialog_positive_1)) { _, _ ->
+                .setTitle(getString(R.string.fragment_playlist_new_dialog_title))
+                .setMessage(getString(R.string.fragment_playlist_new_dialog_message))
+                .setNegativeButton(getString(R.string.fragment_playlist_new_dialog_nevative)) { _, _ ->
+                    isClosed(false)
+                }
+                .setPositiveButton(getString(R.string.fragment_playlist_new_dialog_positive)) { _, _ ->
+                    isClosed(true)
                     findNavController().navigateUp()
                 }
                 .show()
         } else {
+            isClosed(false)
             findNavController().navigateUp()
         }
+
     }
 }

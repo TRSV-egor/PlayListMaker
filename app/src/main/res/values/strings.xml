@@ -47,12 +47,14 @@
     <string name="fragment_playlist_new_dialog_positive">"Завершить"</string>
 
 
-    <string name="fragment_playlist_new_dialog_title_1">"Удалить трек"</string>
+    <string name="fragment_playlist_new_dialog_on_long_clic_title">"Удалить трек"</string>
+    <string name="fragment_playlist_new_dialog_on_long_clic_message">Хотите удалить трек?</string>
     <string name="fragment_playlist_new_dialog_message_1">"Вы уверены, что хотите удалить трек из плейлиста?"</string>
-    <string name="fragment_playlist_new_dialog_nevative_1">"НЕТ"</string>
-    <string name="fragment_playlist_new_dialog_positive_1">"ДА"</string>
+    <string name="fragment_playlist_new_dialog_nevative_no">"НЕТ"</string>
+    <string name="fragment_playlist_new_dialog_positive_yes">"ДА"</string>
     <string name="fragment_playlist_new_dialog_toast">"В этом плейлисте нет списка треков, которым можно поделиться"</string>
-    <string name="fragment_playlist_new_dialog_title_delete">"Хотите удалить плейлист"</string>
+    <string name="fragment_playlist_new_dialog_title_delete">"Хотите удалить плейлист?"</string>
+    <string name="fragment_playlist_new_dialog_message_delete_playlist">Удалить плейлист</string>
 
 
     <string name="playlist_tracks_1">трек</string>

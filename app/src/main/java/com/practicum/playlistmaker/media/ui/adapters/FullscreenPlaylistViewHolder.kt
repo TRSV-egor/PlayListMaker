@@ -2,8 +2,10 @@ package com.practicum.playlistmaker.media.ui.adapters
 
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ViewPlaylistBinding
 import com.practicum.playlistmaker.media.domain.model.PlaylistModel
+import com.practicum.playlistmaker.util.Declination
 
 
 class FullscreenPlaylistViewHolder(
@@ -16,24 +18,12 @@ class FullscreenPlaylistViewHolder(
 
             if (model.path != "") {
                 placeholder.setImageURI(model.path.toUri())
+            } else {
+                placeholder.setImageResource(R.drawable.playlist_view_placeholder)
             }
 
             name.text = model.name
-            //TODO склонения проверить
-            count.text = "${model.tracks.size} ${declination(model.tracks.size)}"
-        }
-    }
-
-    private fun declination(number: Int): String {
-
-        if (number in 11..19) {
-            return "треков"
-        }
-
-        return when (number % 10) {
-            1 -> "трек"
-            2, 3, 4 -> "трека"
-            else -> "треков"
+            count.text = "${model.tracks.size} ${Declination.getTracks(model.tracks.size)}"
         }
     }
 }

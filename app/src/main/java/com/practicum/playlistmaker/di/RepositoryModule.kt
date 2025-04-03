@@ -2,10 +2,10 @@ package com.practicum.playlistmaker.di
 
 import com.practicum.playlistmaker.media.data.converters.PlaylistDBConvertor
 import com.practicum.playlistmaker.media.data.converters.TrackDbConvertor
-import com.practicum.playlistmaker.media.domain.db.FavoriteTrackRepository
-import com.practicum.playlistmaker.media.domain.db.PlaylistRepository
-import com.practicum.playlistmaker.media.domain.db.impl.FavoriteTrackRepositoryImpl
-import com.practicum.playlistmaker.media.domain.db.impl.PlaylistRepositoryImpl
+import com.practicum.playlistmaker.media.data.db.repo.FavoriteTrackRepositoryImpl
+import com.practicum.playlistmaker.media.data.db.repo.PlaylistRepositoryImpl
+import com.practicum.playlistmaker.media.domain.db.interfaces.FavoriteTrackRepository
+import com.practicum.playlistmaker.media.domain.db.interfaces.PlaylistRepository
 import com.practicum.playlistmaker.player.data.impl.AudioPlayerRepositoryImpl
 import com.practicum.playlistmaker.player.domain.AudioPlayerRepository
 import com.practicum.playlistmaker.search.data.impl.TracksRepositoryImpl

@@ -36,13 +36,14 @@
         android:orientation="horizontal">
 
         <TextView
+            android:layout_weight="2"
             android:id="@+id/track_artist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:fontFamily="@font/ys_display_regular"
             android:maxLines="1"
-            android:text="Michael Jackson Michael Jackson Michael Jackson "
+            android:text="Michael Jackson Michael Jackson Michael Jackson Michael Jackson"
             android:textColor="@color/settings_logo"
             android:textSize="@dimen/track_recycler_subtitle_text_size" />
 

@@ -28,8 +28,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SearchFragment : Fragment() {
 
 
-    private var adapterFound = TrackAdapter { item ->
-        onTrackClick(item)
+    private var adapterFound = TrackAdapter { item, longClick ->
+        if (!longClick) onTrackClick(item)
     }
 
     private var adapterHistory = SearchHistoryAdapter { item ->

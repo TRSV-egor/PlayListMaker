@@ -14,13 +14,14 @@
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 
     <application
+
         android:name=".util.App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.PlaylistMaker"
         tools:targetApi="31">

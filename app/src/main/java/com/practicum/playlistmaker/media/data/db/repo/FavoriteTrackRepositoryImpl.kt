@@ -1,9 +1,9 @@
-package com.practicum.playlistmaker.media.domain.db.impl
+package com.practicum.playlistmaker.media.data.db.repo
 
 import com.practicum.playlistmaker.media.data.converters.TrackDbConvertor
 import com.practicum.playlistmaker.media.data.db.AppDatabase
 import com.practicum.playlistmaker.media.data.db.entity.TrackEntity
-import com.practicum.playlistmaker.media.domain.db.FavoriteTrackRepository
+import com.practicum.playlistmaker.media.domain.db.interfaces.FavoriteTrackRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -27,11 +27,7 @@ class FavoriteTrackRepositoryImpl(
     }
 
     override suspend fun contains(track: Track): Boolean {
-        if (appDatabase.favoriteTrackDao().contains(track.trackId) == null){
-            return false
-        } else {
-            return true
-        }
+        return appDatabase.favoriteTrackDao()?.contains(track.trackId) != null
     }
 
     private fun convertFromTrackEntity(tracks: List<TrackEntity>): List<Track> {

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_playlist"
+    android:id="@+id/fragment_playlist_list"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".media.ui.fragments.PlaylistFragment">
+    tools:context=".media.ui.fragments.PlaylistListFragment">
 
     <Button
         android:id="@+id/media_button_new_playlist"

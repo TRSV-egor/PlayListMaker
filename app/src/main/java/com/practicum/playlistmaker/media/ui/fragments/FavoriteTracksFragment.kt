@@ -94,7 +94,7 @@ class FavoriteTracksFragment : Fragment() {
     }
 
     private fun showContent(tracks: List<Track>) {
-        if (tracks.isNullOrEmpty()) {
+        if (tracks.isEmpty()) {
             showEmpty()
         } else {
             adapterFavorites.favoriteTracks.clear()

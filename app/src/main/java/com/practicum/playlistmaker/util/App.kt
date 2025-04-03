@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.util
 
 import android.app.Application
 import android.content.res.Configuration
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import com.practicum.playlistmaker.di.dataModule
 import com.practicum.playlistmaker.di.interactorModule
@@ -57,6 +58,10 @@ class App : Application() {
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )
+    }
+
+    fun getStringFromResources(@StringRes resId: Int): String {
+        return resources.getString(resId)
     }
 
 

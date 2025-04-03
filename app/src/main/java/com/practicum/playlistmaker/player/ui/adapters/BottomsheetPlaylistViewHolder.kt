@@ -19,7 +19,6 @@ class BottomsheetPlaylistViewHolder(
             }
 
             name.text = model.name
-            //TODO склонения проверить
             count.text = "${model.tracks.size} ${declination(model.tracks.size)}"
         }
     }

@@ -70,6 +70,7 @@ class AudioPlayerViewModel(
         changePlayerStatus(
             PlayerStatus.Paused
         )
+
     }
 
     fun playbackControl() {

@@ -49,6 +49,7 @@ class PlaybackButtonView @JvmOverloads constructor(
         when (event.action) {
             MotionEvent.ACTION_DOWN,
             MotionEvent.ACTION_UP -> {
+                changeState()
                 return false
             }
         }
@@ -62,36 +63,22 @@ class PlaybackButtonView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (ready) {
-            if (playing) {
-                canvas.drawButtonPause()
-            } else {
-                canvas.drawButtonPlay()
+        var imageToDraw = imageDisable
+
+        imageToDraw = when (ready) {
+            true -> {
+                if (playing) imagePause else imagePlay
             }
-        } else {
-            canvas.drawButtonDisable()
+
+            false -> imageToDraw
         }
 
+        imageToDraw?.let {
+            canvas.drawBitmap(imageToDraw, null, imageRect, null)
+        }
 
     }
 
-    private fun Canvas.drawButtonPlay() {
-        imagePlay?.let {
-            this.drawBitmap(imagePlay, null, imageRect, null)
-        }
-    }
-
-    private fun Canvas.drawButtonPause() {
-        imagePause?.let {
-            this.drawBitmap(imagePause, null, imageRect, null)
-        }
-    }
-
-    private fun Canvas.drawButtonDisable() {
-        imageDisable?.let {
-            this.drawBitmap(imageDisable, null, imageRect, null)
-        }
-    }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -101,6 +88,13 @@ class PlaybackButtonView @JvmOverloads constructor(
 
     override fun performClick(): Boolean {
         return super.performClick()
+    }
+
+    private fun changeState() {
+        when (playing) {
+            true -> preparedOrPausedState()
+            false -> playingState()
+        }
     }
 
     fun defaultState() {

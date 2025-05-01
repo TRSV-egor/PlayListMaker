@@ -252,12 +252,10 @@ class PlayerFragment : Fragment() {
     }
 
     private fun paused() {
-        binding.customButtonPlay.preparedOrPausedState()
         binding.customButtonPlay.isEnabled = true
     }
 
     private fun playing(timer: String) {
-        binding.customButtonPlay.playingState()
         binding.customButtonPlay.isEnabled = true
         binding.trackTimer.text = timer
     }

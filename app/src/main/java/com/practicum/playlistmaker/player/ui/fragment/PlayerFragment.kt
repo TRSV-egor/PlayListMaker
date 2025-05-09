@@ -1,5 +1,7 @@
 package com.practicum.playlistmaker.player.ui.fragment
 
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -29,6 +32,7 @@ import com.practicum.playlistmaker.search.ui.dpToPx
 import com.practicum.playlistmaker.search.ui.fragment.SearchFragment.Companion.TRACK_BUNDLE
 import com.practicum.playlistmaker.util.DateFormater
 import com.practicum.playlistmaker.util.GetCoverArtworkLink
+import com.practicum.playlistmaker.util.NetworkBroadcastReciever
 import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -39,6 +43,8 @@ class PlayerFragment : Fragment() {
     private var isClickAllowed = true
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+
+    private val networkBroadcastReciever = NetworkBroadcastReciever()
 
     private val clickDebounce =
         debounce<Boolean>(CLICK_DEBOUNCE_DELAY, lifecycleScope, false) { allowed ->
@@ -64,6 +70,16 @@ class PlayerFragment : Fragment() {
                 track = it.getParcelable(TRACK_BUNDLE)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        ContextCompat.registerReceiver(
+            requireContext(),
+            networkBroadcastReciever,
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
     }
 
     override fun onCreateView(
@@ -189,6 +205,12 @@ class PlayerFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         audioPlayerViewModel.releaseAudioPlayer()
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        requireContext().unregisterReceiver(networkBroadcastReciever)
     }
 
     private fun render(status: PlayerStatus) {

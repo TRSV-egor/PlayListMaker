@@ -19,6 +19,8 @@ coroutines = "1.6.4"
 roomKtx = "2.5.1"
 roomCompiler = "2.5.1"
 roomRuntime = "2.5.1"
+fireBom = "33.12.0"
+playServicesMeasurementApi = "22.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,9 +43,13 @@ coroutines = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-androi
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
+firebase-analytics = {group = "com.google.firebase", name = "firebase-analytics"}
+firebase-bom = {group = "com.google.firebase", name = "firebase-bom", version.ref = "fireBom"}
+play-services-measurement-api = { group = "com.google.android.gms", name = "play-services-measurement-api", version.ref = "playServicesMeasurementApi" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 parcelize = { id = "kotlin-parcelize" }
 ksp = { id = "com.google.devtools.ksp" }
+google-services = { id = "com.google.gms.google-services"}

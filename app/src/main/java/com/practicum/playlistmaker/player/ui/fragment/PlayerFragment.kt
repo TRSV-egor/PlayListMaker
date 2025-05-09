@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlayerBinding
 import com.practicum.playlistmaker.media.domain.model.PlaylistModel
@@ -43,6 +45,7 @@ class PlayerFragment : Fragment() {
             isClickAllowed = allowed
         }
 
+    private lateinit var analytics: FirebaseAnalytics
     private lateinit var binding: FragmentPlayerBinding
     private val audioPlayerViewModel: AudioPlayerViewModel by viewModel<AudioPlayerViewModel>()
 
@@ -53,6 +56,7 @@ class PlayerFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        analytics = FirebaseAnalytics.getInstance(requireContext())
         arguments?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 track = it.getParcelable(TRACK_BUNDLE, Track::class.java)
@@ -147,13 +151,16 @@ class PlayerFragment : Fragment() {
             }
         }
 
-
-        binding.buttonPlay.setOnClickListener {
+        binding.customButtonPlay.setOnTouchListener { view, event ->
+            view.performClick()
             audioPlayerViewModel.playbackControl()
+            false
         }
+
         binding.arrowBack.setOnClickListener {
             findNavController().navigateUp()
         }
+
         binding.mediaButtonNewPlaylist.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             findNavController().navigate(
@@ -161,6 +168,9 @@ class PlayerFragment : Fragment() {
             )
         }
         binding.buttonPlaylist.setOnClickListener {
+
+            analytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, bundleOf(TRACK_BUNDLE to track))
+
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             audioPlayerViewModel.getPlaylists()
         }
@@ -170,7 +180,6 @@ class PlayerFragment : Fragment() {
 
 
     }
-
 
     override fun onPause() {
         super.onPause()
@@ -192,16 +201,13 @@ class PlayerFragment : Fragment() {
     }
 
     private fun default(track: Track) {
-        binding.buttonPlay.background =
-            AppCompatResources.getDrawable(requireContext(), R.drawable.audioplayer_play_not_ready)
-        binding.buttonPlay.isEnabled = false
-
+        binding.customButtonPlay.defaultState()
+        binding.customButtonPlay.isEnabled = false
         audioPlayerViewModel.checkFavoriteStatus(track)
 
         binding.buttonFavorites.setOnClickListener {
             audioPlayerViewModel.changeFavoriteStatus(track)
         }
-
 
         with(binding) {
             Glide.with(trackImage.context)
@@ -240,23 +246,17 @@ class PlayerFragment : Fragment() {
     }
 
     private fun prepared(isTrackCompleted: Boolean) {
-        binding.buttonPlay.background =
-            AppCompatResources.getDrawable(requireContext(), R.drawable.audioplayer_play)
-        binding.buttonPlay.isEnabled = true
+        binding.customButtonPlay.preparedOrPausedState()
+        binding.customButtonPlay.isEnabled = true
         if (isTrackCompleted) binding.trackTimer.text = PlayerStatus.ZERO_TIMER
-
     }
 
     private fun paused() {
-        binding.buttonPlay.background =
-            AppCompatResources.getDrawable(requireContext(), R.drawable.audioplayer_play)
-        binding.buttonPlay.isEnabled = true
+        binding.customButtonPlay.isEnabled = true
     }
 
     private fun playing(timer: String) {
-        binding.buttonPlay.background =
-            AppCompatResources.getDrawable(requireContext(), R.drawable.audioplayer_pause)
-        binding.buttonPlay.isEnabled = true
+        binding.customButtonPlay.isEnabled = true
         binding.trackTimer.text = timer
     }
 

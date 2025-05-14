@@ -1,9 +1,14 @@
 package com.practicum.playlistmaker.player.ui.fragment
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +28,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlayerBinding
 import com.practicum.playlistmaker.media.domain.model.PlaylistModel
+import com.practicum.playlistmaker.player.service.AudioPlayerService
 import com.practicum.playlistmaker.player.ui.adapters.BottomsheetPlaylistAdapter
 import com.practicum.playlistmaker.player.ui.models.PlayerStatus
 import com.practicum.playlistmaker.player.ui.models.PlaylistStatus
@@ -34,42 +40,101 @@ import com.practicum.playlistmaker.util.DateFormater
 import com.practicum.playlistmaker.util.GetCoverArtworkLink
 import com.practicum.playlistmaker.util.NetworkBroadcastReciever
 import com.practicum.playlistmaker.util.debounce
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerFragment : Fragment() {
 
-    private var track: Track? = null
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val AUDIOPLAYER_IMAGE_RESOLUTION = 512
+        private const val AUDIOPLAYER_IMAGE_ROUNDED_CORNER = 8f
+        private const val TIMER_TRACK_DURATION = 30000L
+        private const val DESCRIPTION_YEAR_VALUE_INDEX_START = 0
+        private const val DESCRIPTION_YEAR_VALUE_INDEX_END = 4
+        const val TRACK_PREVIEW_URL = "previewUrl"
+
+        @JvmStatic
+        fun newInstance(track: Track) =
+            PlayerFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(TRACK_BUNDLE, track)
+                }
+            }
+    }
+
+    //region Базовые настройки фрагмента
+    private lateinit var track: Track
 
     private var isClickAllowed = true
 
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
-
-    private val networkBroadcastReciever = NetworkBroadcastReciever()
-
-    private val clickDebounce =
-        debounce<Boolean>(CLICK_DEBOUNCE_DELAY, lifecycleScope, false) { allowed ->
-            isClickAllowed = allowed
-        }
-
-    private lateinit var analytics: FirebaseAnalytics
-    private lateinit var binding: FragmentPlayerBinding
     private val audioPlayerViewModel: AudioPlayerViewModel by viewModel<AudioPlayerViewModel>()
-
 
     private var adapterPlaylists = BottomsheetPlaylistAdapter { item ->
         onPlaylistClick(item)
     }
 
+    private val networkBroadcastReciever = NetworkBroadcastReciever()
+
+    private lateinit var binding: FragmentPlayerBinding
+
+    private val clickDebounce =
+        debounce<Boolean>(CLICK_DEBOUNCE_DELAY, lifecycleScope, false) { allowed ->
+            isClickAllowed = allowed
+        }
+    //endregion
+
+    //region Bottom sheet
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    //endregion
+
+    //region FireBase
+    private lateinit var analytics: FirebaseAnalytics
+    //endregion
+
+    //region Сервис
+    private var audioPlayerService: AudioPlayerService? = null
+
+    //TODO А надо ли?
+    private var playerStatus: PlayerStatus = PlayerStatus.Default
+
+    private val serviceConnection = object : ServiceConnection {
+
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as AudioPlayerService.AudioPlayerServiceBinder
+            audioPlayerService = binder.getService()
+
+            lifecycleScope.launch {
+                audioPlayerService?.playerState?.collect {
+
+                    //TODO к слову а надо ли
+                    playerStatus = it
+                    //updateButtonAndProgress()
+                    render(playerStatus)
+                    //render(it)
+                }
+            }
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            audioPlayerService = null
+        }
+    }
+    //endregion
+
+
+    //region Жизненный цикл Fragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         analytics = FirebaseAnalytics.getInstance(requireContext())
         arguments?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                track = it.getParcelable(TRACK_BUNDLE, Track::class.java)
+                track = it.getParcelable(TRACK_BUNDLE, Track::class.java)!!
             } else {
-                track = it.getParcelable(TRACK_BUNDLE)
+                track = it.getParcelable(TRACK_BUNDLE)!!
             }
         }
+        bindMusicService()
     }
 
     override fun onResume() {
@@ -92,6 +157,7 @@ class PlayerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        render(playerStatus)
 
         bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistsBottomSheet).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
@@ -124,9 +190,9 @@ class PlayerFragment : Fragment() {
         binding.audioplayerRecyclerview.adapter = adapterPlaylists
 
 
-        audioPlayerViewModel.observerPlayer().observe(viewLifecycleOwner) {
-            render(it)
-        }
+//        audioPlayerViewModel.observerPlayer().observe(viewLifecycleOwner) {
+//            render(it)
+//        }
 
         audioPlayerViewModel.observePlaylist().observe(viewLifecycleOwner) {
             adapterPlaylists.playlistList.clear()
@@ -169,7 +235,8 @@ class PlayerFragment : Fragment() {
 
         binding.customButtonPlay.setOnTouchListener { view, event ->
             view.performClick()
-            audioPlayerViewModel.playbackControl()
+            //audioPlayerViewModel.playbackControl()
+            audioPlayerService?.playbackControl()
             false
         }
 
@@ -192,37 +259,45 @@ class PlayerFragment : Fragment() {
         }
 
 
-        audioPlayerViewModel.fillPlayer(track ?: return)
+        //audioPlayerViewModel.fillPlayer(track ?: return)
 
 
     }
 
     override fun onPause() {
         super.onPause()
-        audioPlayerViewModel.pauseMediaPlayer()
+        //audioPlayerViewModel.pauseMediaPlayer()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        audioPlayerViewModel.releaseAudioPlayer()
+        //audioPlayerViewModel.releaseAudioPlayer()
+        //audioPlayerService?.releasePlayer()
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        unbindMusicService()
         requireContext().unregisterReceiver(networkBroadcastReciever)
     }
+    //endregion
 
     private fun render(status: PlayerStatus) {
         when (status) {
-            is PlayerStatus.Default -> default(status.track)
+//            is PlayerStatus.Default -> default(status.track)
+//            is PlayerStatus.Prepared -> prepared(status.isTrackCompleted)
+//            is PlayerStatus.Paused -> paused()
+//            is PlayerStatus.Playing -> playing(status.timer)
+            is PlayerStatus.Default -> default()
             is PlayerStatus.Prepared -> prepared(status.isTrackCompleted)
             is PlayerStatus.Paused -> paused()
             is PlayerStatus.Playing -> playing(status.timer)
         }
     }
 
-    private fun default(track: Track) {
+    private fun default() {
+
         binding.customButtonPlay.defaultState()
         binding.customButtonPlay.isEnabled = false
         audioPlayerViewModel.checkFavoriteStatus(track)
@@ -286,29 +361,25 @@ class PlayerFragment : Fragment() {
         track?.let { audioPlayerViewModel.addTrackToPlaylist(it, playlistModel) }
     }
 
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            clickDebounce(true)
+//    private fun clickDebounce(): Boolean {
+//        val current = isClickAllowed
+//        if (isClickAllowed) {
+//            isClickAllowed = false
+//            clickDebounce(true)
+//        }
+//        return current
+//    }
+
+    private fun bindMusicService() {
+        val intent = Intent(requireContext(), AudioPlayerService::class.java).apply {
+            putExtra(TRACK_PREVIEW_URL, track?.previewUrl)
         }
-        return current
+
+        requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
-    companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-        private const val AUDIOPLAYER_IMAGE_RESOLUTION = 512
-        private const val AUDIOPLAYER_IMAGE_ROUNDED_CORNER = 8f
-        private const val TIMER_TRACK_DURATION = 30000L
-        private const val DESCRIPTION_YEAR_VALUE_INDEX_START = 0
-        private const val DESCRIPTION_YEAR_VALUE_INDEX_END = 4
-
-        @JvmStatic
-        fun newInstance(track: Track) =
-            PlayerFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(TRACK_BUNDLE, track)
-                }
-            }
+    private fun unbindMusicService() {
+        requireContext().unbindService(serviceConnection)
     }
+
 }

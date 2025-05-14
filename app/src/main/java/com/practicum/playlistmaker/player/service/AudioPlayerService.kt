@@ -5,26 +5,32 @@ import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
 import android.os.Binder
-import android.os.Build
 import android.os.IBinder
-import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.fragment.SearchFragment
+import com.practicum.playlistmaker.player.ui.fragment.PlayerFragment.Companion.TRACK_PREVIEW_URL
+import com.practicum.playlistmaker.player.ui.models.PlayerStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Locale
 
 class AudioPlayerService : Service() {
 
+    companion object {
+        private const val TIMER_UPD = 300L
+    }
+
     private val binder = AudioPlayerServiceBinder()
 
-    //private val _playerState = MutableStateFlow<PlayerStatus>()
-    //val playerState = _playerState.asStateFlow()
+    //Вместо LiveData в AudioPlayerViewModel
+    private val _playerState = MutableStateFlow<PlayerStatus>(PlayerStatus.Default)
+    val playerState = _playerState.asStateFlow()
 
-    //private var songUrl = ""
-    private var track: Track? = null
+    //private var track: Track? = null
+    private var previewUrl: String = ""
 
     private var mediaPlayer: MediaPlayer? = null
 
@@ -37,19 +43,16 @@ class AudioPlayerService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? {
 
-        track = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent?.getParcelableExtra(SearchFragment.TRACK_BUNDLE, Track::class.java)
-        } else {
-            intent?.getParcelableExtra(SearchFragment.TRACK_BUNDLE)
-        }
+        previewUrl = intent?.getStringExtra(TRACK_PREVIEW_URL) ?: ""
 
-        initMediaPlayer()
+        preparePlayer()
 
         return binder
 
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
+        releasePlayer()
         return super.onUnbind(intent)
     }
 
@@ -57,46 +60,61 @@ class AudioPlayerService : Service() {
         fun getService(): AudioPlayerService = this@AudioPlayerService
     }
 
-    private fun initMediaPlayer() {
-        if (track?.previewUrl.isNullOrEmpty()) return
+    fun playbackControl() {
+        when (_playerState.value) {
+            is PlayerStatus.Playing -> {
+                pausePlayer()
+            }
 
-        mediaPlayer?.setDataSource(track?.previewUrl)
-        mediaPlayer?.prepareAsync()
-        mediaPlayer?.setOnPreparedListener {
-            //_playerState.value = PlayerState.Prepared()
-        }
-        mediaPlayer?.setOnCompletionListener {
-            //_playerState.value = PlayerState.Prepared()
-        }
-    }
+            is PlayerStatus.Prepared, PlayerStatus.Paused -> {
+                startPlayer()
+            }
 
-    fun startPlayer() {
-        mediaPlayer?.start()
-        //_playerState.value = PlayerState.Playing(getCurrentPlayerPosition())
-        startTimer()
+            else -> {}
+        }
     }
 
     fun pausePlayer() {
         mediaPlayer?.pause()
         timerJob?.cancel()
-        //_playerState.value = PlayerState.Paused(getCurrentPlayerPosition())
+        _playerState.value = PlayerStatus.Paused
     }
 
-    private fun releasePlayer() {
+    fun releasePlayer() {
         timerJob?.cancel()
         mediaPlayer?.stop()
-        //_playerState.value = PlayerState.Default()
+        _playerState.value = PlayerStatus.Default
         mediaPlayer?.setOnPreparedListener(null)
         mediaPlayer?.setOnCompletionListener(null)
         mediaPlayer?.release()
         mediaPlayer = null
     }
 
+    private fun preparePlayer() {
+        if (previewUrl.isEmpty()) return
+
+        mediaPlayer?.setDataSource(previewUrl)
+        mediaPlayer?.prepareAsync()
+        mediaPlayer?.setOnPreparedListener {
+            _playerState.value = PlayerStatus.Prepared(false)
+        }
+        mediaPlayer?.setOnCompletionListener {
+            mediaPlayer?.seekTo(0)
+            _playerState.value = PlayerStatus.Prepared(true)
+        }
+    }
+
+    fun startPlayer() {
+        mediaPlayer?.start()
+        _playerState.value = PlayerStatus.Playing(getCurrentPlayerPosition())
+        startTimer()
+    }
+
     private fun startTimer() {
         timerJob = CoroutineScope(Dispatchers.Default).launch {
             while (mediaPlayer?.isPlaying == true) {
-                delay(200L)
-                //_playerState.value = PlayerState.Playing(getCurrentPlayerPosition())
+                delay(TIMER_UPD)
+                _playerState.value = PlayerStatus.Playing(getCurrentPlayerPosition())
             }
         }
     }

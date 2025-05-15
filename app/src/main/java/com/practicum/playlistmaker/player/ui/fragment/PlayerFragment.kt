@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.player.ui.fragment
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -14,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -95,9 +97,6 @@ class PlayerFragment : Fragment() {
     //region Сервис
     private var audioPlayerService: AudioPlayerService? = null
 
-    //TODO А надо ли?
-    private var playerStatus: PlayerStatus = PlayerStatus.Default
-
     private val serviceConnection = object : ServiceConnection {
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -106,12 +105,7 @@ class PlayerFragment : Fragment() {
 
             lifecycleScope.launch {
                 audioPlayerService?.playerState?.collect {
-
-                    //TODO к слову а надо ли
-                    playerStatus = it
-                    //updateButtonAndProgress()
-                    render(playerStatus)
-                    //render(it)
+                    render(it)
                 }
             }
         }
@@ -139,6 +133,7 @@ class PlayerFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        audioPlayerService?.stopNotification()
         ContextCompat.registerReceiver(
             requireContext(),
             networkBroadcastReciever,
@@ -157,7 +152,6 @@ class PlayerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        render(playerStatus)
 
         bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistsBottomSheet).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
@@ -184,15 +178,9 @@ class PlayerFragment : Fragment() {
             }
         })
 
-
         binding.audioplayerRecyclerview.layoutManager =
             LinearLayoutManager(requireContext())
         binding.audioplayerRecyclerview.adapter = adapterPlaylists
-
-
-//        audioPlayerViewModel.observerPlayer().observe(viewLifecycleOwner) {
-//            render(it)
-//        }
 
         audioPlayerViewModel.observePlaylist().observe(viewLifecycleOwner) {
             adapterPlaylists.playlistList.clear()
@@ -235,7 +223,6 @@ class PlayerFragment : Fragment() {
 
         binding.customButtonPlay.setOnTouchListener { view, event ->
             view.performClick()
-            //audioPlayerViewModel.playbackControl()
             audioPlayerService?.playbackControl()
             false
         }
@@ -258,14 +245,19 @@ class PlayerFragment : Fragment() {
             audioPlayerViewModel.getPlaylists()
         }
 
-
-        //audioPlayerViewModel.fillPlayer(track ?: return)
-
-
     }
 
     override fun onPause() {
         super.onPause()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            // На версиях ниже Android 13 —
+            // можно сразу стартовать сервис.
+            audioPlayerService?.startNotification()
+        }
+
         //audioPlayerViewModel.pauseMediaPlayer()
     }
 
@@ -300,8 +292,9 @@ class PlayerFragment : Fragment() {
 
         binding.customButtonPlay.defaultState()
         binding.customButtonPlay.isEnabled = false
-        audioPlayerViewModel.checkFavoriteStatus(track)
 
+        audioPlayerViewModel.checkFavoriteStatus(track)
+        binding.buttonFavorites.isEnabled = true
         binding.buttonFavorites.setOnClickListener {
             audioPlayerViewModel.changeFavoriteStatus(track)
         }
@@ -339,7 +332,7 @@ class PlayerFragment : Fragment() {
             descriptionCountryValue.text = track.country
         }
 
-        binding.buttonFavorites.isEnabled = true
+
     }
 
     private fun prepared(isTrackCompleted: Boolean) {
@@ -380,6 +373,19 @@ class PlayerFragment : Fragment() {
 
     private fun unbindMusicService() {
         requireContext().unbindService(serviceConnection)
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Если выдали разрешение — запускаем сервис.
+            audioPlayerService?.startNotification()
+        } else {
+            // Иначе просто покажем ошибку
+            Toast.makeText(requireContext(), "Can't start foreground service!", Toast.LENGTH_LONG)
+                .show()
+        }
     }
 
 }

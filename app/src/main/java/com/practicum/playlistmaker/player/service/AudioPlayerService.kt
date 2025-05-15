@@ -1,11 +1,20 @@
 package com.practicum.playlistmaker.player.service
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
+import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.player.ui.fragment.PlayerFragment.Companion.TRACK_PREVIEW_URL
 import com.practicum.playlistmaker.player.ui.models.PlayerStatus
 import kotlinx.coroutines.CoroutineScope
@@ -21,6 +30,8 @@ class AudioPlayerService : Service() {
 
     companion object {
         private const val TIMER_UPD = 300L
+        const val SERVICE_NOTIFICATION_ID = 100
+        const val NOTIFICATION_CHANNEL_ID = "music_service_channel"
     }
 
     private val binder = AudioPlayerServiceBinder()
@@ -38,6 +49,7 @@ class AudioPlayerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        createNotificationChannel()
         mediaPlayer = MediaPlayer()
     }
 
@@ -99,6 +111,7 @@ class AudioPlayerService : Service() {
             _playerState.value = PlayerStatus.Prepared(false)
         }
         mediaPlayer?.setOnCompletionListener {
+            timerJob?.cancel()
             mediaPlayer?.seekTo(0)
             _playerState.value = PlayerStatus.Prepared(true)
         }
@@ -112,7 +125,7 @@ class AudioPlayerService : Service() {
 
     private fun startTimer() {
         timerJob = CoroutineScope(Dispatchers.Default).launch {
-            while (mediaPlayer?.isPlaying == true) {
+            while (_playerState.value is PlayerStatus.Playing) {
                 delay(TIMER_UPD)
                 _playerState.value = PlayerStatus.Playing(getCurrentPlayerPosition())
             }
@@ -124,4 +137,58 @@ class AudioPlayerService : Service() {
             ?: "00:00"
     }
 
+    fun startNotification() {
+
+        ServiceCompat.startForeground(
+            /* service = */ this,
+            /* id = */ SERVICE_NOTIFICATION_ID,
+            /* notification = */ createServiceNotification(),
+            /* foregroundServiceType = */ getForegroundServiceTypeConstant()
+        )
+    }
+
+    fun stopNotification() {
+        ServiceCompat.stopForeground(
+            /* service = */ this, ServiceCompat.STOP_FOREGROUND_DETACH,
+        )
+    }
+
+    private fun createNotificationChannel() {
+        // Создание каналов доступно только с Android 8.0
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return
+        }
+
+        val channel = NotificationChannel(
+            /* id= */ NOTIFICATION_CHANNEL_ID,
+            /* name= */ "Audioplayer",
+            /* importance= */ NotificationManager.IMPORTANCE_DEFAULT
+        )
+        channel.description = "Service for playing music"
+
+        // Регистрируем канал уведомлений
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
+
+    private fun createServiceNotification(): Notification {
+        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+            .setContentTitle("PlaylistMaker")
+            .setContentText("SONG_NAME : AUTHOR")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .build()
+    }
+
+    private fun getForegroundServiceTypeConstant(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+        } else {
+            0
+        }
+    }
 }
+
+

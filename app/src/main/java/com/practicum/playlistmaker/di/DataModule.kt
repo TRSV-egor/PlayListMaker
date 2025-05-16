@@ -5,8 +5,6 @@ import android.content.SharedPreferences
 import android.media.MediaPlayer
 import androidx.room.Room
 import com.practicum.playlistmaker.media.data.db.AppDatabase
-import com.practicum.playlistmaker.player.data.MediaPlayerClient
-import com.practicum.playlistmaker.player.data.media_player.MediaPlayerClientImpl
 import com.practicum.playlistmaker.search.data.LocalData
 import com.practicum.playlistmaker.search.data.NetworkClient
 import com.practicum.playlistmaker.search.data.network.ItunesAPI
@@ -27,10 +25,6 @@ val dataModule = module {
 
     single<ExecutorService> {
         Executors.newCachedThreadPool()
-    }
-
-    factory<MediaPlayerClient>{
-        MediaPlayerClientImpl(mediaPlayer = get())
     }
 
     factory<MediaPlayer>{

@@ -10,7 +10,6 @@ import android.content.pm.ServiceInfo
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
 import android.os.Binder
-import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
@@ -28,6 +27,7 @@ import java.util.Locale
 
 class AudioPlayerService : Service() {
 
+    //region Переменные
     companion object {
         private const val TIMER_UPD = 300L
         const val SERVICE_NOTIFICATION_ID = 100
@@ -36,42 +36,43 @@ class AudioPlayerService : Service() {
 
     private val binder = AudioPlayerServiceBinder()
 
-    //Вместо LiveData в AudioPlayerViewModel
     private val _playerState = MutableStateFlow<PlayerStatus>(PlayerStatus.Default)
     val playerState = _playerState.asStateFlow()
 
-    //private var track: Track? = null
     private var previewUrl: String = ""
 
     private var mediaPlayer: MediaPlayer? = null
 
     private var timerJob: Job? = null
 
+    //endregion
+
+    //region Жизненный цикл
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
         mediaPlayer = MediaPlayer()
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-
+    override fun onBind(intent: Intent?): IBinder {
         previewUrl = intent?.getStringExtra(TRACK_PREVIEW_URL) ?: ""
-
         preparePlayer()
-
         return binder
-
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
         releasePlayer()
         return super.onUnbind(intent)
     }
+    //endregion
 
+    //region Служебные
     inner class AudioPlayerServiceBinder : Binder() {
         fun getService(): AudioPlayerService = this@AudioPlayerService
     }
+    //endregion
 
+    //region Управление плеером
     fun playbackControl() {
         when (_playerState.value) {
             is PlayerStatus.Playing -> {
@@ -84,6 +85,10 @@ class AudioPlayerService : Service() {
 
             else -> {}
         }
+    }
+
+    fun getStatus(): PlayerStatus {
+        return playerState.value
     }
 
     fun pausePlayer() {
@@ -136,28 +141,25 @@ class AudioPlayerService : Service() {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer?.currentPosition)
             ?: "00:00"
     }
+    //endregion
 
-    fun startNotification() {
-
+    //region Notification
+    fun startNotification(description: String) {
         ServiceCompat.startForeground(
             /* service = */ this,
             /* id = */ SERVICE_NOTIFICATION_ID,
-            /* notification = */ createServiceNotification(),
+            /* notification = */ createServiceNotification(description),
             /* foregroundServiceType = */ getForegroundServiceTypeConstant()
         )
     }
 
     fun stopNotification() {
         ServiceCompat.stopForeground(
-            /* service = */ this, ServiceCompat.STOP_FOREGROUND_DETACH,
+            /* service = */ this, ServiceCompat.STOP_FOREGROUND_REMOVE,
         )
     }
 
     private fun createNotificationChannel() {
-        // Создание каналов доступно только с Android 8.0
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return
-        }
 
         val channel = NotificationChannel(
             /* id= */ NOTIFICATION_CHANNEL_ID,
@@ -165,17 +167,15 @@ class AudioPlayerService : Service() {
             /* importance= */ NotificationManager.IMPORTANCE_DEFAULT
         )
         channel.description = "Service for playing music"
-
-        // Регистрируем канал уведомлений
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 
-    private fun createServiceNotification(): Notification {
+    private fun createServiceNotification(description: String): Notification {
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle("PlaylistMaker")
-            .setContentText("SONG_NAME : AUTHOR")
+            .setContentText(description)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
@@ -183,12 +183,9 @@ class AudioPlayerService : Service() {
     }
 
     private fun getForegroundServiceTypeConstant(): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
-        } else {
-            0
-        }
+        return ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
     }
+    //endregion
 }
 
 

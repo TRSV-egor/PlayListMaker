@@ -4,8 +4,6 @@ import com.practicum.playlistmaker.media.domain.db.impl.FavoriteTrackInteractorI
 import com.practicum.playlistmaker.media.domain.db.impl.PlaylistInteractorImpl
 import com.practicum.playlistmaker.media.domain.db.interfaces.FavoriteTrackInteractor
 import com.practicum.playlistmaker.media.domain.db.interfaces.PlaylistInteractor
-import com.practicum.playlistmaker.player.domain.AudioPlayerInteractor
-import com.practicum.playlistmaker.player.domain.impl.AudioPlayerInteractorImpl
 import com.practicum.playlistmaker.search.domain.TracksInteractor
 import com.practicum.playlistmaker.search.domain.impl.TracksInteractorImpl
 import com.practicum.playlistmaker.settings.domain.SettingsInteractor
@@ -13,10 +11,6 @@ import com.practicum.playlistmaker.settings.domain.impl.SettingsInteractorImpl
 import org.koin.dsl.module
 
 val interactorModule = module {
-
-    factory<AudioPlayerInteractor>{
-        AudioPlayerInteractorImpl(repository = get())
-    }
 
     factory<TracksInteractor> {
         TracksInteractorImpl(

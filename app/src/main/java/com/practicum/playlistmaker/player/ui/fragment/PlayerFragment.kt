@@ -38,20 +38,18 @@ import com.practicum.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.dpToPx
 import com.practicum.playlistmaker.search.ui.fragment.SearchFragment.Companion.TRACK_BUNDLE
-import com.practicum.playlistmaker.util.DateFormater
 import com.practicum.playlistmaker.util.GetCoverArtworkLink
 import com.practicum.playlistmaker.util.NetworkBroadcastReciever
-import com.practicum.playlistmaker.util.debounce
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerFragment : Fragment() {
 
+    //region Переменные
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val AUDIOPLAYER_IMAGE_RESOLUTION = 512
         private const val AUDIOPLAYER_IMAGE_ROUNDED_CORNER = 8f
-        private const val TIMER_TRACK_DURATION = 30000L
         private const val DESCRIPTION_YEAR_VALUE_INDEX_START = 0
         private const val DESCRIPTION_YEAR_VALUE_INDEX_END = 4
         const val TRACK_PREVIEW_URL = "previewUrl"
@@ -65,7 +63,6 @@ class PlayerFragment : Fragment() {
             }
     }
 
-    //region Базовые настройки фрагмента
     private lateinit var track: Track
 
     private var isClickAllowed = true
@@ -80,10 +77,6 @@ class PlayerFragment : Fragment() {
 
     private lateinit var binding: FragmentPlayerBinding
 
-    private val clickDebounce =
-        debounce<Boolean>(CLICK_DEBOUNCE_DELAY, lifecycleScope, false) { allowed ->
-            isClickAllowed = allowed
-        }
     //endregion
 
     //region Bottom sheet
@@ -117,29 +110,42 @@ class PlayerFragment : Fragment() {
     //endregion
 
 
-    //region Жизненный цикл Fragment
+    //region Жизненный цикл
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         analytics = FirebaseAnalytics.getInstance(requireContext())
         arguments?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                track = it.getParcelable(TRACK_BUNDLE, Track::class.java)!!
+                audioPlayerViewModel.setTrack(it.getParcelable(TRACK_BUNDLE, Track::class.java)!!)
             } else {
-                track = it.getParcelable(TRACK_BUNDLE)!!
+                audioPlayerViewModel.setTrack(it.getParcelable(TRACK_BUNDLE)!!)
             }
         }
+        track = audioPlayerViewModel.observerTrack().value as Track
         bindMusicService()
     }
 
     override fun onResume() {
         super.onResume()
+
         audioPlayerService?.stopNotification()
+
         ContextCompat.registerReceiver(
             requireContext(),
             networkBroadcastReciever,
             IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
             ContextCompat.RECEIVER_NOT_EXPORTED,
         )
+
+        if (audioPlayerService?.getStatus() != null) {
+            when (audioPlayerService?.getStatus()) {
+                is PlayerStatus.Default -> binding.customButtonPlay.defaultState()
+                is PlayerStatus.Prepared, PlayerStatus.Paused -> binding.customButtonPlay.preparedOrPausedState()
+                is PlayerStatus.Playing -> binding.customButtonPlay.playingState()
+                else -> {}
+            }
+        }
+
     }
 
     override fun onCreateView(
@@ -181,6 +187,10 @@ class PlayerFragment : Fragment() {
         binding.audioplayerRecyclerview.layoutManager =
             LinearLayoutManager(requireContext())
         binding.audioplayerRecyclerview.adapter = adapterPlaylists
+
+        audioPlayerViewModel.observerTrack().observe(viewLifecycleOwner) {
+            fillPlayer()
+        }
 
         audioPlayerViewModel.observePlaylist().observe(viewLifecycleOwner) {
             adapterPlaylists.playlistList.clear()
@@ -245,28 +255,21 @@ class PlayerFragment : Fragment() {
             audioPlayerViewModel.getPlaylists()
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+
     }
 
     override fun onPause() {
         super.onPause()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        } else {
-            // На версиях ниже Android 13 —
-            // можно сразу стартовать сервис.
-            audioPlayerService?.startNotification()
+        if (audioPlayerService?.getStatus() is PlayerStatus.Playing) {
+            audioPlayerService?.startNotification("${track.artistName} - ${track.trackName}")
         }
 
-        //audioPlayerViewModel.pauseMediaPlayer()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        //audioPlayerViewModel.releaseAudioPlayer()
-        //audioPlayerService?.releasePlayer()
-
-    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -275,12 +278,9 @@ class PlayerFragment : Fragment() {
     }
     //endregion
 
+    //region Служебные
     private fun render(status: PlayerStatus) {
         when (status) {
-//            is PlayerStatus.Default -> default(status.track)
-//            is PlayerStatus.Prepared -> prepared(status.isTrackCompleted)
-//            is PlayerStatus.Paused -> paused()
-//            is PlayerStatus.Playing -> playing(status.timer)
             is PlayerStatus.Default -> default()
             is PlayerStatus.Prepared -> prepared(status.isTrackCompleted)
             is PlayerStatus.Paused -> paused()
@@ -288,11 +288,7 @@ class PlayerFragment : Fragment() {
         }
     }
 
-    private fun default() {
-
-        binding.customButtonPlay.defaultState()
-        binding.customButtonPlay.isEnabled = false
-
+    private fun fillPlayer() {
         audioPlayerViewModel.checkFavoriteStatus(track)
         binding.buttonFavorites.isEnabled = true
         binding.buttonFavorites.setOnClickListener {
@@ -317,7 +313,7 @@ class PlayerFragment : Fragment() {
                 )
                 .into(binding.trackImage)
 
-            trackTimer.text = DateFormater.mmSS(TIMER_TRACK_DURATION)
+            trackTimer.text = PlayerStatus.ZERO_TIMER
 
             trackArtist.text = track.artistName
             trackName.text = track.trackName
@@ -331,14 +327,20 @@ class PlayerFragment : Fragment() {
             descriptionStyleValue.text = track.primaryGenreName
             descriptionCountryValue.text = track.country
         }
+    }
 
-
+    private fun default() {
+        binding.customButtonPlay.defaultState()
+        binding.customButtonPlay.isEnabled = false
     }
 
     private fun prepared(isTrackCompleted: Boolean) {
         binding.customButtonPlay.preparedOrPausedState()
         binding.customButtonPlay.isEnabled = true
-        if (isTrackCompleted) binding.trackTimer.text = PlayerStatus.ZERO_TIMER
+        if (isTrackCompleted) {
+            binding.trackTimer.text = PlayerStatus.ZERO_TIMER
+            audioPlayerService?.stopNotification()
+        }
     }
 
     private fun paused() {
@@ -351,21 +353,12 @@ class PlayerFragment : Fragment() {
     }
 
     private fun onPlaylistClick(playlistModel: PlaylistModel) {
-        track?.let { audioPlayerViewModel.addTrackToPlaylist(it, playlistModel) }
+        audioPlayerViewModel.addTrackToPlaylist(track, playlistModel)
     }
-
-//    private fun clickDebounce(): Boolean {
-//        val current = isClickAllowed
-//        if (isClickAllowed) {
-//            isClickAllowed = false
-//            clickDebounce(true)
-//        }
-//        return current
-//    }
 
     private fun bindMusicService() {
         val intent = Intent(requireContext(), AudioPlayerService::class.java).apply {
-            putExtra(TRACK_PREVIEW_URL, track?.previewUrl)
+            putExtra(TRACK_PREVIEW_URL, track.previewUrl)
         }
 
         requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
@@ -378,14 +371,15 @@ class PlayerFragment : Fragment() {
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
-        if (isGranted) {
-            // Если выдали разрешение — запускаем сервис.
-            audioPlayerService?.startNotification()
-        } else {
-            // Иначе просто покажем ошибку
-            Toast.makeText(requireContext(), "Can't start foreground service!", Toast.LENGTH_LONG)
+        if (!isGranted) {
+            Toast.makeText(
+                requireContext(),
+                "Не предоставлены права на уведомления!",
+                Toast.LENGTH_LONG
+            )
                 .show()
         }
     }
+    //endregion
 
 }

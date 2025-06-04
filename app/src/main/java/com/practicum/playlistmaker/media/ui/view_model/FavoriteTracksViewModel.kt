@@ -20,7 +20,12 @@ class FavoriteTracksViewModel(
             favoriteTrackInteractor
                 .getFavoriteTrack()
                 .collect { tracks ->
-                    stateLiveData.value = FavoriteStatus.Favorites(tracks)
+
+                    if (tracks.isNullOrEmpty()){
+                        stateLiveData.value = FavoriteStatus.Empty
+                    } else {
+                        stateLiveData.value = FavoriteStatus.Favorites(tracks)
+                    }
                 }
         }
     }

@@ -6,9 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSettingsBinding
+import com.practicum.playlistmaker.settings.ui.compose.SettingsScreen
 import com.practicum.playlistmaker.settings.ui.model.EmailData
 import com.practicum.playlistmaker.settings.ui.model.IntentType
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
@@ -17,15 +21,17 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : Fragment() {
 
-    private lateinit var binding: FragmentSettingsBinding
     private val settingsViewModel: SettingsViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                SettingsScreen(settingsViewModel)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,41 +41,8 @@ class SettingsFragment : Fragment() {
             openActivity(it)
         }
 
-        settingsViewModel.darkThemeLive.observe(viewLifecycleOwner) {
-            binding.themeSwitcher.isChecked = it
-        }
-
         (requireContext().applicationContext as App).checkTheme()
         settingsViewModel.checkDarkTheme((requireContext().applicationContext as App).darkTheme)
-
-
-        binding.themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
-            (requireActivity().applicationContext as App).switchTheme(isChecked)
-            settingsViewModel.toggleTheme(isChecked)
-        }
-
-
-        binding.share.setOnClickListener {
-            settingsViewModel.shareApp(
-                requireContext().getString(R.string.course_url)
-            )
-        }
-
-        binding.support.setOnClickListener {
-            settingsViewModel.getHelp(
-                EmailData(
-                    email = requireContext().getString(R.string.my_email),
-                    subject = requireContext().getString(R.string.email_subject),
-                    text = requireContext().getString(R.string.email_text),
-                )
-            )
-        }
-
-        binding.userAgreement.setOnClickListener {
-            settingsViewModel.userAgreement(
-                requireContext().getString(R.string.practicum_offer)
-            )
-        }
 
     }
 
@@ -112,4 +85,5 @@ class SettingsFragment : Fragment() {
     companion object {
         const val MAIL_TO = "mailto:"
     }
+
 }

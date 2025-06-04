@@ -30,33 +30,15 @@ class SearchViewModel(
     private val stateLiveData = MutableLiveData<SearchStatus>()
     fun observeState(): LiveData<SearchStatus> = stateLiveData
 
-    private var searchFieldLastValue: String = SEARCH_FIELD_DEF
+    private val searchFieldLastValue = MutableLiveData<String>()
+    fun observeQuery(): LiveData<String> = searchFieldLastValue
 
     override fun onCleared() {
         trackSearchDebounce(SEARCH_FIELD_DEF)
     }
 
-    fun searchClearPressed(historyTrackCount: Int) {
-        trackSearchDebounce("")
-        if (historyTrackCount > 0) {
-            getHistory()
-        } else {
-            renderState(
-                SearchStatus.Clean
-            )
-        }
-    }
-
     fun searchUpdButtonPressed() {
-        searchDebounce(searchFieldLastValue)
-    }
-
-    fun focusOnSearchFields(hasFocus: Boolean, empty: Boolean) {
-        if (
-            hasFocus && empty
-        ) {
-            getHistory()
-        }
+        trackSearchDebounce(searchFieldLastValue.value ?: SEARCH_FIELD_DEF)
     }
 
     fun clearHistory() {
@@ -66,7 +48,22 @@ class SearchViewModel(
         )
     }
 
-    fun addTrackToHistory(track: Track, historyTracksArray: MutableList<Track>) {
+    fun addTrackToHistory(
+        track: Track,
+    ) {
+
+        var historyTracksArray: MutableList<Track> = mutableListOf()
+
+
+        viewModelScope.launch {
+            tracksInteractor
+                .getTracksHistory()
+                .collect { pair ->
+                    historyTracksArray = processHistoryResult(pair.first, pair.second, false)
+                }
+        }
+
+
         if (historyTracksArray.contains(track)) {
             historyTracksArray.remove(track)
         }
@@ -80,43 +77,50 @@ class SearchViewModel(
         viewModelScope.launch {
             tracksInteractor.saveTracksToHistory(historyTracksArray)
         }
+
     }
 
-    private fun getHistory() {
+    fun getHistory() {
+        onCleared()
         viewModelScope.launch {
             tracksInteractor
                 .getTracksHistory()
                 .collect { pair ->
-                    processHistoryResult(pair.first, pair.second)
+                    processHistoryResult(pair.first, pair.second, true)
                 }
         }
     }
 
-    private fun processHistoryResult(foundTracks: List<Track>?, errorMessage: String?) {
+    private fun processHistoryResult(
+        foundTracks: List<Track>?,
+        errorMessage: String?,
+        generateState: Boolean
+    ): MutableList<Track> {
         val tracks = mutableListOf<Track>()
 
         if (foundTracks != null) {
             tracks.addAll(foundTracks)
         }
 
-        if (tracks.isNotEmpty()) {
+        if (tracks.isNotEmpty() && generateState) {
             renderState(
                 SearchStatus.History(foundTracks ?: listOf())
             )
 
-        } else {
+        } else if (generateState) {
             renderState(
                 SearchStatus.Clean
             )
         }
 
+        return tracks
     }
 
     fun searchDebounce(
         query: String
     ) {
-        if (query != searchFieldLastValue) {
-            searchFieldLastValue = query
+        if (query != searchFieldLastValue.value) {
+            searchFieldLastValue.value = query
             trackSearchDebounce(query)
         }
 
@@ -146,7 +150,7 @@ class SearchViewModel(
         }
 
         when {
-            tracks.isEmpty() -> {
+            tracks.isEmpty() && errorMessage.isNullOrEmpty() -> {
                 renderState(
                     SearchStatus.Empty
                 )
@@ -172,5 +176,6 @@ class SearchViewModel(
     private fun renderState(state: SearchStatus) {
         stateLiveData.postValue(state)
     }
+
 
 }

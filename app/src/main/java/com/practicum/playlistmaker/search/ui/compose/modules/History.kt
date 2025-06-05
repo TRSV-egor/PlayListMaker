@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.search.ui.compose.modules
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -29,42 +30,49 @@ fun History(
     viewModel: SearchViewModel
 ) {
 
-    Column(
+    LazyColumn(
         modifier = Modifier
-            .padding(top = 16.dp)
-            .verticalScroll(scrollState),
+            .padding(top = 16.dp),
+        //.verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = stringResource(id = R.string.search_history),
-            fontFamily = yandexSansFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 19.sp,
-            modifier = Modifier.padding(top = 18.dp, bottom = 12.dp),
-            color = colorResource(id = R.color.toolbar)
-        )
-        for (track in trackList) {
-            TrackPosition(track, onClickHistory)
-        }
-
-        Button(
-            modifier = Modifier.padding(top = 24.dp),
-            onClick = {
-                viewModel.clearHistory()
-            },
-            enabled = true,
-            shape = RoundedCornerShape(54.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.toolbar))
-        ) {
+        items(1) {
             Text(
-                text = stringResource(id = R.string.search_clear_history),
+                text = stringResource(id = R.string.search_history),
                 fontFamily = yandexSansFamily,
                 fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                color = colorResource(id = R.color.theme_white_black)
+                fontSize = 19.sp,
+                modifier = Modifier.padding(top = 18.dp, bottom = 12.dp),
+                color = colorResource(id = R.color.toolbar)
+            )
+        }
+
+
+        items(trackList.size) {
+            TrackPosition(trackList[it], onClickHistory)
+        }
+
+        items(1) {
+            Button(
+                modifier = Modifier.padding(top = 24.dp),
+                onClick = {
+                    viewModel.clearHistory()
+                },
+                enabled = true,
+                shape = RoundedCornerShape(54.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.toolbar))
+            ) {
+                Text(
+                    text = stringResource(id = R.string.search_clear_history),
+                    fontFamily = yandexSansFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    color = colorResource(id = R.color.theme_white_black)
 
                 )
+            }
         }
+
 
     }
 }

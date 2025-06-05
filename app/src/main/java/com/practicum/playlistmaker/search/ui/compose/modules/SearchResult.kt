@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.search.ui.compose.modules
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,13 +18,12 @@ fun SearchResult(
 ) {
 
 
-    Column(
+    LazyColumn(
         modifier = Modifier
-            .padding(top = 16.dp)
-            .verticalScroll(scrollState),
+            .padding(top = 16.dp),
     ) {
-        for (track in trackList) {
-            TrackPosition(track, onClick)
+        items(trackList.size){
+            TrackPosition(trackList[it], onClick)
         }
     }
 }

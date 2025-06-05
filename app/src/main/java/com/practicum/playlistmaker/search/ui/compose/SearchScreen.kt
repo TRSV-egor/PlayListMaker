@@ -48,7 +48,7 @@ fun SearchScreen(
     val keyboard = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(focusRequester) {
-        if (showKeyboard.equals(true)) {
+        if (showKeyboard.value) {
             focusRequester.requestFocus()
             delay(100)
             keyboard?.show()
@@ -61,7 +61,7 @@ fun SearchScreen(
             .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        SearchField(focusRequester, viewModel, keyboard!!)
+        SearchField(focusRequester, viewModel, keyboard)
 
         when (screenState) {
             SearchStatus.Clean -> {

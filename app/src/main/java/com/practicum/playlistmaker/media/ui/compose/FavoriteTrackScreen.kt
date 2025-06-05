@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,7 +43,7 @@ fun FavoriteTrackScreen(
         when (trackListState) {
             is FavoriteStatus.Loading -> Empty()
             is FavoriteStatus.Empty -> Empty()
-            is FavoriteStatus.Favorites -> TrackList((trackListState as FavoriteStatus.Favorites).tracks, onClick)
+            is FavoriteStatus.Favorites -> TrackList((trackListState as? FavoriteStatus.Favorites)?.tracks, onClick)
 
         }
     }
@@ -68,20 +69,24 @@ private fun Empty() {
             fontFamily = yandexSansFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 19.sp,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = 16.dp),
+            color = colorResource(id = R.color.toolbar)
+
         )
     }
 }
 
 @Composable
-fun TrackList(trackList: List<Track>, onClick:(Track)-> Unit) {
+fun TrackList(trackList: List<Track>?, onClick:(Track)-> Unit) {
     Column(
         modifier = Modifier
             .padding(vertical = 20.dp)
     ) {
 
-        for (track in trackList){
-            TrackPosition(track, onClick)
+        if (trackList != null) {
+            for (track in trackList){
+                TrackPosition(track, onClick)
+            }
         }
 
     }

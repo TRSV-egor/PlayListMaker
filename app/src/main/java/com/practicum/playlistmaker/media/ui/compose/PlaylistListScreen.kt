@@ -77,14 +77,16 @@ fun PlaylistListScreen(
                 )
         }
 
-        if (playlistState.isNullOrEmpty()) {
-            Empty()
-        } else {
-            ListPlaylist(
-                scrollState = scrollState,
-                list = playlistState!!,
-                onPlaylistClick = onPlaylistClick
-            )
+        playlistState?.let {
+            if (playlistState.isNullOrEmpty()) {
+                Empty()
+            } else {
+                ListPlaylist(
+                    scrollState = scrollState,
+                    list = it,
+                    onPlaylistClick = onPlaylistClick
+                )
+            }
         }
 
 

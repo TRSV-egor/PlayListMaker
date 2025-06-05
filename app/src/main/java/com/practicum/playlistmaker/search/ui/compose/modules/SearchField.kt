@@ -43,7 +43,7 @@ import com.practicum.playlistmaker.util.yandexSansFamily
 fun SearchField(
     focusRequester: FocusRequester,
     viewModel: SearchViewModel,
-    keyboard: SoftwareKeyboardController
+    keyboard: SoftwareKeyboardController?
 ) {
 
     val queryState by viewModel.observeQuery().observeAsState()
@@ -143,8 +143,7 @@ fun SearchField(
                     .wrapContentWidth()
                     .clickable(true) {
                         query = ""
-                        keyboard.hide()
-                        viewModel.getHistory()
+                        keyboard?.hide()
                     }
             )
         }

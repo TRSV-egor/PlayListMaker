@@ -4,11 +4,12 @@ plugins {
     alias(libs.plugins.parcelize)
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
     namespace = "com.practicum.playlistmaker"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.practicum.playlistmaker"
@@ -39,12 +40,20 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
     }
 }
 
 dependencies {
-    //implementation(platform("com.google.firebase:firebase-bom:33.12.0"))
-    //implementation("com.google.firebase:firebase-analytics")
+    implementation (libs.koin.androidx.compose)
+    implementation("io.coil-kt.coil3:coil-compose:3.2.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.2.0")
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.material3.android)
+    debugImplementation(libs.androidx.compose.uitool)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.activity)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.coroutines)

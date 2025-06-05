@@ -1,26 +1,31 @@
 [versions]
 agp = "8.6.1"
-kotlin = "2.0.0"
-coreKtx = "1.10.1"
+kotlin = "2.0.21"
+coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
-material = "1.8.0"
-activity = "1.8.0"
-constraintlayout = "2.1.4"
-fragmentKtx = "1.5.6"
+material = "1.12.0"
+activity = "1.10.1"
+constraintlayout = "2.2.1"
+fragmentKtx = "1.8.7"
 viewpager2 = "1.1.0"
-navigationFragmentKtx = "2.5.3"
+navigationFragmentKtx = "2.9.0"
 glide = "4.14.2"
 koin = "3.3.0"
 retrofit = "2.9.0"
-coroutines = "1.6.4"
+coroutines = "1.9.0"
 roomKtx = "2.5.1"
 roomCompiler = "2.5.1"
 roomRuntime = "2.5.1"
-fireBom = "33.12.0"
+fireBom = "33.14.0"
 playServicesMeasurementApi = "22.4.0"
+composeUiMatrial = "1.8.2"
+composeActivity = "1.10.1"
+runtimeLivedata = "1.8.2"
+material3Android = "1.3.2"
+koinAndroidxCompose ="3.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +51,14 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 firebase-analytics = {group = "com.google.firebase", name = "firebase-analytics"}
 firebase-bom = {group = "com.google.firebase", name = "firebase-bom", version.ref = "fireBom"}
 play-services-measurement-api = { group = "com.google.android.gms", name = "play-services-measurement-api", version.ref = "playServicesMeasurementApi" }
+androidx-compose-ui = {group = "androidx.compose.ui", name = "ui", version.ref = "composeUiMatrial"}
+androidx-compose-material = {group = "androidx.compose.material", name = "material", version.ref = "composeUiMatrial"}
+androidx-compose-activity = {group = "androidx.activity", name = "activity-compose", version.ref = "composeActivity"}
+androidx-compose-uitool = {group = "androidx.compose.ui", name = "ui-tooling", version.ref = "composeUiMatrial"}
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
+androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -53,3 +66,4 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 parcelize = { id = "kotlin-parcelize" }
 ksp = { id = "com.google.devtools.ksp" }
 google-services = { id = "com.google.gms.google-services"}
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
